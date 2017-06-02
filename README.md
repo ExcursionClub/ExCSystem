@@ -3,7 +3,7 @@ ExCSystem
 
 Bottom up re-design of the Excursion system
 ________________
-<b>Install
+<b>Install</b>
 
 To install simply install the latest version of django, and any dependencies:
    * none
@@ -11,7 +11,7 @@ To install simply install the latest version of django, and any dependencies:
 Then clone the git repo anywhere
 
 _____________________
-<b>Running
+<b>Running</b>
 
 To run the server, simply navigate to the top ExCSystem directory (the one with manage.py in it) and run
 
