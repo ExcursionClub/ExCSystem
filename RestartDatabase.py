@@ -27,7 +27,6 @@ try:
     os.remove(os.path.join(basepath, 'db.sqlite3'))
 except FileNotFoundError:
     print("The database does not exist. Moving on...")
-print("a")
 
 # Re-creates __init__.py in the migrations folder
 os.mkdir(migrations_path)
@@ -36,11 +35,11 @@ open(os.path.join(migrations_path, '__init__.py'), 'w')
 
 # Re-initializes the database
 from django.core.management import call_command
-print("b")
 call_command('makemigrations', 'core')
 call_command('migrate')
-print("c")
-call_command('createsuperuser', '--username', 'admin', '--email', 'admin@excursionclubucsb.org')
+
+# To finish setup, run the following from the command line:
+# python3.4 manage.py createsuperuser --username=admin --email=admin@excursionclubucsb.org
 
 
 
