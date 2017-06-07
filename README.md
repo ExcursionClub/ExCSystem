@@ -22,6 +22,22 @@ one with manage.py in it) and run
     python3.4 manage.py runserver
 
 _____________________
+<b>Applying Changes</b>
+
+Most changes to the code will be incorporated into the website
+immediately. The exception to this rule are any changes to the models
+that affect how data is stored in the database. To incorporate these,
+stop the server, and run:
+
+    python3.4 manage.py makemigrations core
+    python3.4 manage.py migrate
+
+This should be sufficient for small changes that do not cause conflicts.
+If an error pops up, and there is not important information in the
+database, you can reset the database (see below).
+
+
+_____________________
 <b>Resetting the Database</b>
 
 If you at any point make a significant change to how data is stored in
@@ -39,8 +55,8 @@ You will now be prompted to enter a password for the super user.
 Enter whatever you like, ie admin
 
 
-The server is now set up, as if this was the first time ever running the
-project.
+The server is now set up, and ready to run as if this was the first time
+ever running the project.
 
 NOTE: Neither the database, nor anything in the migrations directory
 should ever be pushed to the git repo. The migrations directory on the
