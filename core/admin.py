@@ -13,8 +13,8 @@ admin.site.register(Gear)
 # Replace the option to create users with the option to create members
 
 
-class UserCreationForm(forms.ModelForm):
-    """A form for creating new users. Includes all the required
+class MemberCreationForm(forms.ModelForm):
+    """A form for creating new members. Includes all the required
     fields, plus a repeated password."""
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
@@ -33,15 +33,15 @@ class UserCreationForm(forms.ModelForm):
 
     def save(self, commit=True):
         # Save the provided password in hashed format
-        user = super(UserCreationForm, self).save(commit=False)
+        user = super(MemberCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user
 
 
-class UserChangeForm(forms.ModelForm):
-    """A form for updating users. Includes all the fields on
+class MemberChangeForm(forms.ModelForm):
+    """A form for updating members. Includes all the fields on
     the user, but replaces the password field with admin's
     password hash display field.
     """
@@ -58,12 +58,12 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-class UserAdmin(BaseUserAdmin):
-    # The forms to add and change user instances
-    form = UserChangeForm
-    add_form = UserCreationForm
+class MemberAdmin(BaseUserAdmin):
+    # The forms to add and change member instances
+    form = MemberChangeForm
+    add_form = MemberCreationForm
 
-    # The fields to be used in displaying the User model.
+    # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('email', 'date_joined', 'is_admin')
@@ -73,7 +73,7 @@ class UserAdmin(BaseUserAdmin):
         ('Personal info', {'fields': ('date_joined',)}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
-    # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
+    # add_fieldsets is not a standard ModelAdmin attribute. MemberAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
@@ -85,8 +85,8 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
-# Now register the new UserAdmin...
-admin.site.register(Member, UserAdmin)
+# Now register the new MemberAdmin...
+admin.site.register(Member, MemberAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

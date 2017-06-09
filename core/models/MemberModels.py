@@ -7,36 +7,36 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class MemberManager(BaseUserManager):
-    def create_user(self, email, date_joined, password=None):
+    def create_member(self, email, date_joined, password=None):
         """
-        Creates and saves a User with the given email, date of
+        Creates and saves a Member with the given email, date of
         birth and password.
         """
         if not email:
             raise ValueError('Users must have an email address')
 
-        user = self.model(
+        member = self.model(
             email=self.normalize_email(email),
             date_joined=date_joined,
         )
 
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
+        member.set_password(password)
+        member.save(using=self._db)
+        return member
 
     def create_superuser(self, email, date_joined, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
-        user = self.create_user(
+        superuser = self.create_member(
             email,
             date_joined=timezone.now(),
             password=password
         )
-        user.is_admin = True
-        user.save(using=self._db)
-        return user
+        superuser.is_admin = True
+        superuser.save(using=self._db)
+        return superuser
 
 
 class Member(AbstractBaseUser):
@@ -66,12 +66,12 @@ class Member(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        "Does the user have a specific permission?"
+        """Does the user have a specific permission?"""
         # Simplest possible answer: Yes, always
         return True
 
     def has_module_perms(self, app_label):
-        "Does the user have permissions to view the app `app_label`?"
+        """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
 
