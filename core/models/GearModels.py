@@ -8,3 +8,6 @@ class Gear(models.Model):
     rfid = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=50)
     is_brokem = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = "Gear"
