@@ -39,7 +39,8 @@ call_command('makemigrations', 'core')
 call_command('migrate')
 
 # To finish setup, run the following from the command line:
-# python3.4 manage.py createsuperuser --username=admin --email=admin@excursionclubucsb.org
+# python3.4 manage.py createsuperuser --email=admin@excursionclubucsb.org --rfid=0000000000 --first_name=Master --last_name=admin --phone_number=+15555555555
+
 
 
 
