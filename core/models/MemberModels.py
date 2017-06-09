@@ -73,6 +73,7 @@ class Member(AbstractBaseUser):
     def get_full_name(self):
         # The user is identified by their email address
         return "{} {}".format(self.first_name, self.last_name)
+    get_full_name.short_description = "Full Name"
 
     def get_short_name(self):
         # The user is identified by their email address

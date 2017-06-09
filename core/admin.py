@@ -21,7 +21,7 @@ class MemberCreationForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('email', 'date_joined')
+        fields = ('email', 'first_name', 'last_name', 'phone_number', 'rfid')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -49,7 +49,15 @@ class MemberChangeForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('email', 'password', 'date_joined', 'is_active', 'is_admin')
+        fields = ('email',
+                  'password',
+                  'date_joined',
+                  'first_name',
+                  'last_name',
+                  'phone_number',
+                  'rfid',
+                  'is_active',
+                  'is_admin')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -66,11 +74,11 @@ class MemberAdmin(BaseUserAdmin):
     # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('email', 'date_joined', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined')
+    list_filter = ('is_active', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('date_joined',)}),
+        ('Personal info', {'fields': ('phone_number', 'first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. MemberAdmin
@@ -78,11 +86,11 @@ class MemberAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'date_joined', 'password1', 'password2')}
+            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'password1', 'password2')}
         ),
     )
-    search_fields = ('email',)
-    ordering = ('email',)
+    search_fields = ('email', 'phone_number', 'first_name', 'last_name')
+    ordering = ('first_name',)
     filter_horizontal = ()
 
 # Now register the new MemberAdmin...
