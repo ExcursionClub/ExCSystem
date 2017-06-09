@@ -1,13 +1,14 @@
 from django.db import models
-from django.utils import timezone
+from django.utils.timezone import now
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Member must be in the __init__.py file so django can import it directly from the models module
 
 
 class MemberManager(BaseUserManager):
-    def create_member(self, email, date_joined, password=None):
+    def create_member(self, email, rfid, first_name, last_name, phone_number, password=None):
         """
         Creates and saves a Member with the given email, date of
         birth and password.
@@ -17,21 +18,28 @@ class MemberManager(BaseUserManager):
 
         member = self.model(
             email=self.normalize_email(email),
-            date_joined=date_joined,
+            rfid=rfid,
+            first_name=first_name,
+            last_name=last_name,
+            date_joined=now(),
+            phone_number=phone_number
         )
 
         member.set_password(password)
         member.save(using=self._db)
         return member
 
-    def create_superuser(self, email, date_joined, password):
+    def create_superuser(self, email, rfid, first_name, last_name, phone_number, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
         """
         superuser = self.create_member(
-            email,
-            date_joined=timezone.now(),
+            email=email,
+            rfid=rfid,
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
             password=password
         )
         superuser.is_admin = True
@@ -45,6 +53,14 @@ class Member(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
+    rfid = models.CharField(
+        verbose_name="RFID",
+        max_length=10,
+        unique="True"
+    )
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone_number = PhoneNumberField(unique=True)
     date_joined = models.DateField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -52,15 +68,15 @@ class Member(AbstractBaseUser):
     objects = MemberManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['date_joined']
+    REQUIRED_FIELDS = ['rfid', 'first_name', 'last_name', 'phone_number']
 
     def get_full_name(self):
         # The user is identified by their email address
-        return self.email
+        return "{} {}".format(self.first_name, self.last_name)
 
     def get_short_name(self):
         # The user is identified by their email address
-        return self.email
+        return self.first_name
 
     def __str__(self):              # __unicode__ on Python 2
         return self.email
