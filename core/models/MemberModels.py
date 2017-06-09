@@ -61,7 +61,7 @@ class Member(AbstractBaseUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     phone_number = PhoneNumberField(unique=True)
-    date_joined = models.DateField()
+    date_joined = models.DateField(default=now())
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
