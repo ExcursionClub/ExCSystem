@@ -9,7 +9,8 @@ This project runs on python 3.4!
 
 To install simply install the latest version of django, and any
 dependencies:
-   * none
+   * Django 1.11.2
+   * django-phonenumber-field
 
 Then clone the git repo anywhere
 
