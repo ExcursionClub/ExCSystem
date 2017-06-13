@@ -50,7 +50,7 @@ using the ResetDatabase.py file.
 To restart he database:
 
     python3.4 RestartDatabase.py
-    python3.4 manage.py createsuperuser --username=admin --email=admin@excursionclubucsb.org
+    python3.4 manage.py createsuperuser --email=admin@excursionclubucsb.org --rfid=0000000000 --first_name=Master --last_name=Admin --phone_number=+15555555555
 
 You will now be prompted to enter a password for the super user.
 Enter whatever you like, ie admin
