@@ -46,8 +46,7 @@ class MemberChangeForm(forms.ModelForm):
                   'last_name',
                   'phone_number',
                   'rfid',
-                  'is_active',
-                  'is_admin')
+                  'status')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -68,6 +67,5 @@ class MemberViewForm(forms.ModelForm):
                   'last_name',
                   'phone_number',
                   'rfid',
-                  'is_active',
                   'is_admin')
 

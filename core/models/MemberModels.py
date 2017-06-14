@@ -41,17 +41,14 @@ class MemberManager(BaseUserManager):
             password=password
         )
         superuser.is_admin = True
+        superuser.status = 7
         superuser.save(using=self._db)
         return superuser
 
 
-class StafferManager(MemberManager):
-
-    def create_staffer(self, **kwargs):
-        return self.create_member(**kwargs)
-
-
 class Member(AbstractBaseUser):
+    """This is the base model for all members (this includes staffers)"""
+
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -66,8 +63,25 @@ class Member(AbstractBaseUser):
     last_name = models.CharField(max_length=50)
     phone_number = PhoneNumberField(unique=True)
     date_joined = models.DateField(default=now())
-    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    status_choices = [
+        ('Member', [
+                (0, "Just Joined"),
+                (1, "Expired Member"),
+                (2, "Active Member"),
+            ],
+        ),
+        ('Staffer', [
+                (3, "Prospective Staffer"),
+                (4, "Expired Staffer"),
+                (5, "Active Staffer"),
+                (6, "Board Member"),
+                (7, "Admin")
+            ],
+        ),
+    ]
+    status = models.IntegerField(default=0, choices=status_choices)
 
     objects = MemberManager()
 
@@ -86,6 +100,13 @@ class Member(AbstractBaseUser):
     def __str__(self):              # __unicode__ on Python 2
         return self.email
 
+    def update_admin(self):
+        """Updates the admin status of the user in the django system"""
+        if self.status == 7:
+            self.is_admin = True
+        else:
+            self.is_admin = False
+
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
         # Simplest possible answer: Yes, always
@@ -98,23 +119,19 @@ class Member(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        """Staff if they are and admin"""
+        """Staff if they are an admin"""
         if self.is_admin:
             return True
         else:
             return False
 
 
-class Staffer(Member):
+class Staffer(models.Model):
+    """This model provides the staffer profile (all the extra data that needs to be known about staffers)"""
+    member = models.OneToOneField(Member, on_delete=models.CASCADE)
     exc_email = models.EmailField(
         verbose_name='Official ExC Email',
         max_length=255,
         unique=True,
     )
     autobiography = models.TextField(verbose_name="Self Description of the staffer")
-
-
-    @property
-    def is_staff(self):
-        """All staffers are staff (duh)"""
-        return True
