@@ -4,8 +4,6 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-# Member must be in the __init__.py file so django can import it directly from the models module
-
 
 class MemberManager(BaseUserManager):
     def create_member(self, email, rfid, first_name, last_name, phone_number, password=None):
@@ -45,6 +43,12 @@ class MemberManager(BaseUserManager):
         superuser.is_admin = True
         superuser.save(using=self._db)
         return superuser
+
+
+class StafferManager(MemberManager):
+
+    def create_staffer(self, **kwargs):
+        return self.create_member(**kwargs)
 
 
 class Member(AbstractBaseUser):
@@ -94,6 +98,23 @@ class Member(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        "Is the user a member of staff?"
-        # Simplest possible answer: All admins are staff
-        return self.is_admin
+        """Staff if they are and admin"""
+        if self.is_admin:
+            return True
+        else:
+            return False
+
+
+class Staffer(Member):
+    exc_email = models.EmailField(
+        verbose_name='Official ExC Email',
+        max_length=255,
+        unique=True,
+    )
+    autobiography = models.TextField(verbose_name="Self Description of the staffer")
+
+
+    @property
+    def is_staff(self):
+        """All staffers are staff (duh)"""
+        return True
