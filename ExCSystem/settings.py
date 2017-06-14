@@ -32,8 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'core.apps.CoreConfig',
-    'kiosk.apps.CoreConfig',
-    'browse.apps.CoreConfig',
+    'kiosk.apps.KioskConfig',
+    'browse.apps.BrowseConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
