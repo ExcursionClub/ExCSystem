@@ -25,6 +25,7 @@ class MemberManager(BaseUserManager):
 
         member.set_password(password)
         member.save(using=self._db)
+
         return member
 
     def create_superuser(self, email, rfid, first_name, last_name, phone_number, password):
@@ -61,6 +62,7 @@ class Member(AbstractBaseUser):
     )
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    picture = models.ImageField(verbose_name="Profile Picture", upload_to="ProfilePics/")
     phone_number = PhoneNumberField(unique=True)
     date_joined = models.DateField(default=now())
     is_admin = models.BooleanField(default=False)
@@ -84,6 +86,8 @@ class Member(AbstractBaseUser):
     status = models.IntegerField(default=0, choices=status_choices)
 
     objects = MemberManager()
+
+    print(picture.storage.url)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['rfid', 'first_name', 'last_name', 'phone_number']
@@ -119,8 +123,11 @@ class Member(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        """Staff if they are an admin"""
-        if self.is_admin:
+        """
+        Property that allows and easy check for whether the member is a staffer
+        """
+        # If the member is a prospective staffer or better, then they are given staff privileges
+        if self.status >= 4:
             return True
         else:
             return False
