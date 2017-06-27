@@ -21,12 +21,12 @@ class MemberAdmin(BaseUserAdmin):
     # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'status')
+    list_display = ('get_full_name', 'picture', 'email', 'phone_number', 'date_joined', 'status')
     list_filter = ('status',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number',)}),
-        ('Club info', {'fields': ('rfid', )}),
+        ('Club info', {'fields': ('rfid', 'picture')}),
         ('Permissions', {'fields': ('status',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. MemberAdmin
