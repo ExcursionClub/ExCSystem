@@ -9,7 +9,7 @@ This project runs on python 3.4!
 
 To install simply install the latest version of django, and any
 dependencies:
-   * Django 1.11.2
+   * Django 1.11.5
    * django-phonenumber-field
 
 Then clone the git repo anywhere
@@ -20,7 +20,7 @@ _____________________
 To run the server, simply navigate to the top ExCSystem directory (the
 one with manage.py in it) and run
 
-    python3.4 manage.py runserver
+    python3.5 manage.py runserver
 
 _____________________
 <b>Applying Changes</b>
@@ -30,8 +30,8 @@ immediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
-    python3.4 manage.py makemigrations core
-    python3.4 manage.py migrate
+    python3.5 manage.py makemigrations core
+    python3.5 manage.py migrate
 
 This should be sufficient for small changes that do not cause conflicts.
 If an error pops up, and there is not important information in the
@@ -49,8 +49,8 @@ using the ResetDatabase.py file.
 
 To restart he database:
 
-    python3.4 RestartDatabase.py
-    python3.4 manage.py createsuperuser --email=admin@excursionclubucsb.org --rfid=0000000000 --first_name=Master --last_name=Admin --phone_number=+15555555555
+    python3.5 RestartDatabase.py
+    python3.5 manage.py createsuperuser --email=admin@excursionclubucsb.org --rfid=0000000000 --first_name=Master --last_name=Admin --phone_number=+15555555555
 
 You will now be prompted to enter a password for the super user.
 Enter whatever you like, ie admin
