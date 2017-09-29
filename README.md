@@ -5,7 +5,7 @@ Bottom up re-design of the Excursion system
 ________________
 <b>Install</b>
 
-This project runs on python 3.4!
+This project runs on python 3.5!
 
 To install simply install the latest version of django, and any
 dependencies:
