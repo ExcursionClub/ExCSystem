@@ -50,6 +50,25 @@ class MemberManager(BaseUserManager):
 class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
 
+    status_choices = [
+        ('Member', [
+            (0, "Just Joined"),
+            (1, "Expired Member"),
+            (2, "Active Member"),
+        ],
+         ),
+        ('Staffer', [
+            (3, "Prospective Staffer"),
+            (4, "Expired Staffer"),
+            (5, "Active Staffer"),
+            (6, "Board Member"),
+            (7, "Admin")
+        ],
+         ),
+    ]
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -60,29 +79,13 @@ class Member(AbstractBaseUser):
         max_length=10,
         unique="True"
     )
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    picture = models.ImageField(verbose_name="Profile Picture", upload_to="ProfilePics/")
+    picture = models.ImageField(
+        verbose_name="Profile Picture",
+        upload_to="ProfilePics/"
+    )
     phone_number = PhoneNumberField(unique=True)
     date_joined = models.DateField(default=now())
     is_admin = models.BooleanField(default=False)
-
-    status_choices = [
-        ('Member', [
-                (0, "Just Joined"),
-                (1, "Expired Member"),
-                (2, "Active Member"),
-            ],
-        ),
-        ('Staffer', [
-                (3, "Prospective Staffer"),
-                (4, "Expired Staffer"),
-                (5, "Active Staffer"),
-                (6, "Board Member"),
-                (7, "Admin")
-            ],
-        ),
-    ]
     status = models.IntegerField(default=0, choices=status_choices)
 
     objects = MemberManager()
@@ -122,15 +125,19 @@ class Member(AbstractBaseUser):
         return True
 
     @property
+    def can_rent(self):
+        """
+        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
+        """
+        return self.status >= 2
+
+    @property
     def is_staff(self):
         """
         Property that allows and easy check for whether the member is a staffer
         """
         # If the member is a prospective staffer or better, then they are given staff privileges
-        if self.status >= 4:
-            return True
-        else:
-            return False
+        return self.status >= 4
 
 
 class Staffer(models.Model):
