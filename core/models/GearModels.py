@@ -1,4 +1,5 @@
 from django.db import models
+from .MemberModels import Member
 
 
 class Gear(models.Model):
@@ -20,6 +21,8 @@ class Gear(models.Model):
         (5, "Removed"),
     ]
     status = models.IntegerField(choices=status_choices)
+
+    checked_out_to = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
 
     def is_available(self):
         """Returns True if the gear is available for renting"""
