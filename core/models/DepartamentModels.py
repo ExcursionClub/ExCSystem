@@ -17,8 +17,8 @@ class Departament(models.Model):
         "Surfing", "Wetsuits", "Mountaineering", "Archery", "Paintballing", "Free Diving", "Off-Road"]
     """
 
-    #: The title of this department
-    title = models.CharField(max_length=20)
+    #: The name of this department
+    name = models.CharField(max_length=20)
 
     #: A short description of the type of trips and gear this department contains
     description = models.TextField()
@@ -37,26 +37,19 @@ class Departament(models.Model):
         :return: None
         """
 
-        department_email = "{}@excursionclubucsb.org".format(self.title)
+        department_email = "{}@excursionclubucsb.org".format(self.name)
         stl_emails = [staffer.exc_email for staffer in self.stls.all()]
         email_body = \
             "Hi {} STL! \n" \
             "\n" \
             "This is an automated message to let you know that:\n" \
             "{}" \
-            "\n".format(title, message)
+            "\n".format(self.name, message)
         for gear in related_gear:
             email_body += "    {}\n".format(gear)
 
         email_body += "From your dearest robot <3"
 
-        send_mail(
-            title,
-            email_body,
-            department_email,
-            stl_emails,
-            fail_silently=False,
-        )
+        send_mail(title, email_body, department_email, stl_emails, fail_silently=False)
 
-    # TODO: Add convenience email functions (that call notify_STL, but require fewer args) for: low supply, broken gear, missing
-
+    # TODO: Add convenience email functions (that call notify_STL, but require fewer args) for: low supply, broken gear, gear gone missing
