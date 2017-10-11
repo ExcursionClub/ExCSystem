@@ -50,6 +50,7 @@ class MemberManager(BaseUserManager):
 
 class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
+    objects = MemberManager()
 
     status_choices = [
         ('Member', [
@@ -85,12 +86,10 @@ class Member(AbstractBaseUser):
         upload_to="ProfilePics/"
     )
     phone_number = PhoneNumberField(unique=True)
-    date_joined = models.DateField(default=now())
+    date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     status = models.IntegerField(default=0, choices=status_choices)
     certifications = models.ManyToManyField(Certification)
-
-    objects = MemberManager()
 
     print(picture.storage.url)
 

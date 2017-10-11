@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 from .MemberModels import Member, Staffer
 
 
-class Departament(models.Model):
+class Department(models.Model):
     """
     General class for a gear department
 

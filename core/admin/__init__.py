@@ -5,7 +5,7 @@ from ..models.MemberModels import Member
 from ..models.GearModels import Gear
 from ..models.TransactionModels import Transaction
 from ..models.CertificationModels import Certification
-from ..models.DepartamentModels import Departament
+from ..models.DepartmentModels import Department
 
 from .MemberAdmin import MemberAdmin
 from .OtherAdmins import CertificationAdmin, DepartmentAdmin
@@ -15,7 +15,7 @@ from .OtherAdmins import CertificationAdmin, DepartmentAdmin
 admin.site.register(Gear)
 admin.site.register(Transaction)
 admin.site.register(Certification, CertificationAdmin)
-admin.site.register(Departament, DepartmentAdmin)
+admin.site.register(Department, DepartmentAdmin)
 
 # Now register the new MemberAdmin...
 admin.site.register(Member, MemberAdmin)

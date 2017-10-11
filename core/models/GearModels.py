@@ -1,6 +1,6 @@
 from django.db import models
 from .MemberModels import Member
-from .DepartamentModels import Departament
+from .DepartmentModels import Department
 from .CertificationModels import Certification
 
 
@@ -26,7 +26,7 @@ class Gear(models.Model):
     status = models.IntegerField(choices=status_choices)
 
     #: The department to which this gear belongs (roughly corresponds to STL positions)
-    department = models.ManyToManyField(Departament)
+    department = models.ManyToManyField(Department)
 
     #: All the certifications that a member must posses to be allowed to check out this gear
     min_required_certs = models.ManyToManyField(Certification, verbose_name="Minimal Certifications Required for Rental")
