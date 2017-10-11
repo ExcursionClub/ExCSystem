@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
+from .CertificationModels import Certification
 
 
 class MemberManager(BaseUserManager):
@@ -87,6 +88,7 @@ class Member(AbstractBaseUser):
     date_joined = models.DateField(default=now())
     is_admin = models.BooleanField(default=False)
     status = models.IntegerField(default=0, choices=status_choices)
+    certifications = models.ManyToManyField(Certification)
 
     objects = MemberManager()
 
