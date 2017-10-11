@@ -41,7 +41,6 @@ class MemberChangeForm(forms.ModelForm):
         model = Member
         fields = ('email',
                   'password',
-                  'date_joined',
                   'first_name',
                   'last_name',
                   'phone_number',
@@ -63,7 +62,6 @@ class MemberViewForm(forms.ModelForm):
         model = Member
         fields = ('email',
                   'password',
-                  'date_joined',
                   'first_name',
                   'last_name',
                   'phone_number',
