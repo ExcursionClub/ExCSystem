@@ -9,7 +9,8 @@ from ..models.DepartmentModels import Department
 
 from .MemberAdmin import MemberAdmin
 from .GearAdmin import GearAdmin
-from .OtherAdmins import CertificationAdmin, DepartmentAdmin, TransactionAdmin
+from .TransactionAdmin import TransactionAdmin
+from .OtherAdmins import CertificationAdmin, DepartmentAdmin
 
 
 # Register your models here.
