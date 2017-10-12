@@ -16,5 +16,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ("timestamp", "type", "gear", "member", "authorizer", "comments")
+    list_display = ("type", "timestamp", "gear", "member", "authorizer", "comments")
     list_filter = ("type", )
+    search_fields = ("gear__name", "member__first_name", "member__last_name",
+                     "authorizer__first_name", "authorizer__last_name")

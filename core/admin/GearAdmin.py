@@ -9,5 +9,5 @@ class GearAdmin(admin.ModelAdmin):
     list_filter = ('status', "department")
 
     # Choose which fields can be searched for
-    search_fields = ('name', 'rfid',)# "checked_out_to")  # TODO: check if checked out to is reasonable thing to search
+    search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
