@@ -11,6 +11,8 @@ To install simply install the latest version of django, and any
 dependencies:
    * Django 1.11.5
    * django-phonenumber-field
+   * names
+   * progressbar2
 
 Then clone the git repo anywhere
 
@@ -50,14 +52,12 @@ using the ResetDatabase.py file.
 To restart he database:
 
     python3.5 RestartDatabase.py
-    python3.5 manage.py createsuperuser --email=admin@excursionclubucsb.org --rfid=0000000000 --first_name=Master --last_name=Admin --phone_number=+15555555555
+    python3.5 PopulateDatabase.py
 
-You will now be prompted to enter a password for the super user.
-Enter whatever you like, ie admin
-
+This will wipe everything that exists in the database, and generate random data for the new database
 
 The server is now set up, and ready to run as if this was the first time
-ever running the project.
+ever running the project, though with the database populated with dummy data
 
 NOTE: Neither the database, nor anything in the migrations directory
 should ever be pushed to the git repo. The migrations directory on the
