@@ -80,7 +80,6 @@ for i in bar(range(total_number_members)):
         member.save()
 
 # Add some staffers
-# TODO: Make staffers get generated and added
 print("Making staffers...")
 number_staffers = 10
 bar = progressbar.ProgressBar()
@@ -116,7 +115,13 @@ departments = ["Camping", "Backpacking", "Rock Climbing", "Skiing/Snowboarding",
 for dept in departments:
     name = dept
     details = "All the gear related to {}".format(name)
-    # department = Department()
+    all_staffers = Staffer.objects.all()
+    i = randint(0, len(all_staffers)-1)
+    stl = all_staffers[i]
+    department = Department(name=name, description=details)
+    department.save()
+    department.stls.add(stl)
+    department.save()
 
 
 
