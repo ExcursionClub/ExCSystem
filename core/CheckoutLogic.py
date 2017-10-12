@@ -5,7 +5,7 @@ from .models.MemberModels import Member
 from .models.TransactionModels import Transaction
 
 
-def do_checkout(member_rfid, staffer_rfid, *gear_rfids):
+def do_checkout(staffer_rfid, member_rfid, *gear_rfids):
     """
     Manages the checkout of any number of gear objects to a member
 
@@ -20,5 +20,5 @@ def do_checkout(member_rfid, staffer_rfid, *gear_rfids):
     return_date = now() + timedelta(days=7)
 
     for gear_rfid in gear_rfids:
-        Transaction.objects.make_checkout(gear_rfid, member_rfid, staffer_rfid, return_date)
+        Transaction.objects.make_checkout(staffer_rfid, gear_rfid, member_rfid, return_date)
 
