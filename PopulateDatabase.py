@@ -78,6 +78,8 @@ for i in bar(range(total_number_members)):
     else:
         member.status = 1
         member.save()
+print("")
+print("Made members")
 
 # Add some staffers
 print("Making staffers...")
@@ -89,7 +91,8 @@ for i in bar(range(number_staffers)):
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
     staffer.save()
-
+print("")
+print("Made staffers")
 
 # Add certifications
 kayak_cert = Certification(title="Kayaking",
@@ -100,7 +103,7 @@ kayak_cert = Certification(title="Kayaking",
                                          "5) Be able to bring the kayak back in to shore safely")
 kayak_cert.save()
 
-sup_cert = Certification(title="Kayaking",
+sup_cert = Certification(title="Stand Up Paddleboarding",
                          requirements= "1) Be able to swim god dammit " \
                                        "2) Have received the safety rant, know about wind and current "
                                        "3) Be able to take the SUP out safely "
@@ -122,10 +125,32 @@ for dept in departments:
     department.save()
     department.stls.add(stl)
     department.save()
+print("")
+print("Made departments")
 
 
 
 # Add gear
-number_gear = 30
-for i in range(number_gear):
-    pass
+print("Making Gear...")
+number_gear = 120
+gear_names = ["Sleeping Bag", "Sleeping Pad", "Tent", "Backpack", "Climbing Shoes", "Climbing Harness", "Skis",
+                  "Snowboard", "Bow", "Rope", "Helmet", "Camping Stove", "Cooler", "Ski Poles", "Ski Boots",
+                  "Snowboard Boots", "Lantern", "Water Filter", "Crash Pad", "Wetsuit", ]
+departments = Department.objects.all()
+bar = progressbar.ProgressBar()
+for i in bar(range(number_gear)):
+    rfid = gen_rfid()
+    gearname = gear_names[randint(0, len(gear_names)-1)]
+    department = departments[randint(0, len(departments)-1)]  #TODO: Make this not be randomly assigned cause ie skis are not wetsuits
+
+    #TODO: Make certain number of ech type of status
+
+    gear = Gear(rfid=rfid, name=gearname, status=0)
+    gear.save()
+    gear.department.add(department)
+    gear.save()
+print("")
+print("Made gear")
+
+
+print("Finished")
