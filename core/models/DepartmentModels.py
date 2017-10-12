@@ -26,6 +26,10 @@ class Department(models.Model):
     #: The staffer (Senior Trip Leader) in charge of maintaining this department
     stls = models.ManyToManyField(Staffer, related_name="STLs_of")
 
+    def __str__(self):
+        """Allows the department to be easily readable"""
+        return self.name
+
     @property
     def stl_names(self):
         """Gets a list of all of the names of the STLs for this department"""

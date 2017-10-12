@@ -15,3 +15,6 @@ class Certification(models.Model):
     #: Description of the minimum requirements needed to have this certification
     requirements = models.TextField(verbose_name="Minimum Certification Requirements")
 
+    def __str__(self):
+        return "{} Certification".format(self.title)
+

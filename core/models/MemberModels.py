@@ -125,8 +125,8 @@ class Member(AbstractBaseUser):
         # The user is identified by their email address
         return self.first_name
 
-    def __str__(self):              # __unicode__ on Python 2
-        return self.email
+    def __str__(self):
+        return self.get_full_name()
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
@@ -164,6 +164,10 @@ class Member(AbstractBaseUser):
 class Staffer(models.Model):
     """This model provides the staffer profile (all the extra data that needs to be known about staffers)"""
     objects = StafferManager()
+
+    def __str__(self):
+        """Gives the staffer a string representation of the staffer name"""
+        return self.member.get_full_name()
 
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
     exc_email = models.EmailField(
