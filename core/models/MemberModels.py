@@ -61,6 +61,7 @@ class MemberManager(BaseUserManager):
             staffer = self.model(member, exc_email, autobiography)
         else:
             staffer = self.model(member, exc_email)
+        staffer.save()
         return staffer
 
 
