@@ -15,9 +15,9 @@ def validate_auth(authorizer):
         raise ValidationError("The entity [{}] is not allowed to authorize a transaction".format(authorizer))
 
 
-def validate_gear(gear):
+def validate_available(gear_pk):
     """Ensures that the piece of gear is in fact available for checkout in the system"""
-    if not gear.status == 0:
+    if not Gear.objects.get(pk=gear_pk).status == 0:
         raise ValidationError("This piece of gear [{}] is not available for checkout".format(gear.rfid))
 
 
@@ -75,7 +75,7 @@ class TransactionManager(models.Manager):
         member = Member.objects.get(rfid=member_rfid)
         comment = "Return date = {}".format(return_date)
 
-        validate_gear(gear)
+        validate_available(gear)
         validate_required_certs(member, gear)
 
         self.__make_transaction("CheckOut", gear=gear, member=member, authorizer=authorizer, comments=comment)
@@ -121,7 +121,7 @@ class Transaction(models.Model):
     type = models.CharField(max_length=20, choices=transaction_types)
 
     #: The piece of gear this transaction relates to: MUST EXIST
-    gear = models.ForeignKey(Gear, null=False, on_delete=models.PROTECT, validators=[validate_gear])
+    gear = models.ForeignKey(Gear, null=False, on_delete=models.PROTECT, validators=[validate_available])
 
     #: If this transaction relates to a member, that member should be referenced here
     member = models.ForeignKey(Member, null=True, on_delete=models.PROTECT)
@@ -131,5 +131,8 @@ class Transaction(models.Model):
 
     #: Any additional notes to be saved about this transaction
     comments = models.TextField()
+
+    def __str__(self):
+        return "{} Transaction for a {}".format(self.type, self.gear.name)
 
 
