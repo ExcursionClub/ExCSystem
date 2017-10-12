@@ -8,11 +8,12 @@ from ..models.CertificationModels import Certification
 from ..models.DepartmentModels import Department
 
 from .MemberAdmin import MemberAdmin
+from .GearAdmin import GearAdmin
 from .OtherAdmins import CertificationAdmin, DepartmentAdmin
 
 
 # Register your models here.
-admin.site.register(Gear)
+admin.site.register(Gear, GearAdmin)
 admin.site.register(Transaction)
 admin.site.register(Certification, CertificationAdmin)
 admin.site.register(Department, DepartmentAdmin)
