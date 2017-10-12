@@ -21,8 +21,9 @@ import core.CheckoutLogic as logic
 
 
 admin_rfid = "0000000000"
+system_rfid = "1111111111"
 
-used_rfids = [admin_rfid]
+used_rfids = [admin_rfid, system_rfid]
 used_phones = []
 
 
@@ -66,9 +67,10 @@ def generate_rand_member():
     return member
 
 
-# Add the master admin account
+# Add the master admin  and excursion system accounts
 admin = Member.objects.create_superuser("admin@excursionclubucsb.org", admin_rfid, "Master", "Admin", gen_phone(), password="admin")
-
+system = Member.objects.create_member("system@excursionclubucsb.org", system_rfid, "excursion", "System", gen_phone(), password="excursion")
+Staffer.objects.upgrade_to_staffer(system, "ExCSystem", "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
 
 # Add dummy members
 print("Making members...")

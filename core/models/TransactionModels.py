@@ -8,22 +8,11 @@ from core.models.GearModels import Gear
 def validate_auth(authorizer):
     """
     Makes sure that the person who authorized the transaction is in fact authorized to do so
-    The only options that should return true are "System" (for when the system is automatically changing the status
-    of a piece of gear without oversight) or the rfid of a staffer as a string.
     """
-    # The easiest authorizer to verify is "SYSTEM"
-    if authorizer == "SYSTEM":
-        return
-
-    # If the authorizer was not the system, see if it was a staffer:
-    try:
-        member = Member.objects.get(rfid=authorizer)
-    except ObjectDoesNotExist:
-        raise ValidationError("There is no member with rfid [{}]".format(authorizer))
 
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
-    if not member.is_staff:
-        raise ValidationError("The entity [{}] is not allowed to authorize a transaction".format(authorizer))
+    if not authorizer.is_staff:
+        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.name))
 
 
 def validate_available(gear):
@@ -49,17 +38,18 @@ def validate_required_certs(member, gear):
 
 class TransactionManager(models.Manager):
 
-    def __make_transaction(self, authorizer, type, gear, member=None, comments=""):
+    def __make_transaction(self, authorizer_rfid, type, gear, member=None, comments=""):
         """
         Basic transaction creation function, with the universal validators
 
         :param type: the type of the transaction
         :param gear: a gear model instance, the piece of gear that is being referred to
-        :param authorizer: string identifying the entity authorizing the transaction
+        :param authorizer: string, the rfid of the entity authorizing the transaction
         :param member: if applicable, the member referenced in the transaction (default=None)
         :param comments: any extra comments about the transaction (default="")
         :return: Transaction
         """
+        authorizer = Member.objects.get(rfid=authorizer_rfid)
         validate_auth(authorizer)
 
         transaction = self.model(
@@ -72,14 +62,14 @@ class TransactionManager(models.Manager):
         transaction.save(using=self._db)
         return transaction
 
-    def make_checkout(self, authorizer, gear_rfid, member_rfid, return_date):
+    def make_checkout(self, authorizer_rfid, gear_rfid, member_rfid, return_date):
         """
         Convenience function for creating checkout type transactions. This is the only way gear should be checked out
 
         :param gear_rfid: string, the 10-digit rfid of the gear being checked out
         :param member_rfid: string, the 10-digit rfid of the member checking out the gear
-        :param authorizer: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)
-        :param duration: the date by which the gear should be returned
+        :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)
+        :param return_date: the date by which the gear should be returned
         :return: transaction
         """
         # First, get the objects we are concerned with
@@ -90,18 +80,21 @@ class TransactionManager(models.Manager):
         validate_available(gear)
         validate_required_certs(member, gear)
 
-        # If everything validated, we can continue with the checkout
+        # If everything validated, we can try to make the transaction
+        comment = "Return date = {}".format(return_date)
+        transaction = self.__make_transaction(authorizer_rfid, "CheckOut", gear, member=member, comments=comment)
+
+        # If the transaction was validated, then we can actually change the gear status
         gear.status = 1
         gear.checked_out_to = member
         gear.save()
-        comment = "Return date = {}".format(return_date)
-        return self.__make_transaction(authorizer, "CheckOut", gear, member=member, comments=comment)
+        return transaction
 
-    def add_gear(self, authorizer, gear_rfid, gear_name, gear_department, *required_certs):
+    def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs):
         """
         Convenience function for creating Gear. This is the only way gear should ever be created
 
-        :param authorizer: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
+        :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being checked out
         :param gear_name: string, the name of the piece of gear to be checked out
         :param gear_department: the department this gear belongs in
@@ -118,7 +111,7 @@ class TransactionManager(models.Manager):
 
         # Make the transaction. This will also run all the necessary validations
         try:
-            transaction = self.__make_transaction(authorizer, "Create", gear, comments="")
+            transaction = self.__make_transaction(authorizer_rfid, "Create", gear, comments="")
         # If any validation failed, we need to undo the gear creation before aborting
         except ValidationError:
             gear.delete()
@@ -169,18 +162,27 @@ class Transaction(models.Model):
     type = models.CharField(max_length=20, choices=transaction_types)
 
     #: The piece of gear this transaction relates to: MUST EXIST
-    gear = models.ForeignKey(Gear, null=False, on_delete=models.PROTECT, validators=[validate_available])
+    gear = models.ForeignKey(Gear, null=False, on_delete=models.PROTECT, related_name="has_checked_out",
+                             validators=[validate_available])
 
     #: If this transaction relates to a member, that member should be referenced here
     member = models.ForeignKey(Member, null=True, on_delete=models.PROTECT)
 
-    #: Either "System" or a String of the rfid of the person who authorized the transaction
-    authorizer = models.CharField(max_length=10, null=False, validators=[validate_auth])
+    #: Either SYSTEM or a String of the rfid of the person who authorized the transaction
+    authorizer = models.ForeignKey(Member, null=False, on_delete=models.PROTECT,
+                                   related_name="has_authorized", validators=[validate_auth])
 
     #: Any additional notes to be saved about this transaction
     comments = models.TextField(default="")
 
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
+
+    @property
+    def authorizer_name(self):
+        if self.authorizer == SYSTEM:
+            name = "System"
+        else:
+            name = Member.objects.get(rfid=self.authorizer)
 
 
