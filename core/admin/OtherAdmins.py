@@ -13,3 +13,8 @@ class DepartmentAdmin(admin.ModelAdmin):
 
     # Make all the data about a department be shown in the list display
     list_display = ("name", "description", "stl_names")
+
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ("timestamp", "type", "gear", "member", "authorizer", "comments")
+    list_filter = ("type", )
