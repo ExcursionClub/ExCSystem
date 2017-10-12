@@ -5,6 +5,8 @@ import progressbar
 
 from random import randint
 from django.db.utils import IntegrityError
+from django.core.exceptions import ValidationError
+from django.utils.timezone import now, timedelta
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings")
 django.setup()
@@ -13,6 +15,9 @@ from core.models.MemberModels import Member, Staffer
 from core.models.GearModels import Gear
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
+from core.models.TransactionModels import Transaction
+
+import core.CheckoutLogic as logic
 
 
 admin_rfid = "0000000000"
@@ -41,6 +46,11 @@ def gen_phone():
     return phone
 
 
+def pick_random(list):
+    """Picks and returns a random element from the provided list"""
+    return list[randint(0, len(list)-1)]
+
+
 def generate_rand_member():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
@@ -65,10 +75,12 @@ print("Making members...")
 total_number_members = 100
 number_new = int(total_number_members / 5)
 number_expired = int(total_number_members / 3)
+member_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(total_number_members)):
 
     member = generate_rand_member()
+    member_rfids.append(member.rfid)
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
     if number_new < i < (number_new + number_expired):
@@ -84,9 +96,12 @@ print("Made members")
 # Add some staffers
 print("Making staffers...")
 number_staffers = 10
+staffer_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_staffers)):
     member = generate_rand_member()
+    member_rfids.append(member.rfid)
+    staffer_rfids.append(member.rfid)
     nickname = member.first_name + str(i)
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
@@ -115,12 +130,11 @@ sup_cert.save()
 # Add departments
 departments = ["Camping", "Backpacking", "Rock Climbing", "Skiing/Snowboarding", "Kayaking", "Paddleboarding",
                "Surfing", "Wetsuits", "Mountaineering", "Archery", "Paintballing", "Free Diving", "Off-Road"]
+all_staffers = Staffer.objects.all()
 for dept in departments:
     name = dept
     details = "All the gear related to {}".format(name)
-    all_staffers = Staffer.objects.all()
-    i = randint(0, len(all_staffers)-1)
-    stl = all_staffers[i]
+    stl = pick_random(all_staffers)
     department = Department(name=name, description=details)
     department.save()
     department.stls.add(stl)
@@ -137,19 +151,36 @@ gear_names = ["Sleeping Bag", "Sleeping Pad", "Tent", "Backpack", "Climbing Shoe
                   "Snowboard", "Bow", "Rope", "Helmet", "Camping Stove", "Cooler", "Ski Poles", "Ski Boots",
                   "Snowboard Boots", "Lantern", "Water Filter", "Crash Pad", "Wetsuit", ]
 departments = Department.objects.all()
+gear_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     rfid = gen_rfid()
-    gearname = gear_names[randint(0, len(gear_names)-1)]
-    department = departments[randint(0, len(departments)-1)]  #TODO: Make this not be randomly assigned cause ie skis are not wetsuits
+    authorizer = pick_random(staffer_rfids)
+    gearname = pick_random(gear_names)
+    department = pick_random(departments)  #TODO: Make this not be randomly assigned cause ie skis are not wetsuits
 
-    #TODO: Make certain number of ech type of status
-
-    gear = Gear(rfid=rfid, name=gearname, status=0, department=department)
-    gear.save()
+    transaction, gear = Transaction.objects.add_gear(authorizer, rfid, gearname, department)
+    gear_rfids.append(rfid)
 
 print("")
 print("Made gear")
 
+
+# Check out gear to random members
+print("Checking out random gear...")
+n_gear_to_checkout = int(number_gear / 2)
+n_failed_checkouts = 0
+bar = progressbar.ProgressBar()
+for i in bar(range(n_gear_to_checkout)):
+    gear_rfid = pick_random(gear_rfids)
+    member_rfid = pick_random(member_rfids)
+    authorizer = pick_random(staffer_rfids)
+
+    try:
+        logic.do_checkout(authorizer, member_rfid, gear_rfid)
+    except ValidationError as e:
+        n_failed_checkouts += 1
+print("")
+print("{} out of {} checkouts failed to complete".format(n_failed_checkouts, n_gear_to_checkout))
 
 print("Finished")
