@@ -47,6 +47,22 @@ class MemberManager(BaseUserManager):
         superuser.save(using=self._db)
         return superuser
 
+    def upgrade_to_staffer(self, member, staffname, autobiography=None):
+        """
+        Begins the process of turning a member into a staffer
+
+        :param member: the member to make a staffer
+        :param staffname: the prefix (before @) part of the staffer's staff email
+        :return: Staffer
+        """
+        exc_email = "{}@excursionclubucsb.org".format(staffname)
+        member.status = 5
+        if autobiography is not None:
+            staffer = self.model(member, exc_email, autobiography)
+        else:
+            staffer = self.model(member, exc_email)
+        return staffer
+
 
 class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
@@ -149,4 +165,5 @@ class Staffer(models.Model):
         max_length=255,
         unique=True,
     )
-    autobiography = models.TextField(verbose_name="Self Description of the staffer")
+    autobiography = models.TextField(verbose_name="Self Description of the staffer",
+                                     default="I am too lazy and lame to upload a bio!")
