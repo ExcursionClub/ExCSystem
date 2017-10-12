@@ -24,7 +24,12 @@ class Department(models.Model):
     description = models.TextField()
 
     #: The staffer (Senior Trip Leader) in charge of maintaining this department
-    stls = models.ManyToManyField(Staffer, related_name="STLs_of")
+    stls = models.ManyToManyField(Member, related_name="STLs_of")   #TODO: This should be to staffers
+
+    @property
+    def stl_names(self):
+        """Gets a list of all of the names of the STLs for this department"""
+        return [stl.get_full_name() for stl in self.stls.all()]
 
     def notify_STL(self, title, message, *related_gear):
         """
