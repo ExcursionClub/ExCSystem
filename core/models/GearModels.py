@@ -4,6 +4,9 @@ from .DepartmentModels import Department
 from .CertificationModels import Certification
 
 
+# TODO: subclass Gear for all the different types of gear
+# TODO: figure out how to "subclass" via the django admin, so a new type of gear could be added if necessary
+
 class Gear(models.Model):
     """
     The base model for a piece of gear
@@ -26,13 +29,18 @@ class Gear(models.Model):
     status = models.IntegerField(choices=status_choices)
 
     #: The department to which this gear belongs (roughly corresponds to STL positions)
-    department = models.ManyToManyField(Department)
+    department = models.ForeignKey(Department)
 
     #: All the certifications that a member must posses to be allowed to check out this gear
     min_required_certs = models.ManyToManyField(Certification, verbose_name="Minimal Certifications Required for Rental")
 
     #: Who currently has this piece of gear. If null, then the gear is not checked out
     checked_out_to = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+
+    # TODO: Add image of gear
+
+    def __str__(self):
+        return self.name
 
     def is_available(self):
         """Returns True if the gear is available for renting"""
