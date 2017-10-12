@@ -12,4 +12,4 @@ class CertificationAdmin(admin.ModelAdmin):
 class DepartmentAdmin(admin.ModelAdmin):
 
     # Make all the data about a department be shown in the list display
-    list_display = ("name", "description", "stls")
+    list_display = ("name", "description", "stl_names")
