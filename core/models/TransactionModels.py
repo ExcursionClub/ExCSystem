@@ -130,7 +130,7 @@ class Transaction(models.Model):
     authorizer = models.CharField(max_length=10, null=False, validators=[validate_auth])
 
     #: Any additional notes to be saved about this transaction
-    comments = models.TextField()
+    comments = models.TextField(default="")
 
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
