@@ -64,7 +64,7 @@ class TransactionManager(models.Manager):
 
     def make_checkout(self, authorizer_rfid, gear_rfid, member_rfid, return_date):
         """
-        Convenience function for creating checkout type transactions. This is the only way gear should be checked out
+        Central function for creating checkout type transactions. This is the only way gear should be checked out
 
         :param gear_rfid: string, the 10-digit rfid of the gear being checked out
         :param member_rfid: string, the 10-digit rfid of the member checking out the gear
@@ -92,7 +92,7 @@ class TransactionManager(models.Manager):
 
     def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs):
         """
-        Convenience function for creating Gear. This is the only way gear should ever be created
+        Central function for creating Gear. This is the only way gear should ever be created
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being checked out
@@ -120,6 +120,27 @@ class TransactionManager(models.Manager):
 
         # If everything went smoothly to this point, we can return the transaction logging the addition and the gear
         return transaction, gear
+
+    def check_in_gear(self, authorizer_rfid, gear_rfid):
+        """
+        Central function for checking in gear. All gear check-ins must pass through here
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear being checked in
+        :return: Check-in type Transaction
+        """
+        # First, retrieve the piece of gear we are concerned with
+        gear = Gear.objects.get(rfid=gear_rfid)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "CheckIn", gear)
+
+        # If the transaction went through, we can go ahead and check in the gear
+        gear.status = 0
+        gear.checked_out_to = None
+
+        return transaction
+
 
     # TODO: make convenience functions for each transaction type
 
@@ -177,12 +198,4 @@ class Transaction(models.Model):
 
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
-
-    @property
-    def authorizer_name(self):
-        if self.authorizer == SYSTEM:
-            name = "System"
-        else:
-            name = Member.objects.get(rfid=self.authorizer)
-
 
