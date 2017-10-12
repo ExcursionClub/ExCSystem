@@ -145,10 +145,9 @@ for i in bar(range(number_gear)):
 
     #TODO: Make certain number of ech type of status
 
-    gear = Gear(rfid=rfid, name=gearname, status=0)
+    gear = Gear(rfid=rfid, name=gearname, status=0, department=department)
     gear.save()
-    gear.department.add(department)
-    gear.save()
+
 print("")
 print("Made gear")
 
