@@ -24,7 +24,7 @@ class Department(models.Model):
     description = models.TextField()
 
     #: The staffer (Senior Trip Leader) in charge of maintaining this department
-    stls = models.ManyToManyField(Member, related_name="STLs_of")   #TODO: This should be to staffers
+    stls = models.ManyToManyField(Staffer, related_name="STLs_of")   #TODO: This should be to staffers
 
     @property
     def stl_names(self):

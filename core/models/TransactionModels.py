@@ -115,7 +115,7 @@ class Transaction(models.Model):
     ]
 
     #: The time at which this transaction was created - will be automatically set and cannot be changed
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField()
 
     #: A string defining the type of transaction this is (see transaction types)
     type = models.CharField(max_length=20, choices=transaction_types)

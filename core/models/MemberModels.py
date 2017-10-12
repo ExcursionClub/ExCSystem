@@ -47,6 +47,8 @@ class MemberManager(BaseUserManager):
         superuser.save(using=self._db)
         return superuser
 
+
+class StafferManager(models.Manager):
     def upgrade_to_staffer(self, member, staffname, autobiography=None):
         """
         Begins the process of turning a member into a staffer
@@ -57,10 +59,11 @@ class MemberManager(BaseUserManager):
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
         member.status = 5
+        member.save()
         if autobiography is not None:
-            staffer = self.model(member, exc_email, autobiography)
+            staffer = self.model(member=member, exc_email=exc_email, autobiography=autobiography)
         else:
-            staffer = self.model(member, exc_email)
+            staffer = self.model(member=member, exc_email=exc_email)
         staffer.save()
         return staffer
 
@@ -160,6 +163,8 @@ class Member(AbstractBaseUser):
 
 class Staffer(models.Model):
     """This model provides the staffer profile (all the extra data that needs to be known about staffers)"""
+    objects = StafferManager()
+
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
     exc_email = models.EmailField(
         verbose_name='Official ExC Email',
