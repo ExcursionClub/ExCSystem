@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
@@ -19,6 +19,20 @@ def validate_available(gear):
     """Ensures that the piece of gear is in fact available for checkout in the system"""
     if not gear.is_available():
         raise ValidationError("This piece of gear [{}] is not available for checkout".format(gear.rfid))
+
+
+def validate_rfid(rfid):
+    """Ensures that the given rfid is unique"""
+    # TODO: is there a better way to do this? This approach might get slow
+    member_rfids = [member.rfid for member in Member.objects.all()]
+    if rfid in member_rfids:
+        raise ValidationError("This rfid is already in use by the member {}".format(Member.objects.get(rfid=rfid)))
+    else:
+        # Do this in a two step process to reduce processing time in half of cases
+        gear_rfids = [gear.rfid for gear in Gear.objects.all()]
+        if rfid in gear_rfids:
+            raise ValidationError("This rfid is already in use by a {}".format(Gear.objects.get(rfid=rfid)))
+    # TODO: If we add other kinds of RFID tags, make sure this is updated
 
 
 def validate_required_certs(member, gear):
@@ -95,12 +109,14 @@ class TransactionManager(models.Manager):
         Central function for creating Gear. This is the only way gear should ever be created
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
-        :param gear_rfid: string, the 10-digit rfid of the gear being checked out
+        :param gear_rfid: string, the 10-digit rfid of the gear being added
         :param gear_name: string, the name of the piece of gear to be checked out
         :param gear_department: the department this gear belongs in
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :return: Transaction (the transaction logging this gear addition), gear (the new piece of gear)
         """
+        # First must make sure that the rfid is not in use by anything
+        validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
         gear = Gear(rfid=gear_rfid, name=gear_name, department=gear_department, status=0)
@@ -141,8 +157,161 @@ class TransactionManager(models.Manager):
 
         return transaction
 
+    def retag_gear(self, authorizer_rfid, old_rfid, new_rfid):
+        """
+        Central function to change the rfid of a piece of gear
 
-    # TODO: make convenience functions for each transaction type
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param old_rfid: string, the old 10-digit rfid of the piece of gear
+        :param new_rfid: string, the new 10-digit rfid to give this piece of gear
+        :return: ReTag Transaction
+        """
+        validate_rfid(new_rfid)
+        gear = Gear.objects.get(rfid=old_rfid)
+
+        # Create a transaction to ensure everything is authorized
+        details = "Changed RFID from {} to {}".format(old_rfid, new_rfid)
+        transaction = self.__make_transaction(authorizer_rfid, "ReTag", gear, comments=details)
+
+        # If the transaction went through, we can go ahead and remove the gear
+        gear.rfid = new_rfid
+        gear.save()
+
+        return transaction
+
+    def fix_gear(self, authorizer_rfid, gear_rfid, repairs_description):
+        """
+        Central function for noting that a piece of gear was repaired
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear that got broken
+        :param repairs_description: a description of the repairs that were made
+        :return: Fix Transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=repairs_description)
+
+        gear.set_status = 0
+        gear.save()
+        return transaction
+
+    def break_gear(self, authorizer_rfid, gear_rfid, damage_description):
+        """
+        Central function for noting damage to gear
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear that got broken
+        :param damage_description: a description of the damage and (if known) repairs needed
+        :return: Break Transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "Break", gear, comments=damage_description)
+
+        gear.set_status = 2
+        gear.save()
+
+        return transaction
+
+    def missing_gear(self, authorizer_rfid, gear_rfid):
+        """
+        Central function for noting that a piece of gear has been missing for a while
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear that got broken
+        :return: Fix Transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+        last_owner = gear.checked_out_to.get_full_name()
+        details = "Last known owner: {}".format(last_owner)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=details)
+
+        gear.set_status = 3
+        gear.save()
+        return transaction
+
+    def expire_gear(self, authorizer_rfid, gear_rfid):
+        """
+        Central function for noting that a piece of gear is probably lost
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear that got broken
+        :return: Fix Transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+        last_owner = gear.checked_out_to.get_full_name()
+        details = "Last known owner: {}".format(last_owner)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=details)
+
+        gear.set_status = 4
+        gear.save()
+        return transaction
+
+    def delete_gear(self, authorizer_rfid, gear_rfid, reason):
+        """
+        Central function for permanently removing a gear from circulation
+
+        This should only be used when a piece of gear is being throw away. Since this is a dramatic action, the STL
+        for the relevant department should get an email notifying them of the removal, in case it was not intentional
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear being deleted
+        :param reason: string explaining why this piece of gear is being removed
+        :return: transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+
+        # Create a transaction to ensure everything is authorized
+        transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=reason)
+
+        # If the transaction went through, we can go ahead and remove the gear
+        gear.status = 5
+        gear.checked_out_to = None
+        gear.department.notify_gear_removed()
+
+        return transaction
+
+    def override(self, authorizer_rfid, gear_rfid, **kwargs):
+        """
+        Allows the admin to override the settings on any piece of gear
+
+        :param authorizer_rfid: string, the 10-digit rfid of the entity authorizing the transaction
+        :param gear_rfid: string, 10-digit rfid of the gear being deleted
+
+        available kwargs:
+            rfid: (default None), the rfid to set the rfid to. If left None, no change is made
+            status: (default None), the status to set the gear to. If left None, no change is made
+            department: (default None), the department to set the gear into. If left None, no change is made
+            checked_out_to: (default None), the member to check the gear out to. If left None, no change is made
+            min_required_certs: (default None), A list of all the certs to require. If left None, no change is made
+
+        :return: Admin Override Transaction
+        """
+        gear = Gear.objects.get(rfid=gear_rfid)
+
+        if authorizer_rfid != "0000000000":
+            raise ValidationError("You can't do admin overrides unless you know the admin code")
+
+        # All the changes made will be described here
+        action = "Admin override on {} [{}]: \n".format(gear, gear_rfid)
+
+        # Set each of the available kwargs to their desired value if they are not none
+        for kwarg in kwargs.keys():
+            value = kwargs[kwarg]
+            old_value = gear.__getattribute__(kwarg)
+            gear.__setattr__(kwarg, value)
+            action += "  Changed {} from {} to {}\n".format(kwarg, old_value, value)
+
+        # Save the changes made in a transaction
+        transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=action)
+        return transaction
 
 
 class Transaction(models.Model):
@@ -162,11 +331,12 @@ class Transaction(models.Model):
         )
          ),
         ("Admin Actions", (
-            ("Create", "New Gear"),
-            ("Delete", "Remove Gear"),
-            ("ReTag",  "Change Tag"),
-            ("Break",  "Set Broken"),
-            ("Fix",    "Set Fixed")
+            ("Create",   "New Gear"),
+            ("Delete",   "Remove Gear"),
+            ("ReTag",    "Change Tag"),
+            ("Break",    "Set Broken"),
+            ("Fix",      "Set Fixed"),
+            ("Override", "Admin Override")
         )
          ),
         ("Auto Updates", (
