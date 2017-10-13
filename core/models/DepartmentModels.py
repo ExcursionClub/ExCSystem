@@ -61,4 +61,10 @@ class Department(models.Model):
 
         send_mail(title, email_body, department_email, stl_emails, fail_silently=False)
 
+    def notify_gear_removed(self, gear):
+        """Sends an email to the STL that the piece of gear has been removed"""
+        message = "The following piece of gear has been permanently removed from circulation!"
+        self.notify_STL("Gear Removal", message, gear)
+
+
     # TODO: Add convenience email functions (that call notify_STL, but require fewer args) for: low supply, broken gear, gear gone missing
