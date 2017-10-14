@@ -1,23 +1,22 @@
+import os
 import django
 import names
-import os
 import progressbar
 
 from random import randint
-from django.db.utils import IntegrityError
+
 from django.core.exceptions import ValidationError
-from django.utils.timezone import now, timedelta
+from django.db.utils import IntegrityError
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings")
 django.setup()
 
 from core.models.MemberModels import Member, Staffer
-from core.models.GearModels import Gear
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.TransactionModels import Transaction
 
-import core.CheckoutLogic as logic
+import kiosk.CheckoutLogic as logic
 
 
 admin_rfid = "0000000000"
