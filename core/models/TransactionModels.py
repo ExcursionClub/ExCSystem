@@ -106,6 +106,7 @@ class TransactionManager(models.Manager):
         # If the transaction was validated, then we can actually change the gear status
         gear.status = 1
         gear.checked_out_to = member
+        gear.due_date = return_date
         gear.save()
         return transaction
 
@@ -171,6 +172,7 @@ class TransactionManager(models.Manager):
         # If the transaction went through, we can go ahead and check in the gear
         gear.status = 0
         gear.checked_out_to = None
+        gear.due_date = None
 
         return transaction
 

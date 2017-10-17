@@ -37,6 +37,9 @@ class Gear(models.Model):
     #: Who currently has this piece of gear. If null, then the gear is not checked out
     checked_out_to = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
 
+    #: The date at which this gear is due to be returned, null if not checked out
+    due_date = models.DateField(null=True, default=None)
+
     # TODO: Add image of gear
 
     def __str__(self):
