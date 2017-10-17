@@ -59,6 +59,7 @@ class StafferManager(models.Manager):
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
         member.status = 5
+        member.date_expires = None
         member.save()
         if autobiography is not None:
             staffer = self.model(member=member, exc_email=exc_email, autobiography=autobiography)
@@ -107,6 +108,7 @@ class Member(AbstractBaseUser):
     )
     phone_number = PhoneNumberField(unique=True)
     date_joined = models.DateField(auto_now_add=True)
+    date_expires = models.DateField(null=True)
     is_admin = models.BooleanField(default=False)
     status = models.IntegerField(default=0, choices=status_choices)
     certifications = models.ManyToManyField(Certification)
@@ -134,6 +136,14 @@ class Member(AbstractBaseUser):
             self.is_admin = True
         else:
             self.is_admin = False
+
+    def expire(self):
+        """Expires this member's membership"""
+        if self.status == 2 or self.status == 3:
+            self.status = 1
+        elif self.status >= 5:
+            self.status = 4
+
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
