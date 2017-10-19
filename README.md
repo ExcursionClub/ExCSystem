@@ -23,7 +23,47 @@ To run the server, simply navigate to the top ExCSystem directory (the
 one with manage.py in it) and run
 
     python3.5 manage.py runserver
+    
+The website is now available at http://127.0.0.1:8000 and the admin panel is at http://127.0.0.1:8000/admin
+    
+ _____________________
+<b>General Function</b>
 
+This project is, as it is written in Django, very much database-driven. It's focus to provide a
+simple, easy to use, understand, and extend interface for the databases that are the backbone of 
+the Excursion Club rental system. To do so there are three main data models/tables.
+
+<u>Member</u>:
+    These are the members of the excursion club. If the member is also a staffer, they have staffer exclusive
+    data saved via the proxy model Staffer.
+    
+<u>Gear</u>:
+    These are all the things at the excursion club that can potentially be rented. No changes should ever
+    be made by modifying the data on a piece of gear directly.
+    
+<u>Transaction</u>:
+    The most powerful of the three, transactions are a type of log of all the changes to the gear
+    data. Most importantly however, <b> creating a transaction modifies the gear table in the corresponding 
+    way </b>. Therefore, by analyzing the transaction history, the exact state of any piece of gear can be 
+    determined.
+    
+The kiosk module is intended to provide an clean and easy to use interface for creating and modifying transactions.
+The automatically generated Django admin panel serves as a method to view and edit certain data. The exact 
+functionality depends on the permission level of the user.
+
+<u>Member</u>:
+    Can only see the types of gear that are available, but cannot see the exact quantities or make any changes
+
+<u>Staffer</u>:
+    Can see exactly what gear is available, and can make basic changes to members
+
+<u>Board Member</u>:
+    Is allowed to make any modifications to members.
+
+<u>Admin</u>:
+    There should only ever be one admin, this user can arbitrarily modify any element of the database except 
+    Transactions and Gear. Any change to gear must be made through the admin override transaction
+    
 _____________________
 <b>Applying Changes</b>
 
