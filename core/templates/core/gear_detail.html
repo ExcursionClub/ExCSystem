@@ -4,8 +4,8 @@
 {% block object-tools %}
 {% if change %}{% if not is_popup %}
 <ul class="object-tools">  
-    {% url opts|admin_urlname:'edit' original.pk|admin_urlquote as edit_url %}
-    <li><a href="{% add_preserved_filters edit_url %}" class="historylink">{% trans "Edit Data" %}</a></li>
+    {% url opts|admin_urlname:'change' original.pk|admin_urlquote as change_url %}
+    <li><a href="{% add_preserved_filters change_url %}" class="historylink">{% trans "Edit Data" %}</a></li>
 
     {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
     <li><a href="{% add_preserved_filters history_url %}" class="historylink">{% trans "History" %}</a></li>
