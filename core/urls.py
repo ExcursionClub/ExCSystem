@@ -1,7 +1,8 @@
-from django.conf.urls import url
+from django.urls import path
 
-from . import views
+from core.views.GearViews import GearDetailView
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
+    path('gear/<int:pk>/view/', GearDetailView.as_view(), name='gear-detail'),
+    # url(r'^$', views.index, name='index'),
 ]

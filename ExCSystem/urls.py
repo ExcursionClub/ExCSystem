@@ -16,7 +16,10 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 
+
 urlpatterns = [
-    url(r'^core/', include('core.urls')),
-    url(r'^admin/', admin.site.urls),
+    url('core/', include('core.urls')),
+    url('admin/', admin.site.urls),
+    url('admin/', include('core.urls')),
+    url(r'kiosk/', admin.site.urls),
 ]
