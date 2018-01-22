@@ -1,3 +1,30 @@
-<p>{{ object.content }}</p>
-<p>Checked out to: {{ object.checked_out_to }}</p>
-<p>Due Date: {{ object.due_date|date }}</p>
+{% extends "admin/change_form.html" %}
+
+{% load i18n admin_urls %}
+{% block object-tools %}
+{% if change %}{% if not is_popup %}
+<ul class="object-tools">  
+    {% url opts|admin_urlname:'edit' original.pk|admin_urlquote as edit_url %}
+    <li><a href="{% add_preserved_filters edit_url %}" class="historylink">{% trans "Edit Data" %}</a></li>
+
+    {% url opts|admin_urlname:'history' original.pk|admin_urlquote as history_url %}
+    <li><a href="{% add_preserved_filters history_url %}" class="historylink">{% trans "History" %}</a></li>
+
+    {% if has_absolute_url %}<li><a href="{{ absolute_url }}" class="viewsitelink">{% trans "View on site" %}</a></li>{% endif %}
+</ul>  
+{% endif %}{% endif %}
+{% endblock %}
+
+{% block field_sets %}
+{% for fieldset in adminform %}
+  {% include "admin/includes/fieldset.html" %}
+{% endfor %}
+{% endblock %}
+
+{% block after_field_sets %}{% endblock %}
+
+{% block inline_field_sets %}
+{% for inline_admin_formset in inline_admin_formsets %}
+    {% include inline_admin_formset.opts.template %}
+{% endfor %}
+{% endblock %}
