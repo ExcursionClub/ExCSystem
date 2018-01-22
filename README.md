@@ -1,9 +1,8 @@
-ExCSystem
----------
+# ExCSystem
 
 Bottom up re-design of the Excursion system
-________________
-<b>Getting Started</b>
+
+## Getting Started
 
 This project requires python3.5 and virtualenv.
 
@@ -15,35 +14,36 @@ $ pip install -r requirements.txt
 $ python manage.py runserver
 ```
 
-_____________________
-<b>Applying Changes</b>
+## Applying Changes</b>
 
 Most changes to the code will be incorporated into the website
 immediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
-    python3.5 manage.py makemigrations core
-    python3.5 manage.py migrate
+```bash
+python3.5 manage.py makemigrations core
+python3.5 manage.py migrate
+```
 
 This should be sufficient for small changes that do not cause conflicts.
 If an error pops up, and there is not important information in the
 database, you can reset the database (see below).
 
-
-_____________________
-<b>Resetting the Database</b>
+## Resetting the Database
 
 If you at any point make a significant change to how data is stored in
 the database, chances are that you will run into migration conflicts
-when running the 'makemigrations' and 'migrate' commands. In the early
+when running the `makemigrations` and `migrate` commands. In the early
 stages, you can safely and easily reset the entire database from scratch
 using the ResetDatabase.py file.
 
 To restart he database:
 
-    python3.5 RestartDatabase.py
-    python3.5 PopulateDatabase.py
+```bash
+python3.5 RestartDatabase.py
+python3.5 PopulateDatabase.py
+```
 
 This will wipe everything that exists in the database, and generate random data for the new database
 
