@@ -10,6 +10,6 @@ class ViewList(ChangeList):
 
     def url_for_result(self, result):
         pk = getattr(result, self.pk_attname)
-        return reverse('admin:{}_{}_detail'.format(self.opts.app_label, self.opts.model_name),
+        return reverse('{}_{}_detail'.format(self.opts.app_label, self.opts.model_name),
                        args=(quote(pk),),
                        current_app=self.model_admin.admin_site.name)
