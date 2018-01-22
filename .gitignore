@@ -1,0 +1,21 @@
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media
+migrations/
+
+### macOS ###
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+### PyCharm ###
+.idea/
+
+### Virtualenv ###
+venv/
+

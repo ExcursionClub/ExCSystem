@@ -1,58 +1,49 @@
-ExCSystem
----------
+# ExCSystem
 
 Bottom up re-design of the Excursion system
-________________
-<b>Install</b>
 
-This project runs on python 3.5!
+## Getting Started
 
-To install simply install the latest version of django, and any
-dependencies:
-   * Django 1.11.5
-   * django-phonenumber-field
-   * names
-   * progressbar2
+This project requires python3.5 and virtualenv.
 
-Then clone the git repo anywhere
+```bash
+$ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ python manage.py runserver
+```
 
-_____________________
-<b>Running</b>
-
-To run the server, simply navigate to the top ExCSystem directory (the
-one with manage.py in it) and run
-
-    python3.5 manage.py runserver
-
-_____________________
-<b>Applying Changes</b>
+## Applying Changes</b>
 
 Most changes to the code will be incorporated into the website
 immediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
-    python3.5 manage.py makemigrations core
-    python3.5 manage.py migrate
+```bash
+python3.5 manage.py makemigrations core
+python3.5 manage.py migrate
+```
 
 This should be sufficient for small changes that do not cause conflicts.
 If an error pops up, and there is not important information in the
 database, you can reset the database (see below).
 
-
-_____________________
-<b>Resetting the Database</b>
+## Resetting the Database
 
 If you at any point make a significant change to how data is stored in
 the database, chances are that you will run into migration conflicts
-when running the 'makemigrations' and 'migrate' commands. In the early
+when running the `makemigrations` and `migrate` commands. In the early
 stages, you can safely and easily reset the entire database from scratch
 using the ResetDatabase.py file.
 
 To restart he database:
 
-    python3.5 RestartDatabase.py
-    python3.5 PopulateDatabase.py
+```bash
+python3.5 RestartDatabase.py
+python3.5 PopulateDatabase.py
+```
 
 This will wipe everything that exists in the database, and generate random data for the new database
 
