@@ -4,6 +4,7 @@ from functools import update_wrapper
 # from django.urls import path
 
 from core.views.GearViews import GearDetailView
+from core.views.ViewList import ViewList
 
 
 class GearAdmin(admin.ModelAdmin):
@@ -16,7 +17,13 @@ class GearAdmin(admin.ModelAdmin):
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
+    def get_changelist(self, request, **kwargs):
+        return ViewList
+
     def get_urls(self):
+        """
+        Adds the detail view to the urlpatterns, in addition to what the overwritten function does
+        """
         from django.urls import path
 
         def wrap(view):
@@ -31,10 +38,14 @@ class GearAdmin(admin.ModelAdmin):
             path('', wrap(self.changelist_view), name='%s_%s_changelist' % info),
             path('add/', wrap(self.add_view), name='%s_%s_add' % info),
             path('autocomplete/', wrap(self.autocomplete_view), name='%s_%s_autocomplete' % info),
-            path('<int:pk>/detail/', wrap(GearDetailView.as_view()), name='%s_%s_view' % info),
+            path('<path:object_id>/change/', wrap(self.change_view), name='%s_%s_change' % info),
             path('<path:object_id>/history/', wrap(self.history_view), name='%s_%s_history' % info),
             path('<path:object_id>/delete/', wrap(self.delete_view), name='%s_%s_delete' % info),
-            path('<path:object_id>/change/', wrap(self.change_view), name='%s_%s_change' % info),
+
+            # Adding this with this name allows ViewList to automatically link to the view page
+            path('<int:pk>/detail/', wrap(GearDetailView.as_view()), name='%s_%s_detail' % info),
 
         ]
+
+        print(self.list_display_links)
         return urlpatterns
