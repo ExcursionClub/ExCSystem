@@ -3,26 +3,17 @@ ExCSystem
 
 Bottom up re-design of the Excursion system
 ________________
-<b>Install</b>
+<b>Getting Started</b>
 
-This project runs on python 3.5!
+This project requires python3.5 and virtualenv.
 
-To install simply install the latest version of django, and any
-dependencies:
-   * Django 1.11.5
-   * django-phonenumber-field
-   * names
-   * progressbar2
-
-Then clone the git repo anywhere
-
-_____________________
-<b>Running</b>
-
-To run the server, simply navigate to the top ExCSystem directory (the
-one with manage.py in it) and run
-
-    python3.5 manage.py runserver
+```bash
+$ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+$ python manage.py runserver
+```
 
 _____________________
 <b>Applying Changes</b>
