@@ -6,6 +6,7 @@ __pycache__/
 local_settings.py
 db.sqlite3
 media
+migrations/
 
 ### macOS ###
 *.DS_Store
@@ -17,3 +18,4 @@ media
 
 ### Virtualenv ###
 venv/
+
