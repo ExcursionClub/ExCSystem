@@ -1,6 +1,7 @@
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
+from core.views.ViewList import ViewList
 
 
 # Replace the option to create users with the option to create members
@@ -31,3 +32,6 @@ class MemberAdmin(BaseUserAdmin):
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
     filter_horizontal = ()
+
+    def get_changelist(self, request, **kwargs):
+        return ViewList
