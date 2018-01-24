@@ -20,6 +20,6 @@ from django.contrib import admin
 urlpatterns = [
     url('core/', include('core.urls')),
     url('admin/', admin.site.urls),
-    url('admin/', include('core.urls')),
+    url('admin/core/', include('core.urls')),
     url(r'kiosk/', admin.site.urls),
 ]
