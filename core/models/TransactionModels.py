@@ -18,8 +18,7 @@ def validate_can_checkout(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
     if not member.can_rent:
         raise ValidationError("{} is not allowed to check out gear, because their status is {}".format(
-            member.get_full_name(), member.status
-        ))
+            member.get_full_name(), member.status))
 
 
 def validate_available(gear):
@@ -44,12 +43,14 @@ def validate_rfid(rfid):
 
 def validate_required_certs(member, gear):
     """Validate that the member has all the certifications required to check out this piece of gear."""
-    has_all_perms = True
+    missing_certs = []
     for cert_required in gear.min_required_certs.all():
         if cert_required not in member.certifications.all():
-            has_all_perms = False
-    if not has_all_perms:
-        raise ValidationError("The member does not have the certifications required to rent this piece of gear")
+            missing_certs.append(cert_required)
+    if len(missing_certs) != 0:
+        cert_names = [cert.title for cert in missing_certs]
+        raise ValidationError("{} is missing the following certifications: {}".format(
+            member.get_full_name, cert_names))
 
 
 class TransactionManager(models.Manager):
@@ -117,6 +118,7 @@ class TransactionManager(models.Manager):
         gear.checked_out_to = member
         gear.due_date = return_date
         gear.save()
+
         return transaction
 
     def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs, is_new=True):
@@ -225,7 +227,7 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        comment= "{} {}".format(person_repairing, repairs_description)
+        comment = "{} {}".format(person_repairing, repairs_description)
 
         # Create a transaction to ensure everything is authorized
         transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=comment)
