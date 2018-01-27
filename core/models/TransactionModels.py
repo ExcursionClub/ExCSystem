@@ -24,7 +24,8 @@ def validate_can_checkout(member):
 def validate_available(gear):
     """Ensure that the piece of gear is in fact available for checkout (is in stock)."""
     if not gear.is_available():
-        raise ValidationError("This piece of gear [{}] is not available for checkout".format(gear.rfid))
+        raise ValidationError("The {} with [{}] is not available for checkout because it is {}".format(
+            gear.name, gear.rfid, gear.status))
 
 
 def validate_rfid(rfid):
