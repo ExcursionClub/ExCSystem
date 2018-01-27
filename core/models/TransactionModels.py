@@ -26,11 +26,11 @@ def validate_rfid(rfid):
     member_rfids = [member.rfid for member in Member.objects.all()]
     if rfid in member_rfids:
         raise ValidationError("This rfid is already in use by the member {}".format(Member.objects.get(rfid=rfid)))
-    else:
-        # Do this in a two step process to reduce processing time in half of cases
-        gear_rfids = [gear.rfid for gear in Gear.objects.all()]
-        if rfid in gear_rfids:
-            raise ValidationError("This rfid is already in use by a {}".format(Gear.objects.get(rfid=rfid)))
+
+    # Do this in a two step process to reduce processing time in half of cases
+    gear_rfids = [gear.rfid for gear in Gear.objects.all()]
+    if rfid in gear_rfids:
+        raise ValidationError("This rfid is already in use by a {}".format(Gear.objects.get(rfid=rfid)))
     # TODO: If we add other kinds of RFID tags, make sure this is updated
 
 
