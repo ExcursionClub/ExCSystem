@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
 
+from core.convinience import get_all_rfids
+
 
 def validate_auth(authorizer):
     """Make sure that the person who authorized the transaction is in fact authorized to do so."""
@@ -30,16 +32,8 @@ def validate_available(gear):
 
 def validate_rfid(rfid):
     """Ensure that the given rfid is unique across all tables containing rfids."""
-    # TODO: is there a better way to do this? This approach might get slow
-    member_rfids = [member.rfid for member in Member.objects.all()]
-    if rfid in member_rfids:
-        raise ValidationError("This rfid is already in use by the member {}".format(Member.objects.get(rfid=rfid)))
-
-    # Do this in a two step process to reduce processing time in half of cases
-    gear_rfids = [gear.rfid for gear in Gear.objects.all()]
-    if rfid in gear_rfids:
-        raise ValidationError("This rfid is already in use by a {}".format(Gear.objects.get(rfid=rfid)))
-    # TODO: If we add other kinds of RFID tags, make sure this is updated
+    if rfid in get_all_rfids():
+        raise ValidationError("This rfid is already in use!")
 
 
 def validate_required_certs(member, gear):
