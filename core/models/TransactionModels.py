@@ -42,7 +42,7 @@ def validate_required_certs(member, gear):
     for cert_required in gear.min_required_certs.all():
         if cert_required not in member.certifications.all():
             missing_certs.append(cert_required)
-    if len(missing_certs) != 0:
+    if missing_certs:
         cert_names = [cert.title for cert in missing_certs]
         raise ValidationError("{} is missing the following certifications: {}".format(
             member.get_full_name, cert_names))
