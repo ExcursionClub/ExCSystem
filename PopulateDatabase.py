@@ -70,6 +70,7 @@ def generate_rand_member():
         member.first_name = first_name
         member.last_name = last_name
         member.phone_number = gen_phone()
+        member.save()
     # If anything goes wrong when making this member, try again
     except IntegrityError:
         member = generate_rand_member()
