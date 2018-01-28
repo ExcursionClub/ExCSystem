@@ -16,10 +16,10 @@ class MemberManager(BaseUserManager):
             raise ValueError('Users must have an email address')
 
         # Trying to add the max timedelta to now results in an overflow, so handle the superuser case separately
-        if membership_duration == timedelta.max:
-            expiration_date = datetime.max
-        else:
+        try:
             expiration_date = now() + membership_duration
+        except OverflowError:
+            expiration_date = datetime.max
 
         member = self.model(
             email=self.normalize_email(email),
