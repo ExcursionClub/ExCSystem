@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -15,7 +15,11 @@ class MemberManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
-        expiration_date = now() + membership_duration
+        # Trying to add the max timedelta to now results in an overflow, so handle the superuser case separately
+        if membership_duration == timedelta.max:
+            expiration_date = datetime.max
+        else:
+            expiration_date = now() + membership_duration
 
         member = self.model(
             email=self.normalize_email(email),
