@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
 
+from core.convinience import get_all_rfids
+
 
 def validate_auth(authorizer):
     """Make sure that the person who authorized the transaction is in fact authorized to do so."""
@@ -14,34 +16,36 @@ def validate_auth(authorizer):
         raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.name))
 
 
+def validate_can_checkout(member):
+    """Ensure that the member is authorized to check out gear (is at least an active member)"""
+    if not member.can_rent:
+        raise ValidationError("{} is not allowed to check out gear, because their status is {}".format(
+            member.get_full_name(), member.status))
+
+
 def validate_available(gear):
     """Ensure that the piece of gear is in fact available for checkout (is in stock)."""
     if not gear.is_available():
-        raise ValidationError("This piece of gear [{}] is not available for checkout".format(gear.rfid))
+        raise ValidationError("The {} with [{}] is not available for checkout because it is {}".format(
+            gear.name, gear.rfid, gear.status))
 
 
 def validate_rfid(rfid):
     """Ensure that the given rfid is unique across all tables containing rfids."""
-    # TODO: is there a better way to do this? This approach might get slow
-    member_rfids = [member.rfid for member in Member.objects.all()]
-    if rfid in member_rfids:
-        raise ValidationError("This rfid is already in use by the member {}".format(Member.objects.get(rfid=rfid)))
-    else:
-        # Do this in a two step process to reduce processing time in half of cases
-        gear_rfids = [gear.rfid for gear in Gear.objects.all()]
-        if rfid in gear_rfids:
-            raise ValidationError("This rfid is already in use by a {}".format(Gear.objects.get(rfid=rfid)))
-    # TODO: If we add other kinds of RFID tags, make sure this is updated
+    if rfid in get_all_rfids():
+        raise ValidationError("This rfid is already in use!")
 
 
 def validate_required_certs(member, gear):
     """Validate that the member has all the certifications required to check out this piece of gear."""
-    has_all_perms = True
+    missing_certs = []
     for cert_required in gear.min_required_certs.all():
         if cert_required not in member.certifications.all():
-            has_all_perms = False
-    if not has_all_perms:
-        raise ValidationError("The member does not have the certifications required to rent this piece of gear")
+            missing_certs.append(cert_required)
+    if missing_certs:
+        cert_names = [cert.title for cert in missing_certs]
+        raise ValidationError("{} is missing the following certifications: {}".format(
+            member.get_full_name, cert_names))
 
 
 class TransactionManager(models.Manager):
@@ -97,6 +101,7 @@ class TransactionManager(models.Manager):
 
         # Run all the necessary validations
         validate_available(gear)
+        validate_can_checkout(member)
         validate_required_certs(member, gear)
 
         # If everything validated, we can try to make the transaction
@@ -108,6 +113,7 @@ class TransactionManager(models.Manager):
         gear.checked_out_to = member
         gear.due_date = return_date
         gear.save()
+
         return transaction
 
     def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs, is_new=True):
@@ -216,7 +222,7 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        comment= "{} {}".format(person_repairing, repairs_description)
+        comment = "{} {}".format(person_repairing, repairs_description)
 
         # Create a transaction to ensure everything is authorized
         transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=comment)
