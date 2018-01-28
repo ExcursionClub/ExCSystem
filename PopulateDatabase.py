@@ -81,9 +81,11 @@ def generate_rand_member():
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser("admin@excursionclubucsb.org", ADMIN_RFID, PASSWORD)
-system = Member.objects.create_member("system@excursionclubucsb.org", SYSTEM_RFID, PASSWORD)
-Staffer.objects.upgrade_to_staffer(system, "ExCSystem", "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
+admin = Member.objects.create_superuser("admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD)
+system = Member.objects.create_member("system@excursionclubucsb.org", SYSTEM_RFID,
+                                      membership_duration=timedelta.max, password=PASSWORD)
+Staffer.objects.upgrade_to_staffer(system, "ExCSystem",
+                                   "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
 
 
 # Add dummy members
