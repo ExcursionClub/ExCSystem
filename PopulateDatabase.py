@@ -7,6 +7,7 @@ from random import randint
 
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.utils.timezone import timedelta
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings")
 django.setup()
@@ -40,10 +41,16 @@ def gen_phone():
     """Generates a random and unique phone number"""
     phone = "+{}{}".format(randint(1, 45), randint(1000000, 7000000))
     if phone in used_phones:
-        phone = gen_rfid()
+        phone = gen_phone()
     else:
         used_phones.append(phone)
     return phone
+
+
+def gen_duration():
+    """Randomly pick a duration of either 90 or 365 days"""
+    durations = [timedelta(days=90), timedelta(days=365)]
+    return pick_random(durations)
 
 
 def pick_random(list):
@@ -54,11 +61,12 @@ def pick_random(list):
 def generate_rand_member():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
+    duration = gen_duration()
     email = "{}.{}@fakeemail.lol".format(first_name, last_name)
     rfid = gen_rfid()
 
     try:
-        member = Member.objects.create_member(email, rfid, password="fake")
+        member = Member.objects.create_member(email, rfid, membership_duration=duration, password="fake")
         member.first_name = first_name
         member.last_name = last_name
         member.phone_number = gen_phone()
