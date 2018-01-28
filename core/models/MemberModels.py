@@ -115,6 +115,21 @@ class Member(AbstractBaseUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['rfid', 'date_expires']
 
+    @property
+    def can_rent(self):
+        """
+        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
+        """
+        return self.status >= 2
+
+    @property
+    def is_staff(self):
+        """
+        Property that allows and easy check for whether the member is a staffer
+        """
+        # If the member is an active staffer or better, then they are given staff privileges
+        return self.status >= 5
+
     def get_full_name(self):
         # The user is identified by their email address
         return "{} {}".format(self.first_name, self.last_name)
@@ -150,21 +165,6 @@ class Member(AbstractBaseUser):
         """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
-
-    @property
-    def can_rent(self):
-        """
-        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
-        """
-        return self.status >= 2
-
-    @property
-    def is_staff(self):
-        """
-        Property that allows and easy check for whether the member is a staffer
-        """
-        # If the member is a prospective staffer or better, then they are given staff privileges
-        return self.status >= 4
 
 
 class Staffer(models.Model):
