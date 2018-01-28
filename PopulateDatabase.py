@@ -57,12 +57,15 @@ def pick_random(element_list):
 def generate_rand_member():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
-    email = '{}.{}@fakeemail.lol'.format(first_name, last_name)
-    phone = gen_phone()
+    email = "{}.{}@fakeemail.lol".format(first_name, last_name)
     rfid = gen_rfid()
 
     try:
-        random_member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password=PASSWORD)
+        member = Member.objects.create_member(email, rfid, password=PASSWORD)
+        member.first_name = first_name
+        member.last_name = last_name
+        member.phone_number = gen_phone()
+    # If anything goes wrong when making this member, try again
     except IntegrityError:
         random_member = generate_rand_member()
 
