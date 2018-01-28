@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('core/', include('core.urls')),
     path('admin/core/', include('core.urls')),
-    path('kiosk/', include('kiosk.urls')),
+    # path('kiosk/', include('kiosk.urls')),
 ]
