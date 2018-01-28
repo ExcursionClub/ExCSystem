@@ -39,8 +39,15 @@ class MemberManager(BaseUserManager):
             membership_duration=timedelta.max,
             password=password,
         )
+
+        # Add the rest of the data about the superuser
         superuser.is_admin = True
         superuser.status = 7
+        superuser.first_name = "Master"
+        superuser.last_name = "Admin"
+        superuser.phone_number = '+15555555555'
+        superuser.certifications = Certification.objects.all()
+
         superuser.save(using=self._db)
         return superuser
 
@@ -101,9 +108,10 @@ class Member(AbstractBaseUser):
     )
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/"
+        upload_to="ProfilePics/",
+        null=True
     )
-    phone_number = PhoneNumberField(unique=True)
+    phone_number = PhoneNumberField(unique=True, null=True)
     date_joined = models.DateField(auto_now_add=True)
     date_expires = models.DateField(null=True)
     is_admin = models.BooleanField(default=False)
