@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.timezone import now
+from django.utils.timezone import now, timedelta
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -7,7 +7,7 @@ from .CertificationModels import Certification
 
 
 class MemberManager(BaseUserManager):
-    def create_member(self, email, rfid, first_name, last_name, phone_number, password=None):
+    def create_member(self, email, rfid, membership_duration, password=None):
         """
         Creates and saves a Member with the given email, date of
         birth and password.
@@ -15,13 +15,12 @@ class MemberManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
+        expiration_date = now() + membership_duration
+
         member = self.model(
             email=self.normalize_email(email),
             rfid=rfid,
-            first_name=first_name,
-            last_name=last_name,
-            date_joined=now(),
-            phone_number=phone_number
+            date_expires=expiration_date
         )
 
         member.set_password(password)
@@ -29,7 +28,7 @@ class MemberManager(BaseUserManager):
 
         return member
 
-    def create_superuser(self, email, rfid, first_name, last_name, phone_number, password):
+    def create_superuser(self, email, rfid, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -37,10 +36,8 @@ class MemberManager(BaseUserManager):
         superuser = self.create_member(
             email=email,
             rfid=rfid,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            password=password
+            membership_duration=timedelta.max,
+            password=password,
         )
         superuser.is_admin = True
         superuser.status = 7
@@ -90,8 +87,8 @@ class Member(AbstractBaseUser):
          ),
     ]
 
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -100,7 +97,7 @@ class Member(AbstractBaseUser):
     rfid = models.CharField(
         verbose_name="RFID",
         max_length=10,
-        unique="True"
+        unique=True
     )
     picture = models.ImageField(
         verbose_name="Profile Picture",
@@ -116,7 +113,7 @@ class Member(AbstractBaseUser):
     print(picture.storage.url)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['rfid', 'first_name', 'last_name', 'phone_number']
+    REQUIRED_FIELDS = ['rfid', 'date_expires']
 
     def get_full_name(self):
         # The user is identified by their email address
@@ -143,7 +140,6 @@ class Member(AbstractBaseUser):
             self.status = 1
         elif self.status >= 5:
             self.status = 4
-
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
