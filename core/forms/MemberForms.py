@@ -54,17 +54,3 @@ class MemberChangeForm(forms.ModelForm):
         # field does not have access to the initial value
         return self.initial["password"]
 
-
-class MemberViewForm(forms.ModelForm):
-    """This form allows you to view all the information, without editing any of it"""
-
-    class Meta:
-        model = Member
-        fields = ('email',
-                  'password',
-                  'first_name',
-                  'last_name',
-                  'phone_number',
-                  'rfid',
-                  'is_admin')
-
