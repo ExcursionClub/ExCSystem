@@ -5,5 +5,5 @@ def index(request):
     return HttpResponse("Hello, Kiosk")
 
 
-def logged_in(request):
+def check_out(request):
     return HttpResponse("Logged in")
