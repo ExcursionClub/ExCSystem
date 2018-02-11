@@ -5,9 +5,15 @@
 {% block content %}
 {% if user.is_authenticated %}
   Logged in as {{ user.email }}
-    <a href="{%  url 'logout' %}">logout</a>
+    <a href="{% url 'logout' %}">logout</a>
     <p>To check in gear scan the gear RFID tag</p>
     <p>To check out gear scan the member RFID tag</p>
+    <p>Or type in the RFID number</p>
+    <form method='post'>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type='submit' value='Submit'>
+    </form>
 {% else %}
   <p>You are not logged in</p>
   <a href="{% url 'login' %}">login</a>
