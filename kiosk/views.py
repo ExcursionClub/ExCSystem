@@ -21,18 +21,8 @@ class HomeView(generic.TemplateView):
             return redirect('rfid', text)
 
 
-class CheckOutView(generic.ListView):
+class CheckOutView(View):
     template_name = 'kiosk/check_out.html'
 
     def get(self, request, rfid):
-        return render(request, self.template_name, rfid)
-
-    def get_queryset(self):
-        # Not sure what this does
-        return GearModels.Gear.objects
-
-
-class GearView(View):
-    def get(self, request, rfid):
-        return HttpResponse('This is RFID {}'.format(rfid))
-        #return render(request, self.template_name, rfid)
+        return render(request, self.template_name, {'rfid': rfid})
