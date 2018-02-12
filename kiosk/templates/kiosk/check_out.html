@@ -1,14 +1,14 @@
-{% extends 'kiosk/base.html' %}
+{% extends "kiosk/base.html" %}
 
 {% block title %}Kiosk{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-  <h1>Check out gear for {{ rfid }}</h1>
+    <h1>Check out gear for {{ rfid }}</h1>
     <a href="{%  url 'home' %}">go back</a>
     <p>Scan RFID tag</p>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
 {% endif %}
 {% endblock %}
