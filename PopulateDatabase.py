@@ -107,6 +107,17 @@ for i in bar(range(number_staffers)):
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
     staffer.save()
+
+# Add staffer with known rfid
+member = generate_rand_member()
+member.rfid = 1000000000
+member_rfids.append(member.rfid)
+staffer_rfids.append(member.rfid)
+nickname = member.first_name + str(i)
+member.save()
+staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+staffer.save()
+
 print("")
 print("Made staffers")
 
