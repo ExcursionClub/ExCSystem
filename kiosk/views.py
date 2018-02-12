@@ -9,7 +9,7 @@ from core.models.MemberModels import Member
 
 
 class HomeView(generic.TemplateView):
-    template_name = 'home.html'
+    template_name = 'kiosk/home.html'
 
     def get(self, request):
         form = HomeForm()
