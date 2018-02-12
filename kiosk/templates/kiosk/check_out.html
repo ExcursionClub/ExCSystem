@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-    <h1>Check out gear for {{ rfid }}</h1>
+    <h1>Check out gear for {{ name }}</h1>
     <a href="{%  url 'home' %}">go back</a>
     <p>Scan RFID tag</p>
 {% else %}

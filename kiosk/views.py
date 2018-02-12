@@ -28,11 +28,14 @@ class CheckOutView(View):
     template_name = 'kiosk/check_out.html'
 
     def get(self, request, rfid):
-        return render(request, self.template_name, {'rfid': rfid})
+        name = self.get_name(rfid)
+        args = {'name': name}
+        return render(request, self.template_name, args)
 
     def get_name(self, rfid):
-        member_rfids = [member.rfid for member in Member.objects.all()]
-        if rfid in member_rfids:
-            return rfid.get_full_name()
+        name = Member.objects.all().filter(rfid=rfid).get().get_full_name()
+        if name:
+            return name
         else:
+            # TODO: Fail soft. Deny redirect from page
             raise ValidationError('This is not associated with a member')
