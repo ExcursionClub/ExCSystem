@@ -21,7 +21,7 @@ class HomeView(generic.TemplateView):
             text = form.cleaned_data['post']
             form = HomeForm()
             # TODO: Add check if gear or member
-            return redirect('rfid', text)
+            return redirect('check_out', text)
 
 
 class CheckOutView(View):
@@ -29,7 +29,8 @@ class CheckOutView(View):
 
     def get(self, request, rfid):
         name = self.get_name(rfid)
-        args = {'name': name}
+        checked_out_gear = [1,2,3] #self.get_checked_out_gear(rfid)
+        args = {'name': name, 'checked_out_gear': checked_out_gear}
         return render(request, self.template_name, args)
 
     def get_name(self, rfid):
