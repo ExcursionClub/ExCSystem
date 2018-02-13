@@ -6,7 +6,7 @@
 {% if user.is_authenticated %}
     <h1>Check out gear for {{ name }}</h1>
     <a href="{%  url 'home' %}">go back</a>
-    <p>Scan RFID tag</p>
+    <p>Scan RFID tag to check out more gear</p>
     <ul>
         {% for gear in checked_out_gear %}
         <li>{{ gear }}</li>

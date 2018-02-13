@@ -3,9 +3,9 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic, View
 
-from core.models import GearModels
-from kiosk.forms import HomeForm
+from core.models.GearModels import Gear
 from core.models.MemberModels import Member
+from kiosk.forms import HomeForm
 
 
 class HomeView(generic.TemplateView):
@@ -28,7 +28,7 @@ class CheckOutView(View):
 
     def get(self, request, rfid):
         name = self.get_name(rfid)
-        checked_out_gear = [1,2,3] #self.get_checked_out_gear(rfid)
+        checked_out_gear = self.get_checked_out_gear(rfid)
         args = {'name': name, 'checked_out_gear': checked_out_gear}
         return render(request, self.template_name, args)
 
@@ -39,3 +39,8 @@ class CheckOutView(View):
         else:
             # TODO: Fail soft. Deny redirect from page
             raise ValidationError('This is not associated with a member')
+
+    def get_checked_out_gear(self, rfid):
+        current_member = Member.objects.filter(rfid=rfid).first()
+        checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
+        return checked_out_gear

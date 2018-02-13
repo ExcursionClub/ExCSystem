@@ -195,4 +195,13 @@ for i in bar(range(n_gear_to_checkout)):
 print("")
 print("{} out of {} checkouts failed to complete".format(n_failed_checkouts, n_gear_to_checkout))
 
+for i in range(5):
+    gear_rfid = pick_random(gear_rfids)
+    member_rfid = '1234567890'
+    authorizer = '1234567890'
+    try:
+        logic.do_checkout(authorizer, member_rfid, gear_rfid)
+    except ValidationError as e:
+        pass
+
 print("Finished")
