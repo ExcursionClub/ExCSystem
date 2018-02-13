@@ -7,6 +7,12 @@
     <h1>Check out gear for {{ name }}</h1>
     <a href="{%  url 'home' %}">go back</a>
     <p>Scan RFID tag to check out more gear</p>
+    <p>Or type in the RFID number</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
     <ul>
         {% for gear in checked_out_gear %}
         <li>{{ gear }}</li>
