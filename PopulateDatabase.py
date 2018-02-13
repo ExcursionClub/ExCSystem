@@ -19,10 +19,11 @@ from core.models.TransactionModels import Transaction
 import kiosk.CheckoutLogic as logic
 
 
-admin_rfid = '0000000000'
-system_rfid = '1111111111'
+ADMIN_RFID = '0000000000'
+SYSTEM_RFID = '1111111111'
+PASSWORD = 'admin'
 
-used_rfids = [admin_rfid, system_rfid]
+used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones = []
 
 
@@ -59,7 +60,7 @@ def generate_rand_member():
     rfid = gen_rfid()
 
     try:
-        random_member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password='fake')
+        random_member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password=PASSWORD)
     except IntegrityError:
         random_member = generate_rand_member()
 
@@ -67,8 +68,8 @@ def generate_rand_member():
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser('admin@excursionclubucsb.org', admin_rfid, 'Master', 'Admin', gen_phone(), password='admin')
-system = Member.objects.create_member('system@excursionclubucsb.org', system_rfid, 'excursion', 'System', gen_phone(), password='excursion')
+admin = Member.objects.create_superuser('admin@excursionclubucsb.org', ADMIN_RFID, 'Master', 'Admin', gen_phone(), PASSWORD)
+system = Member.objects.create_member('system@excursionclubucsb.org', SYSTEM_RFID, 'excursion', 'System', gen_phone(), PASSWORD)
 Staffer.objects.upgrade_to_staffer(system, 'ExCSystem', 'I am the Excursion computer system, and I do all the work nobody else can or wants to do')
 
 # Add dummy members
