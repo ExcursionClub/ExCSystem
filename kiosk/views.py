@@ -37,16 +37,15 @@ class CheckOutView(View):
     def post(self, request, rfid):
         form = HomeForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data['rfid']
+            gear_rfid = form.cleaned_data['rfid']
             # TODO: Check that RFID isn't already used
             staffer_rfid = '1234567890'
-            member_rfid = rfid
+            member_rfid = '1234567890'
             # Get random gear RFID
             # TODO: Add gear with known gear id for testing
-            for gear in Gear.objects.all():
-                if gear.is_available():
-                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
-                    break
+            gear = Gear.objects.filter(rfid=gear_rfid).get()
+            if gear.is_available():
+                do_checkout(staffer_rfid, member_rfid, gear.rfid)
             return redirect('check_out', member_rfid)
 
     def get_name(self, member_rfid):

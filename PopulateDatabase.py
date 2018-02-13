@@ -74,6 +74,7 @@ admin = Member.objects.create_superuser('admin@excursionclubucsb.org', ADMIN_RFI
 system = Member.objects.create_member('system@excursionclubucsb.org', SYSTEM_RFID, 'excursion', 'System', gen_phone(), PASSWORD)
 Staffer.objects.upgrade_to_staffer(system, 'ExCSystem', 'I am the Excursion computer system, and I do all the work nobody else can or wants to do')
 
+
 # Add dummy members
 print('Making members...')
 total_number_members = 100
@@ -97,6 +98,7 @@ for i in bar(range(total_number_members)):
 print('')
 print('Made members')
 
+
 # Add some staffers
 print('Making staffers...')
 number_staffers = 10
@@ -110,6 +112,7 @@ for i in bar(range(number_staffers)):
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
     staffer.save()
+
 
 # Add staffer with known rfid
 member = generate_rand_member()
@@ -179,14 +182,6 @@ for i in bar(range(number_gear)):
 print('')
 print('Made gear')
 
-# Add gear with know RFID
-for gear_rfid in RFIDS_TO_HAND_OUT:
-    authorizer = '1234567890'
-    gear_name = pick_random(gear_names)
-    department = pick_random(departments)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
-    gear_rfids.append(gear_rfid)
-
 
 # Check out gear to random members
 print('Checking out random gear...')
@@ -205,8 +200,19 @@ for i in bar(range(n_gear_to_checkout)):
 print('')
 print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_gear_to_checkout))
 
-# Check out gear with known RFID
+
+# Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
+    authorizer = '1234567890'
+    gear_name = pick_random(gear_names)
+    department = pick_random(departments)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
+    gear_rfids.append(gear_rfid)
+
+
+# Check out gear with known RFID
+for i in range(5):
+    gear_rfid = pick_random(gear_rfids)
     member_rfid = '1234567890'
     authorizer = '1234567890'
     try:
