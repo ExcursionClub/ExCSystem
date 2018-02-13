@@ -110,7 +110,7 @@ for i in bar(range(number_staffers)):
 
 # Add staffer with known rfid
 member = generate_rand_member()
-member.rfid = 1000000000
+member.rfid = 1234567890
 member_rfids.append(member.rfid)
 staffer_rfids.append(member.rfid)
 nickname = member.first_name + str(i)

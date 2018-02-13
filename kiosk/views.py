@@ -18,8 +18,7 @@ class HomeView(generic.TemplateView):
     def post(self, request):
         form = HomeForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data['post']
-            form = HomeForm()
+            text = form.cleaned_data['rfid']
             # TODO: Add check if gear or member
             return redirect('check_out', text)
 
@@ -34,7 +33,7 @@ class CheckOutView(View):
         return render(request, self.template_name, args)
 
     def get_name(self, rfid):
-        name = Member.objects.all().filter(rfid=rfid).get().get_full_name()
+        name = Member.objects.filter(rfid=rfid).get().get_full_name()
         if name:
             return name
         else:
