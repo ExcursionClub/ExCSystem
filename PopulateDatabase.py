@@ -123,19 +123,19 @@ print("Made staffers")
 
 # Add certifications
 kayak_cert = Certification(title="Kayaking",
-                           requirements= "1) Be able to swim god dammit " \
-                                         "2) Have received the safety rant, know about wind and current " \
-                                         "3) Be able to take the kayak out safely " \
-                                         "4) Be able to get off of, flip, and get into a kayak out in the water " \
-                                         "5) Be able to bring the kayak back in to shore safely")
+                           requirements="1) Be able to swim god dammit "
+                                        "2) Have received the safety rant, know about wind and current "
+                                        "3) Be able to take the kayak out safely "
+                                        "4) Be able to get off of, flip, and get into a kayak out in the water "
+                                        "5) Be able to bring the kayak back in to shore safely")
 kayak_cert.save()
 
 sup_cert = Certification(title="Stand Up Paddleboarding",
-                         requirements= "1) Be able to swim god dammit " \
-                                       "2) Have received the safety rant, know about wind and current "
-                                       "3) Be able to take the SUP out safely "
-                                       "4) Be able to get off of, flip, and get into a SUP out in the water " \
-                                       "5) Be able to bring the SUP back in to shore safely")
+                         requirements="1) Be able to swim god dammit "
+                                      "2) Have received the safety rant, know about wind and current "
+                                      "3) Be able to take the SUP out safely "
+                                      "4) Be able to get off of, flip, and get into a SUP out in the water "
+                                      "5) Be able to bring the SUP back in to shore safely")
 sup_cert.save()
 
 
@@ -159,18 +159,18 @@ print("Made departments")
 print("Making Gear...")
 number_gear = 120
 gear_names = ["Sleeping Bag", "Sleeping Pad", "Tent", "Backpack", "Climbing Shoes", "Climbing Harness", "Skis",
-                  "Snowboard", "Bow", "Rope", "Helmet", "Camping Stove", "Cooler", "Ski Poles", "Ski Boots",
-                  "Snowboard Boots", "Lantern", "Water Filter", "Crash Pad", "Wetsuit", ]
+              "Snowboard", "Bow", "Rope", "Helmet", "Camping Stove", "Cooler", "Ski Poles", "Ski Boots",
+              "Snowboard Boots", "Lantern", "Water Filter", "Crash Pad", "Wetsuit", ]
 departments = Department.objects.all()
 gear_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer = pick_random(staffer_rfids)
-    gearname = pick_random(gear_names)
-    department = pick_random(departments)  #TODO: Make this not be randomly assigned cause ie skis are not wetsuits
+    gear_name = pick_random(gear_names)
+    department = pick_random(departments)  # TODO: Make this not be randomly assigned cause ie skis are not wetsuits
 
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gearname, department)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
     gear_rfids.append(gear_rfid)
 
 print("")
