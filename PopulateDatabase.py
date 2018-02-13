@@ -46,9 +46,9 @@ def gen_phone():
     return phone
 
 
-def pick_random(list):
+def pick_random(element_list):
     """Picks and returns a random element from the provided list"""
-    return list[randint(0, len(list)-1)]
+    return element_list[randint(0, len(element_list)-1)]
 
 
 def generate_rand_member():
@@ -59,11 +59,11 @@ def generate_rand_member():
     rfid = gen_rfid()
 
     try:
-        member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password="fake")
+        random_member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password="fake")
     except IntegrityError:
-        member = generate_rand_member()
+        random_member = generate_rand_member()
 
-    return member
+    return random_member
 
 
 # Add the master admin  and excursion system accounts
@@ -155,7 +155,6 @@ print("")
 print("Made departments")
 
 
-
 # Add gear
 print("Making Gear...")
 number_gear = 120
@@ -166,13 +165,13 @@ departments = Department.objects.all()
 gear_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
-    rfid = gen_rfid()
+    gear_rfid = gen_rfid()
     authorizer = pick_random(staffer_rfids)
     gearname = pick_random(gear_names)
     department = pick_random(departments)  #TODO: Make this not be randomly assigned cause ie skis are not wetsuits
 
-    transaction, gear = Transaction.objects.add_gear(authorizer, rfid, gearname, department)
-    gear_rfids.append(rfid)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gearname, department)
+    gear_rfids.append(gear_rfid)
 
 print("")
 print("Made gear")
