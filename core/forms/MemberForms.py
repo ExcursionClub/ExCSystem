@@ -37,6 +37,15 @@ class MemberCreationForm(forms.ModelForm):
         return user
 
 
+class MemberFinishForm(forms.ModelForm):
+    """
+    Form used to let the member finish their account setup
+    """
+    class Meta:
+        model = Member
+        fields = ('phone_number',)
+
+
 class MemberChangeForm(forms.ModelForm):
     """A form for updating members. Includes all the fields on
     the user, but replaces the password field with admin's
