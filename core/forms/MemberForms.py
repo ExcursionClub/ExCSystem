@@ -6,12 +6,19 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 class MemberCreationForm(forms.ModelForm):
     """A form for creating new members. Includes all the required
     fields, plus a repeated password."""
+
+    username = forms.EmailField(label='Email', widget=forms.EmailInput)
+    rfid = forms.CharField(label='RFID', max_length=10)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
     class Meta:
         model = Member
-        fields = ('email', 'rfid')
+        fields = ('username', 'rfid', 'password1', 'password2',)
+
+    def clean_email(self):
+        email = self.cleaned_data['username']
+        return email
 
     def clean_password2(self):
         # Check that the two password entries match
