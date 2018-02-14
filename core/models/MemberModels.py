@@ -97,6 +97,7 @@ class Member(AbstractBaseUser):
         ],
          ),
     ]
+    status = models.IntegerField(default=0, choices=status_choices)
 
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
@@ -116,10 +117,11 @@ class Member(AbstractBaseUser):
         null=True
     )
     phone_number = PhoneNumberField(unique=True, null=True)
+
     date_joined = models.DateField(auto_now_add=True)
-    date_expires = models.DateField(null=True)
+    date_expires = models.DateField(null=False)
+
     is_admin = models.BooleanField(default=False)
-    status = models.IntegerField(default=0, choices=status_choices)
     certifications = models.ManyToManyField(Certification)
 
     print(picture.storage.url)
