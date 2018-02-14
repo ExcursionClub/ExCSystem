@@ -23,12 +23,7 @@ class MemberAdmin(BaseUserAdmin):
     )
     # add_fieldsets is not a standard ModelAdmin attribute. MemberAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'phone_number', 'rfid', 'password1', 'password2',)}
-        ),
-    )
+
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
     filter_horizontal = ()
