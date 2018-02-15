@@ -144,9 +144,16 @@ class Member(AbstractBaseUser):
         # If the member is an active staffer or better, then they are given staff privileges
         return self.status >= 5
 
+    def has_name(self):
+        """Check whether the name of this member has been set"""
+        return self.first_name is not None and self.last_name is not None
+
     def get_full_name(self):
-        # The user is identified by their email address
-        return "{} {}".format(self.first_name, self.last_name)
+        """Return the full name if it is know, or 'New Member' if it is not"""
+        if self.has_name():
+            return "{} {}".format(self.first_name, self.last_name)
+        else:
+            return "New Member"
     get_full_name.short_description = "Full Name"
 
     def get_short_name(self):
@@ -157,10 +164,10 @@ class Member(AbstractBaseUser):
         """
         If we know the name of the user, then display their name, otherwise use their email
         """
-        if self.first_name is None or self.last_name is None:
-            return self.email
-        else:
+        if self.has_name():
             return self.get_full_name()
+        else:
+            return self.email
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
