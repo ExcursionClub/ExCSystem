@@ -5,7 +5,7 @@ from django.views.generic.base import TemplateView
 from . import views
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', views.HomeView.as_view(), name='home'),
     path('', include('django.contrib.auth.urls')),
-    path('check_out/', views.check_out, name='check_out'),
+    path('<int:rfid>/', views.CheckOutView.as_view(), name='check_out'),
 ]

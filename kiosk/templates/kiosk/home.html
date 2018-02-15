@@ -1,0 +1,21 @@
+{% extends "kiosk/../base.html" %}
+
+{% block title %}Kiosk{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+    <p>Logged in as {{ user.email }}</p>
+    <a href="{% url 'logout' %}">logout</a>
+    <p>To check in gear scan the gear RFID tag</p>
+    <p>To check out gear scan the member RFID tag</p>
+    <p>Or type in the RFID number</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+{% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}
