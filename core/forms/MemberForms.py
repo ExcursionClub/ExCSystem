@@ -44,36 +44,53 @@ class MemberCreationForm(forms.ModelForm):
         return user
 
 
-class MemberFinishForm(forms.Form):
+class MemberFinishForm(forms.ModelForm):
     """
     Form used to let the member finish their account setup
 
     To finish setting up their account, members must submit all missing data (ie phone number) and successfully complete
     a quiz about the rules of the club.
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
     """
 
-    pass
+    class Meta:
+        model = Member
 
 
-class MemberChangeRFIDForm(forms.Form):
+class MemberChangeRFIDForm(forms.ModelForm):
     """
     Form to expedite the process of changing a users RFID tag
 
     This form allows a member to replace a lost or missing RFID tag. Note: a member cannot have more than one RFID
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
     """
 
-    pass
+    class Meta:
+        model = Member
+        fields = ('rfid', )
 
 
-class MemberUpdateContactForm(forms.Form):
+class MemberUpdateContactForm(forms.ModelForm):
     """
     Form to expedite the process of updating a members contact info (email, phone)
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
     """
 
-    pass
+    class Meta:
+        model = Member
+        fields = ('email', 'phone')
 
 
-class MemberChangeStatusForm(forms.Form):
+class MemberChangeStatusForm(forms.ModelForm):
     """
     Form to change the status of a member, and dispatch any additional data requirements
 
@@ -86,7 +103,9 @@ class MemberChangeStatusForm(forms.Form):
 
     """
 
-    pass
+    class Meta:
+        model = Member
+        fields = ('status', )
 
 
 class StafferDataForm(forms.ModelForm):
@@ -103,8 +122,7 @@ class StafferDataForm(forms.ModelForm):
 
     class Meta:
         model = Staffer
-
-    pass
+        fields = ('member', 'staff_name', 'autobiography')
 
 
 class MemberChangeForm(forms.ModelForm):
