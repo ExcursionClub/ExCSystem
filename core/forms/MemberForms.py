@@ -76,6 +76,20 @@ class MemberChangeRFIDForm(forms.ModelForm):
         fields = ('rfid', )
 
 
+class MemberChangeCertsForm(forms.ModelForm):
+    """
+    Form to add/remove certifications from the member
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
+    """
+
+    class Meta:
+        model = Member
+        fields = ('certifications', )
+
+
 class MemberUpdateContactForm(forms.ModelForm):
     """
     Form to expedite the process of updating a members contact info (email, phone)
