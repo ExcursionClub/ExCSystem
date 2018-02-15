@@ -124,8 +124,6 @@ class Member(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     certifications = models.ManyToManyField(Certification)
 
-    print(picture.storage.url)
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['rfid', 'date_expires']
 
