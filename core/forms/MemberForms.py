@@ -4,8 +4,14 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
 class MemberCreationForm(forms.ModelForm):
-    """A form for creating new members. Includes all the required
-    fields, plus a repeated password."""
+    """
+    A form for creating new members. Includes all the required
+    fields, plus a repeated password.
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
+    """
 
     username = forms.EmailField(label='Email', widget=forms.EmailInput)
     rfid = forms.CharField(label='RFID', max_length=10)
@@ -30,6 +36,7 @@ class MemberCreationForm(forms.ModelForm):
 
     def save(self, commit=True):
         # Save the provided password in hashed format
+        print(self.errors)
         user = super(MemberCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -37,19 +44,79 @@ class MemberCreationForm(forms.ModelForm):
         return user
 
 
-class MemberFinishForm(forms.ModelForm):
+class MemberFinishForm(forms.Form):
     """
     Form used to let the member finish their account setup
+
+    To finish setting up their account, members must submit all missing data (ie phone number) and successfully complete
+    a quiz about the rules of the club.
     """
+
+    pass
+
+
+class MemberChangeRFIDForm(forms.Form):
+    """
+    Form to expedite the process of changing a users RFID tag
+
+    This form allows a member to replace a lost or missing RFID tag. Note: a member cannot have more than one RFID
+    """
+
+    pass
+
+
+class MemberUpdateContactForm(forms.Form):
+    """
+    Form to expedite the process of updating a members contact info (email, phone)
+    """
+
+    pass
+
+
+class MemberChangeStatusForm(forms.Form):
+    """
+    Form to change the status of a member, and dispatch any additional data requirements
+
+    This form should only be accessible to users with high status (board or above) and allows them to change the status
+    of the member in the system. Once the form is submitted further data processing is dispatched based on the change in
+    status.
+    Ex:
+        If a Member becomes a staffer, then they are emailed a form with additional staffer information.
+        If a Staffer is demoted, then their associated staff profile is removed.
+
+    """
+
+    pass
+
+
+class StafferDataForm(forms.ModelForm):
+    """
+    Form to request the additional information required when becoming a staffer.
+
+    A link to this form should be emailed to a member when they are upgraded to a staffer, or when a staffer wishes to
+    edit their description or other staff data.
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
+    """
+
     class Meta:
-        model = Member
-        fields = ('phone_number',)
+        model = Staffer
+
+    pass
 
 
 class MemberChangeForm(forms.ModelForm):
-    """A form for updating members. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field.
+    """
+    A form for changing members. Includes all fields, except password is hashed.
+
+    This form can change pretty much anything about the member and exposes all the data. Therefore it should only be
+    used in unexpected/unusual circumstances, and all expected/common changes should have their dedicated form.
+
+    This uses the ModelForm (like the rest of django's admin) to automatically translate the model into a Form, View and
+    the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
+    and templates may not be present.
     """
     password = ReadOnlyPasswordHashField()
 
