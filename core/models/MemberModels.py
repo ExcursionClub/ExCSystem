@@ -67,7 +67,7 @@ class StafferManager(models.Manager):
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
         member.status = 5
-        member.date_expires = None
+        member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
             staffer = self.model(member=member, exc_email=exc_email, autobiography=autobiography)
