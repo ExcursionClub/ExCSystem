@@ -154,7 +154,13 @@ class Member(AbstractBaseUser):
         return self.first_name
 
     def __str__(self):
-        return self.get_full_name()
+        """
+        If we know the name of the user, then display their name, otherwise use their email
+        """
+        if self.first_name is None or self.last_name is None:
+            return self.email
+        else:
+            return self.get_full_name()
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
