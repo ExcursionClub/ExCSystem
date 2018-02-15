@@ -25,7 +25,6 @@ class MemberAdmin(BaseUserAdmin):
             'fields': ('username', 'password1', 'password2', 'rfid'),
         }),
     )
-    exclude = ('date_joined', )
 
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
