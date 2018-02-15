@@ -122,7 +122,8 @@ class StafferDataForm(forms.ModelForm):
 
     class Meta:
         model = Staffer
-        fields = ('member', 'staff_name', 'autobiography')
+        # Member should already be known when this form is accessed, so having it as a field is excessive
+        fields = ('staff_name', 'autobiography')
 
 
 class MemberChangeForm(forms.ModelForm):
