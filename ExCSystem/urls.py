@@ -16,6 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+admin.site.site_header = 'Excursion Admin'
+admin.site.site_title = 'Excursion Admin'
+admin.site.index_title = 'Admin Home'
+
+# If you want to change the template to use for the admin set it here
+# admin.site.index_template = path/to/the/template.html
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('kiosk/', include('kiosk.urls')),
