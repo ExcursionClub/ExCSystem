@@ -7,6 +7,7 @@ from core.models.MemberModels import Member
 class MemberDetailView(DetailView):
 
     model = Member
+    template_name = "admin/core/member/member_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
