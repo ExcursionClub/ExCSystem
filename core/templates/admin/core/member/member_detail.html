@@ -1,7 +1,30 @@
 {% extends "admin/change_form.html" %}
 
 {% block field_sets %}
-    <p>{{ object.email }}</p>
-    <p>Reporter: {{ object.rfid }}</p>
-    <p>Published: {{ object.phone_number }}</p>
+
+ <table>
+  <tr>
+    <td>Member Email: </td>
+    <td>{{ object.email }}</td>
+  </tr><tr>
+    <td>Full Name : </td>
+    <td>{{ object.get_full_name }}</td>
+  </tr><tr>
+    <td>RFID: </td>
+    <td>{{ object.rfid }}</td>
+  </tr><tr>
+    <td>Phone Number: </td>
+    <td>{{ object.phone_number }}</td>
+  </tr><tr>
+    <td>Date Joined: </td>
+    <td>{{ object.date_joined }}</td>
+  </tr><tr>
+    <td>Date Expires: </td>
+    <td>{{ object.date_expires }}</td>
+  </tr><tr>
+     <td>Picture: </td>
+     <td>{{ object.picture }}</td>
+  </tr>
+</table>
+
 {% endblock %}
