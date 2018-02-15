@@ -15,14 +15,13 @@ class MemberAdmin(BaseUserAdmin):
     # that reference specific fields on auth.User.
     list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'status')
     list_filter = ('status',)
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number',)}),
-        ('Club info', {'fields': ('rfid', 'picture')}),
-        ('Permissions', {'fields': ('status',)}),
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('username', 'password1', 'password2', 'rfid'),
+        }),
     )
-    # add_fieldsets is not a standard ModelAdmin attribute. MemberAdmin
-    # overrides get_fieldsets to use this attribute when creating a user.
 
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
