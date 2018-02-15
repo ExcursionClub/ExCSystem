@@ -1,6 +1,9 @@
 from django import forms
-from core.models import Member, Staffer
+from django.utils.timezone import timedelta
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+
+from core.models import Member, Staffer
+from core.convinience import get_all_rfids
 
 
 class MemberCreationForm(forms.ModelForm):
@@ -14,7 +17,8 @@ class MemberCreationForm(forms.ModelForm):
     """
 
     username = forms.EmailField(label='Email', widget=forms.EmailInput)
-    rfid = forms.CharField(label='RFID', max_length=10)
+    rfid = forms.CharField(label='RFID', max_length=10, widget=forms.TextInput)
+    # membership_rfid = forms.CharField(label="Membership RFID", max_length=10, widget=forms.TextInput)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
@@ -26,6 +30,14 @@ class MemberCreationForm(forms.ModelForm):
         email = self.cleaned_data['username']
         return email
 
+    def clean_rfid(self):
+        rfid = self.cleaned_data['rfid']
+        if len(rfid) != 10:
+            raise forms.ValidationError("This is not a valid 10 digit RFID!")
+        if rfid in get_all_rfids():
+            raise forms.ValidationError("This RFID is already in use!")
+        return rfid
+
     def clean_password2(self):
         # Check that the two password entries match
         password1 = self.cleaned_data.get("password1")
@@ -35,13 +47,21 @@ class MemberCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
-        print(self.errors)
-        user = super(MemberCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password1"])
-        if commit:
-            user.save()
-        return user
+        """
+        Save the newly created member
+
+        :param commit: This is ignored, we always commit
+        """
+
+        # We will always commit the save, so make sure m2m fields are always saved
+        self.save_m2m = self._save_m2m
+
+        email = self.cleaned_data['username']
+        rfid = self.cleaned_data['rfid']
+        password = self.cleaned_data['password1']
+        duration = timedelta(days=90)
+        member = Member.objects.create_member(email, rfid, duration, password=password)
+        return member
 
 
 class MemberFinishForm(forms.ModelForm):
@@ -58,6 +78,7 @@ class MemberFinishForm(forms.ModelForm):
 
     class Meta:
         model = Member
+        fields = ('first_name', 'last_name', 'phone_number', 'picture')
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
@@ -101,7 +122,7 @@ class MemberUpdateContactForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('email', 'phone')
+        fields = ('email', 'phone_number')
 
 
 class MemberChangeStatusForm(forms.ModelForm):
@@ -134,10 +155,23 @@ class StafferDataForm(forms.ModelForm):
     and templates may not be present.
     """
 
+    exc_email = forms.CharField(
+        label="Staffer Nickname",
+        max_length=20,
+        help_text="The name of the staffer: to be used as the beginning of the email address"
+    )
+
     class Meta:
         model = Staffer
         # Member should already be known when this form is accessed, so having it as a field is excessive
-        fields = ('staff_name', 'autobiography')
+        fields = ('exc_email', 'autobiography')
+
+    def clean_exc_email(self):
+        """
+        Although the field is named exc_email, the input should only be the staff name, so append rest of email here
+        """
+        staff_name = self.cleaned_data['exc_email']
+        return staff_name + "@excursionclubucsb.org"
 
 
 class MemberChangeForm(forms.ModelForm):
