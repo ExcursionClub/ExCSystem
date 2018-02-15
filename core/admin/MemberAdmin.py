@@ -1,7 +1,10 @@
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.urls import path
+from functools import update_wrapper
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
 from core.views.ViewList import ViewList
+from core.views.MemberViews import MemberDetailView
 
 
 # Replace the option to create users with the option to create members
@@ -30,3 +33,25 @@ class MemberAdmin(BaseUserAdmin):
 
     def get_changelist(self, request, **kwargs):
         return ViewList
+
+    def get_urls(self):
+        """Get all the urls admin related urls for member. Overridden here to add the detail view url"""
+
+        # Using this wrapper to call the view allows us to check permissions
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return update_wrapper(wrapper, view)
+
+        # Get all the urls automatically generated for a admin view of a model by django
+        urls = super().get_urls()
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        # Setup all the additional urls we want
+        my_urls = [
+            path('<int:pk>/detail/', wrap(MemberDetailView.as_view()), name='%s_%s_change' % info),
+        ]
+
+        # Return all of our newly created urls along with all of the defaults
+        return my_urls + urls
