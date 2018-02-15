@@ -1,5 +1,5 @@
 from django import forms
-from core.models import Member
+from core.models import Member, Staffer
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
