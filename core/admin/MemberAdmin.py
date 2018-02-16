@@ -4,7 +4,7 @@ from functools import update_wrapper
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
 from core.views.ViewList import ViewList
-from core.views.MemberViews import MemberDetailView
+from core.views.MemberViews import (MemberDetailView, MemberFinishView, )
 
 
 # Replace the option to create users with the option to create members
@@ -50,6 +50,7 @@ class MemberAdmin(BaseUserAdmin):
         # Setup all the additional urls we want
         my_urls = [
             path('<int:pk>/detail/', wrap(MemberDetailView.as_view()), name='%s_%s_detail' % info),
+            path('<int:pk>/finish/', wrap(MemberFinishView.as_view()), name='%s_%s_finish' % info)
         ]
 
         # Return all of our newly created urls along with all of the defaults
