@@ -25,7 +25,7 @@ class HomeView(generic.TemplateView):
                 # TODO: Use currently logged in staffers rfid
                 staffer_rfid = '1234567890'
                 do_checkin(staffer_rfid, rfid)
-                alert_message = gear.get().name + "was checked in successfully"
+                alert_message = gear.get().name + " was checked in successfully"
                 messages.add_message(request, messages.INFO, alert_message)
                 return redirect('home')
             else:
