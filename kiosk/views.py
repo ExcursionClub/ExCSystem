@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views import generic, View
@@ -24,7 +25,8 @@ class HomeView(generic.TemplateView):
                 # TODO: Use currently logged in staffers rfid
                 staffer_rfid = '1234567890'
                 do_checkin(staffer_rfid, rfid)
-                # TODO: Add visual feedback that gear has been checked in
+                alert_message = gear.get().name + "was checked in successfully"
+                messages.add_message(request, messages.INFO, alert_message)
                 return redirect('home')
             else:
                 return redirect('check_out', rfid)
