@@ -21,8 +21,10 @@ class HomeView(generic.TemplateView):
             rfid = form.cleaned_data['rfid']
             gear = Gear.objects.filter(rfid=rfid)
             if gear and gear.get().is_rented_out():
+                # TODO: Use currently logged in staffers rfid
                 staffer_rfid = '1234567890'
                 do_checkin(staffer_rfid, rfid)
+                # TODO: Add visual feedback that gear has been checked in
                 return redirect('home')
             else:
                 return redirect('check_out', rfid)
@@ -43,10 +45,9 @@ class CheckOutView(View):
         if form.is_valid():
             gear_rfid = form.cleaned_data['rfid']
             # TODO: Check that RFID isn't already used
+            # TODO: Use currently logged in staffers rfid
             staffer_rfid = '1234567890'
             member_rfid = '1234567890'
-            # Get random gear RFID
-            # TODO: Add gear with known gear id for testing
             gear = Gear.objects.filter(rfid=gear_rfid).get()
             if gear.is_available():
                 do_checkout(staffer_rfid, member_rfid, gear.rfid)
