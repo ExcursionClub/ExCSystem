@@ -1,11 +1,10 @@
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views import generic, View
 
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
-from kiosk.CheckoutLogic import do_checkout
+from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm
 
 
@@ -19,9 +18,14 @@ class HomeView(generic.TemplateView):
     def post(self, request):
         form = HomeForm(request.POST)
         if form.is_valid():
-            text = form.cleaned_data['rfid']
-            # TODO: Add check if gear or member
-            return redirect('check_out', text)
+            rfid = form.cleaned_data['rfid']
+            gear = Gear.objects.filter(rfid=rfid)
+            if gear and gear.get().is_rented_out():
+                staffer_rfid = '1234567890'
+                do_checkin(staffer_rfid, rfid)
+                return redirect('home')
+            else:
+                return redirect('check_out', rfid)
 
 
 class CheckOutView(View):
