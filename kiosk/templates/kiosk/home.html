@@ -5,7 +5,6 @@
 {% block content %}
 {% if user.is_authenticated %}
     <p>Logged in as {{ user.email }}</p>
-    <a href="{% url 'logout' %}">logout</a>
     <p>To check in gear scan the gear RFID tag</p>
     <p>To check out gear scan the member RFID tag</p>
     <p>Or type in the RFID number</p>
@@ -15,6 +14,7 @@
         <input type="submit" value="Submit">
     </form>
     {% if messages %}
+    <br>
     <ul class="messages">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}" role="alert">
