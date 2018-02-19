@@ -15,7 +15,7 @@
     </form>
     <ul>
         {% for gear in checked_out_gear %}
-        <li>{{ gear }}</li>
+        <li>{{ gear }}, (Due {{ gear.due_date }})</li>
         {% endfor %}
     </ul>
 {% else %}
