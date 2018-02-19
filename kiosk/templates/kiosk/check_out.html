@@ -5,7 +5,6 @@
 {% block content %}
 {% if user.is_authenticated %}
     <h1>Check out gear for {{ name }}</h1>
-    <a href="{%  url 'home' %}">go back</a>
     <p>Scan RFID tag to check out more gear</p>
     <p>Or type in the RFID number</p>
     <form method="post">
