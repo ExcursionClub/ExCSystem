@@ -21,6 +21,7 @@ class HomeView(generic.TemplateView):
         if form.is_valid():
             rfid = form.cleaned_data['rfid']
             gear = Gear.objects.filter(rfid=rfid)
+            member = Member.objects.filter(rfid=rfid)
             if gear and gear.get().is_rented_out():
                 # TODO: Use currently logged in staffers rfid
                 staffer_rfid = '1234567890'
@@ -28,8 +29,12 @@ class HomeView(generic.TemplateView):
                 alert_message = gear.get().name + " was checked in successfully"
                 messages.add_message(request, messages.INFO, alert_message)
                 return redirect('home')
-            else:
+            elif member and member.get():
                 return redirect('check_out', rfid)
+            else:
+                alert_message = "The RFID tag is not registered to a user or gear"
+                messages.add_message(request, messages.WARNING, alert_message)
+                return redirect('home')
 
 
 class CheckOutView(View):
