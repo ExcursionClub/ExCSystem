@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views import generic, View
@@ -9,8 +10,10 @@ from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm
 
 
-class HomeView(generic.TemplateView):
+class HomeView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'kiosk/home.html'
+    login_url = '/kiosk/login/'
+    redirect_field_name = ''
 
     def get(self, request):
         form = HomeForm()
