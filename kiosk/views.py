@@ -11,6 +11,13 @@ from kiosk.forms import HomeForm
 
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
+    """
+    Main kiosk view
+    Here gear can be checked in by either scanning an RFID tag or
+    typing the RFID number.
+    If a member tag is entered the CheckoutView is opened and
+    gear can be checked out to that member.
+    """
     template_name = 'kiosk/home.html'
     login_url = '/kiosk/login/'
     redirect_field_name = ''
@@ -47,6 +54,11 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
 
 class CheckOutView(View):
+    """
+    Members view of the kiosk
+    Contains a list of gear that's rented out by the member
+    Check out gear by scanning and RFID tag or typing the RFID number
+    """
     template_name = 'kiosk/check_out.html'
 
     def get(self, request, rfid):
