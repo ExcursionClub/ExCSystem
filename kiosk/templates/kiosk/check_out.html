@@ -3,32 +3,34 @@
 {% block title %}Kiosk | Check out gear{% endblock %}
 
 {% block content %}
-{% if user.is_authenticated %}
-    <h1>Check out gear for {{ name }}</h1>
-    <p>Scan RFID tag to check out more gear</p>
-    <p>Or type in the RFID number</p>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
-    </form>
-    <ul>
-        {% for gear in checked_out_gear %}
-        <li>{{ gear }}, (Due {{ gear.due_date }})</li>
-        {% endfor %}
-    </ul>
-    {% if messages %}
-    <br>
-    <ul class="messages">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}" role="alert">
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% endif %} {{ message }}
-          </div>
-        {% endfor %}
-    </ul>
+    {% if user.is_authenticated %}
+        <h1>Check out gear for {{ name }}</h1>
+        <p>Scan RFID tag to check out more gear</p>
+        <p>Or type in the RFID number</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+        <ul>
+            {% for gear in checked_out_gear %}
+                <li>{{ gear }}, (Due {{ gear.due_date }})</li>
+            {% endfor %}
+        </ul>
+        {% if messages %}
+            <br>
+            <ul class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            Error
+                        {% endif %} {{ message }}
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">login</a>
     {% endif %}
-{% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">login</a>
-{% endif %}
 {% endblock %}

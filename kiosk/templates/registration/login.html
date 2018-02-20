@@ -3,13 +3,13 @@
 {% block title %}Kiosk{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-</form>
+    <h2>Login</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+    </form>
 
-<h3>or</h3>
-<h2>Scan RFID tag</h2>
+    <h3>or</h3>
+    <h2>Scan RFID tag</h2>
 {% endblock %}
