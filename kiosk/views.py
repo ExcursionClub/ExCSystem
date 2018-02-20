@@ -66,6 +66,8 @@ class CheckOutView(View):
                 gear = gear.get()
                 if gear.is_available():
                     do_checkout(staffer_rfid, member_rfid, gear.rfid)
+                    alert_message = gear.name + " was checked out successfully"
+                    messages.add_message(request, messages.INFO, alert_message)
                 else:
                     alert_message = "Gear is already rented out"
                     messages.add_message(request, messages.WARNING, alert_message)
