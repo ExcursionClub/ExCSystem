@@ -29,15 +29,16 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
             if member and member.get():
                 return redirect('check_out', rfid)
-            elif gear and gear.get().is_rented_out():
-                do_checkin(staffer_rfid, rfid)
-                alert_message = gear.get().name + " was checked in successfully"
-                messages.add_message(request, messages.INFO, alert_message)
-            elif gear and gear.get().is_rented_out():
-                do_checkin(staffer_rfid, rfid)
-                alert_message = gear.get().name + " was checked in successfully"
-                messages.add_message(request, messages.INFO, alert_message)
-                return redirect('home')
+            elif gear:
+                gear = gear.get()
+                if gear.is_rented_out():
+                    do_checkin(staffer_rfid, rfid)
+                    alert_message = gear.name + " was checked in successfully"
+                    messages.add_message(request, messages.INFO, alert_message)
+                else:
+                    alert_message = gear.name + " is already checked in"
+                    messages.add_message(request, messages.INFO, alert_message)
+                    return redirect('home')
             else:
                 alert_message = "The RFID tag is not registered to a user or gear"
                 messages.add_message(request, messages.WARNING, alert_message)
