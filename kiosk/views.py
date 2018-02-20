@@ -23,8 +23,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         form = HomeForm(request.POST)
         if form.is_valid():
             rfid = form.cleaned_data['rfid']
-            # TODO: Use currently logged in staffers rfid
-            staffer_rfid = '1234567890'
+            staffer_rfid = request.user.rfid
             gear = Gear.objects.filter(rfid=rfid)
             member = Member.objects.filter(rfid=rfid)
             if member and member.get():
@@ -60,8 +59,7 @@ class CheckOutView(View):
         if form.is_valid():
             gear_rfid = form.cleaned_data['rfid']
             # TODO: Check that RFID isn't already used
-            # TODO: Use currently logged in staffers rfid
-            staffer_rfid = '1234567890'
+            staffer_rfid = request.user.rfid
             member_rfid = rfid
             gear = Gear.objects.filter(rfid=gear_rfid).get()
             if gear.is_available():
