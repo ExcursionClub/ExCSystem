@@ -26,9 +26,10 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
             staffer_rfid = request.user.rfid
             gear = Gear.objects.filter(rfid=rfid)
             member = Member.objects.filter(rfid=rfid)
+
             if member and member.get():
                 return redirect('check_out', rfid)
-            if gear and gear.get().is_rented_out():
+            elif gear and gear.get().is_rented_out():
                 do_checkin(staffer_rfid, rfid)
                 alert_message = gear.get().name + " was checked in successfully"
                 messages.add_message(request, messages.INFO, alert_message)
@@ -58,12 +59,20 @@ class CheckOutView(View):
         form = HomeForm(request.POST)
         if form.is_valid():
             gear_rfid = form.cleaned_data['rfid']
-            # TODO: Check that RFID isn't already used
             staffer_rfid = request.user.rfid
             member_rfid = rfid
-            gear = Gear.objects.filter(rfid=gear_rfid).get()
-            if gear.is_available():
-                do_checkout(staffer_rfid, member_rfid, gear.rfid)
+            gear = Gear.objects.filter(rfid=gear_rfid)
+            if gear:
+                gear = gear.get()
+                if gear.is_available():
+                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
+                else:
+                    alert_message = "Gear is already rented out"
+                    messages.add_message(request, messages.WARNING, alert_message)
+            else:
+                alert_message = "The RFID tag is not registered to a piece of gear"
+                messages.add_message(request, messages.WARNING, alert_message)
+
             return redirect('check_out', member_rfid)
 
     def get_name(self, member_rfid):
@@ -71,7 +80,6 @@ class CheckOutView(View):
         if name:
             return name
         else:
-            # TODO: Fail soft. Deny redirect from page
             raise ValidationError('This is not associated with a member')
 
     def get_checked_out_gear(self, member_rfid):
