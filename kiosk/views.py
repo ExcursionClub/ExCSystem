@@ -109,7 +109,6 @@ class RetagView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = ''
 
     def get(self, request):
-        # TODO: Get list of gear types and pass into the form
         department_form = DepartmentForm()
         gear_form = GearForm()
         args = {'department_form': department_form, 'gear_form': gear_form}
