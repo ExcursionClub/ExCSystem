@@ -13,6 +13,11 @@ FRUIT_CHOICES = [
     ]
 
 
+class DepartmentForm(forms.Form):
+    favorite_fruit= forms.CharField(label='Select the department the gear is in',
+                                    widget=forms.RadioSelect(choices=FRUIT_CHOICES))
+
+
 class GearForm(forms.Form):
     favorite_fruit= forms.CharField(label='Select what you are retagging',
                                     widget=forms.RadioSelect(choices=FRUIT_CHOICES))

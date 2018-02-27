@@ -6,7 +6,12 @@
     {% if user.is_authenticated %}
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            {{ department_form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ gear_form.as_p }}
             <input type="submit" value="Submit">
         </form>
         {% if messages %}

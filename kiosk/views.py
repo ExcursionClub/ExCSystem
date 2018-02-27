@@ -7,7 +7,7 @@ from django.views import generic, View
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
 from kiosk.CheckoutLogic import do_checkin, do_checkout
-from kiosk.forms import GearForm, HomeForm
+from kiosk.forms import DepartmentForm, GearForm, HomeForm
 
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
@@ -109,5 +109,8 @@ class RetagView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = ''
 
     def get(self, request):
-        form = GearForm()
-        return render(request, self.template_name, {'form': form})
+        # TODO: Get list of gear types and pass into the form
+        department_form = DepartmentForm()
+        gear_form = GearForm()
+        args = {'department_form': department_form, 'gear_form': gear_form}
+        return render(request, self.template_name, args)
