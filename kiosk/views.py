@@ -7,7 +7,7 @@ from django.views import generic, View
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
 from kiosk.CheckoutLogic import do_checkin, do_checkout
-from kiosk.forms import HomeForm
+from kiosk.forms import GearForm, HomeForm
 
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
@@ -109,5 +109,5 @@ class RetagView(LoginRequiredMixin, generic.TemplateView):
     redirect_field_name = ''
 
     def get(self, request):
-        form = HomeForm()
+        form = GearForm()
         return render(request, self.template_name, {'form': form})

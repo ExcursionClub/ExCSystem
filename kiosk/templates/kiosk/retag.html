@@ -4,9 +4,6 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <p>To retag gear scan the gear RFID tag</p>
-        <p>To retag gear scan the member RFID tag</p>
-        <p>Or type in the RFID number</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
