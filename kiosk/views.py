@@ -103,6 +103,11 @@ class CheckOutView(View):
         return checked_out_gear
 
 
-class RetagView(View):
-    # TODO: Implement
-    pass
+class RetagView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'kiosk/retag.html'
+    login_url = '/kiosk/login/'
+    redirect_field_name = ''
+
+    def get(self, request):
+        form = HomeForm()
+        return render(request, self.template_name, {'form': form})
