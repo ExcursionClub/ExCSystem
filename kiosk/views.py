@@ -101,3 +101,8 @@ class CheckOutView(View):
         current_member = Member.objects.filter(rfid=member_rfid).first()
         checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
         return checked_out_gear
+
+
+class RetagView(View):
+    # TODO: Implement
+    pass
