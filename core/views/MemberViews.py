@@ -34,6 +34,10 @@ class MemberDetailView(DetailView):
         context = get_default_context(self, context)
         return context
 
+    def post(self, request, *args, **kwargs):
+        """Treat post requests as get requests"""
+        return self.get(request, *args, **kwargs)
+
 
 class MemberFinishView(FormView):
 
