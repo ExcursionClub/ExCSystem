@@ -27,7 +27,6 @@ class MemberCreationForm(forms.ModelForm):
         fields = ('username', 'rfid', 'password1', 'password2',)
 
     def clean_username(self):
-        print("cleaning email")
         email = self.cleaned_data['username']
         # If a member exists with this email, raise a validation error
         current = Member.objects.filter(email=email)
