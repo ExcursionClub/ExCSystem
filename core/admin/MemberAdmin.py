@@ -1,5 +1,6 @@
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.urls import path
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 from functools import update_wrapper
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
@@ -55,3 +56,10 @@ class MemberAdmin(BaseUserAdmin):
 
         # Return all of our newly created urls along with all of the defaults
         return my_urls + urls
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """Redirect to the detail page after saving the new member, unless we're adding another"""
+        if '_continue' not in request.POST:
+            return HttpResponseRedirect(reverse("admin:core_member_detail", kwargs={'pk': obj.pk}))
+        else:
+            return super(MemberAdmin, self).response_add(request, obj, post_url_continue)
