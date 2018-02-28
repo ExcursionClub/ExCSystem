@@ -26,8 +26,13 @@ class MemberCreationForm(forms.ModelForm):
         model = Member
         fields = ('username', 'rfid', 'password1', 'password2',)
 
-    def clean_email(self):
+    def clean_username(self):
+        print("cleaning email")
         email = self.cleaned_data['username']
+        current = Member.objects.filter(email=email)
+        # If a member exists with this email, raise a validation error
+        if current:
+            raise forms.ValidationError("The email '{}' is already in use!".format(email))
         return email
 
     def clean_rfid(self):
@@ -60,6 +65,7 @@ class MemberCreationForm(forms.ModelForm):
         rfid = self.cleaned_data['rfid']
         password = self.cleaned_data['password1']
         duration = timedelta(days=90)
+        # TODO: Catch integrity error on creation
         member = Member.objects.create_member(email, rfid, duration, password=password)
         return member
 
