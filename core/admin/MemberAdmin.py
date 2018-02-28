@@ -26,6 +26,20 @@ class MemberAdmin(BaseUserAdmin):
             'fields': ('username', 'password1', 'password2', 'rfid'),
         }),
     )
+    fieldsets = (
+        ('Contact Info', {
+            'classes': ('wide',),
+            'fields': ('email', 'phone_number',),
+        }),
+        ('Personal Info', {
+            'classes': ('wide',),
+            'fields': ('first_name', 'last_name', 'picture')
+        }),
+        ('Clu  Info', {
+            'classes': ('wide',),
+            'fields': ('rfid', 'status',)
+        })
+    )
 
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
