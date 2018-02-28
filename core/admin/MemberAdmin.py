@@ -73,7 +73,6 @@ class MemberAdmin(BaseUserAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         """Redirect to the detail page after saving the new member, unless we're adding another"""
-        print(request.POST)
         if '_addanother' not in request.POST and '_continue' not in request.POST:
             return HttpResponseRedirect(reverse("admin:core_member_detail", kwargs={'pk': obj.pk}))
         else:
