@@ -103,12 +103,26 @@ class CheckOutView(View):
         return checked_out_gear
 
 
-class RetagView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'kiosk/retag.html'
+class RetagDepartmentView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'kiosk/retag_department.html'
     login_url = '/kiosk/login/'
     redirect_field_name = ''
 
     def get(self, request):
+        # Consider free text search for gear type
+        department_form = DepartmentForm()
+        gear_form = GearForm()
+        args = {'department_form': department_form, 'gear_form': gear_form}
+        return render(request, self.template_name, args)
+
+
+class RetagGearView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'kiosk/retag_gear_type.html'
+    login_url = '/kiosk/login/'
+    redirect_field_name = ''
+
+    def get(self, request):
+        # Consider free text search for gear type
         department_form = DepartmentForm()
         gear_form = GearForm()
         args = {'department_form': department_form, 'gear_form': gear_form}
