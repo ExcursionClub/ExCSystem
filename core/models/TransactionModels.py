@@ -179,6 +179,7 @@ class TransactionManager(models.Manager):
         gear.status = 0
         gear.checked_out_to = None
         gear.due_date = None
+        gear.save()
 
         return transaction
 

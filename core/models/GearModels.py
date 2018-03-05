@@ -52,6 +52,9 @@ class Gear(models.Model):
         else:
             return False
 
+    def is_rented_out(self):
+        return True if self.status == 1 else False
+
     def is_active(self):
         """Returns True if the gear is actively in circulation (ie could be checked out in a few days)"""
         if self.status <= 1:

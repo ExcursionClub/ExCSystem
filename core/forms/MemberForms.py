@@ -54,7 +54,6 @@ class MemberCreationForm(forms.ModelForm):
     def save(self, commit=True):
         """
         Save the newly created member
-
         :param commit: This is ignored, we always commit
         """
 
