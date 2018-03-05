@@ -1,0 +1,10 @@
+Hi and welcome to the excursion club!
+
+We're excited that you want to come and get stoked with us. Before you get access to all of our awesome
+gear and trips, please click the link below to finish the sign up process!
+
+{finish_signup_url}
+
+You will be asked to provide some extra contact information, upload a profile picture, and verify that
+you've read and understand the rules. After that, your membership will be fully active! Your little blue
+RFID tag will begin opening our gate and you will have access to all the trips we lead!

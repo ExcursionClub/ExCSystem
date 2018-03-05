@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
@@ -184,23 +186,16 @@ class Member(AbstractBaseUser):
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""
-        send_mail(title, body, from_email, self.email, fail_silently=False)
+        send_mail(title, body, from_email, [self.email], fail_silently=False)
 
     def send_intro_email(self, finish_signup_url):
         """Send the introduction email with the link to finish signing up to the member"""
         title = "Finish Signing Up"
-        body = \
-            "Hi and welcome to the excursion club! \n" \
-            "\n" \
-            "We're excited that you want to come and get stoked with us. Before you get access to all of our awesome" \
-            "gear and trips, please click the link below to finish the sign up process!\n" \
-            "\n" \
-            "{finish_signup_url}\n" \
-            "\n" \
-            "You will be asked to provide some extra contact information, upload a profile picture, and verify that" \
-            "you've read and understand the rules. After that, your membership will be fully active! Your little blue " \
-            "RFID tag will begin opening our gate and you will have access to all the trips we lead!" \
-            "\n".format(finish_signup_url=finish_signup_url)
+        # get the absolute path equivalent of going up one level and then into the templates directory
+        templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
+        template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
+        template = template_file.read()
+        body = template.format(finish_signup_url=finish_signup_url)
         self.send_email(title, body, from_email='membership@excursionclubucsb.org')
 
     def has_perm(self, perm, obj=None):
