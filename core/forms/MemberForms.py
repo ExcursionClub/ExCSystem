@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.timezone import timedelta
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
+from ExCSystem.settings import WEB_BASE
 from core.models import Member, Staffer
 from core.convinience import get_all_rfids
 
@@ -65,7 +66,7 @@ class MemberCreationForm(forms.ModelForm):
         password = self.cleaned_data['password1']
         duration = timedelta(days=90)
         member = Member.objects.create_member(email, rfid, duration, password=password)
-        finish_url = reverse("admin:core_member_finish", kwargs={'pk': member.pk})
+        finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
         member.send_intro_email(finish_url)
         return member
 
