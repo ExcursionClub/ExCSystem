@@ -152,7 +152,7 @@ class Member(AbstractBaseUser):
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
         if self.has_name():
-            return "{} {}".format(self.first_name, self.last_name)
+            return "{first} {last}".format(first=self.first_name, last=self.last_name)
         else:
             return "New Member"
     get_full_name.short_description = "Full Name"

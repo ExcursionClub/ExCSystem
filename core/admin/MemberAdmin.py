@@ -64,8 +64,8 @@ class MemberAdmin(BaseUserAdmin):
 
         # Setup all the additional urls we want
         my_urls = [
-            path('<int:pk>/detail/', wrap(MemberDetailView.as_view()), name='%s_%s_detail' % info),
-            path('<int:pk>/finish/', wrap(MemberFinishView.as_view()), name='%s_%s_finish' % info)
+            path('<int:pk>/detail/', wrap(MemberDetailView.as_view()), name='{info}_{info}_detail'.format(info=info)),
+            path('<int:pk>/finish/', wrap(MemberFinishView.as_view()), name='{info}_{info}_finish'.format(info=info))
         ]
 
         # Return all of our newly created urls along with all of the defaults

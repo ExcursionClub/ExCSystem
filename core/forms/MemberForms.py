@@ -33,7 +33,7 @@ class MemberCreationForm(forms.ModelForm):
         # If a member exists with this email, raise a validation error
         current = Member.objects.filter(email=email)
         if current:
-            raise forms.ValidationError("The email '{}' is already in use!".format(email))
+            raise forms.ValidationError("The email '{email}' is already in use!".format(email=email))
         return email
 
     def clean_rfid(self):

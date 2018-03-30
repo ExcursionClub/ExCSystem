@@ -4,6 +4,7 @@ import names
 import progressbar
 
 from random import randint
+from random import choice
 
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -40,11 +41,11 @@ def gen_rfid():
     return rfid
 
 
-def gen_phone():
+def gen_phone_num():
     """Generates a random and unique phone number"""
     phone = '+{}{}'.format(randint(1, 45), randint(1000000, 7000000))
     if phone in used_phones:
-        phone = gen_phone()
+        phone = gen_phone_num()
     else:
         used_phones.append(phone)
     return phone
@@ -53,26 +54,31 @@ def gen_phone():
 def gen_duration():
     """Randomly pick a duration of either 90 or 365 days"""
     durations = [timedelta(days=90), timedelta(days=365)]
-    return pick_random(durations)
+    return choice(durations)
 
 
 def pick_random(element_list):
     """Picks and returns a random element from the provided list"""
-    return element_list[randint(0, len(element_list)-1)]
+    return choice(element_list)
 
 
 def generate_rand_member():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
-    duration = gen_duration()
+    membership_duration = gen_duration()
     email = "{}.{}@fakeemail.lol".format(first_name, last_name)
     rfid = gen_rfid()
 
     try:
-        random_member = Member.objects.create_member(email, rfid, membership_duration=duration, password=PASSWORD)
+        random_member = Member.objects.create_member(
+            email,
+            rfid,
+            membership_duration=membership_duration,
+            password=PASSWORD
+        )
         random_member.first_name = first_name
         random_member.last_name = last_name
-        random_member.phone_number = gen_phone()
+        random_member.phone_number = gen_phone_num()
         random_member.save()
     # If anything goes wrong when making this member, try again
     except IntegrityError:
@@ -82,10 +88,15 @@ def generate_rand_member():
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser("admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD)
-system = Member.objects.create_member("system@excursionclubucsb.org", SYSTEM_RFID,
-                                      membership_duration=timedelta.max, password=PASSWORD)
-Staffer.objects.upgrade_to_staffer(system, "ExCSystem",
+admin = Member.objects.create_superuser("admin@excursionclubucsb.org",
+                                        ADMIN_RFID,
+                                        password=PASSWORD)
+system = Member.objects.create_member("system@excursionclubucsb.org",
+                                      SYSTEM_RFID,
+                                      membership_duration=timedelta.max,
+                                      password=PASSWORD)
+Staffer.objects.upgrade_to_staffer(system,
+                                   "ExCSystem",
                                    "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
 
 # Add dummy members
