@@ -1,5 +1,5 @@
-import django.forms.widgets as djangoWidgets
+from django.forms import widgets
 
-class RFIDWidget(djangoWidgets.TextInput):
 
+class RFIDWidget(widgets.TextInput):
     pass
