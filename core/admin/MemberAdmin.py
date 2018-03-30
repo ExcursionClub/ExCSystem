@@ -35,7 +35,7 @@ class MemberAdmin(BaseUserAdmin):
             'classes': ('wide',),
             'fields': ('first_name', 'last_name', 'picture')
         }),
-        ('Clu  Info', {
+        ('Club  Info', {
             'classes': ('wide',),
             'fields': ('rfid', 'status',)
         })
