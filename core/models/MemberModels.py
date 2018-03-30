@@ -147,7 +147,7 @@ class Member(AbstractBaseUser):
 
     def has_name(self):
         """Check whether the name of this member has been set"""
-        return self.first_name is not None and self.last_name is not None
+        return self.first_name and self.last_name
 
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
