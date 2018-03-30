@@ -25,5 +25,5 @@ admin.site.index_title = 'Admin Home'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('kiosk/', include('kiosk.urls')),
+    path('kiosk/', include('kiosk.urls')),
 ]
