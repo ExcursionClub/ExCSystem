@@ -43,7 +43,7 @@ def gen_rfid():
 
 def gen_phone_num():
     """Generates a random and unique phone number"""
-    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 7000000))
+    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 9999999))
     if phone in used_phones:
         phone = gen_phone_num()
     else:
