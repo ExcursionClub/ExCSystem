@@ -2,6 +2,12 @@ from django.db import models
 
 
 class RFIDField(models.CharField):
+    """
+    Very simple model field specifically designed to store RFID's.
+
+    Essentially just a thin wrapper around CharField that forces the RFID to be unique and ensures that it has at most
+    10 characters.
+    """
 
     description = "Specific type of charfield for storing 10 digit RFID's"
 
