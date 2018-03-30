@@ -65,7 +65,7 @@ class MemberCreationForm(forms.ModelForm):
         rfid = self.cleaned_data['rfid']
         password = self.cleaned_data['password1']
         duration = timedelta(days=90)
-        member = Member.objects.create_member(email, rfid, duration, password=password)
+        member = Member.objects.create_member(email, rfid, duration, password)
         finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
         member.send_intro_email(finish_url)
         return member
