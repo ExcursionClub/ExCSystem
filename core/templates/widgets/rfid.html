@@ -1,4 +1,4 @@
-{% extends "dynamicTwoState.html" %}
+{% extends "widgets/dynamicTwoState.html" %}
 
 <script>
     $("#click_to_scan_button").click(
@@ -12,6 +12,6 @@
 <input type="button" id="click_to_scan_button" value="Scan RFID">
 {% endblock %}
 
-{% block original_display %}
+{% block changed_display %}
 <input type="text" id="rfid">
 {% endblock %}
