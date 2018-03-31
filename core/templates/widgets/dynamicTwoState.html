@@ -16,12 +16,12 @@
 
 <br>
 <div id="original_display">
-    {% original_display %}
+    {% block original_display %}{% endblock %}
     <input id="change_button" type="button" value="{{ widget.change_button_text }}">
 </div>
 <br>
 <div id="changed_display" hidden>
-    {% changed_display %}
+    {% block changed_display %}{% endblock %}
     {% if widget.allow_revert %}
         <input id="revert_button" type="button" value="{{ widget.revert_button_text }}">
     {% endif %}
