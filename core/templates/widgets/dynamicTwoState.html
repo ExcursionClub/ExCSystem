@@ -1,0 +1,28 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    $("#change_button").click(
+        function() {
+            $("#original_display").hide();
+            $("#changed_display").show();
+        }
+    );
+    $("#revert_button").click(
+        function() {
+            $("#changed_display").hide();
+            $("#original_display").show();
+        }
+    );
+</script>
+
+<br>
+<div id="original_display">
+    {% original_display %}
+    <input id="change_button" type="button" value="{{ widget.change_button_text }}">
+</div>
+<br>
+<div id="changed_display" hidden>
+    {% changed_display %}
+    {% if widget.allow_revert %}
+        <input id="revert_button" type="button" value="{{ widget.revert_button_text }}">
+    {% endif %}
+</div>
