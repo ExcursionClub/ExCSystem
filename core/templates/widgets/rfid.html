@@ -1,7 +1,15 @@
 {% extends "dynamicTwoState.html" %}
 
+<script>
+    $("#click_to_scan_button").click(
+        function () {
+            $("#rfid").focus();
+        }
+    );
+</script>
+
 {% block original_display %}
-<input type="button" id="click_to_scan_button" value="click to scan RFID">
+<input type="button" id="click_to_scan_button" value="Scan RFID">
 {% endblock %}
 
 {% block original_display %}
