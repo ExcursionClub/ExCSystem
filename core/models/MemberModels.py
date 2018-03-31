@@ -1,5 +1,8 @@
+import os
+
 from django.db import models
-from django.utils.timezone import now
+from django.core.mail import send_mail
+from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
@@ -7,7 +10,7 @@ from .CertificationModels import Certification
 
 
 class MemberManager(BaseUserManager):
-    def create_member(self, email, rfid, first_name, last_name, phone_number, password=None):
+    def create_member(self, email, rfid, membership_duration, password=None):
         """
         Creates and saves a Member with the given email, date of
         birth and password.
@@ -15,13 +18,16 @@ class MemberManager(BaseUserManager):
         if not email:
             raise ValueError('Users must have an email address')
 
+        # Trying to add the max timedelta to now results in an overflow, so handle the superuser case separately
+        try:
+            expiration_date = now() + membership_duration
+        except OverflowError:
+            expiration_date = datetime.max
+
         member = self.model(
             email=self.normalize_email(email),
             rfid=rfid,
-            first_name=first_name,
-            last_name=last_name,
-            date_joined=now(),
-            phone_number=phone_number
+            date_expires=expiration_date
         )
 
         member.set_password(password)
@@ -29,7 +35,7 @@ class MemberManager(BaseUserManager):
 
         return member
 
-    def create_superuser(self, email, rfid, first_name, last_name, phone_number, password):
+    def create_superuser(self, email, rfid, password):
         """
         Creates and saves a superuser with the given email, date of
         birth and password.
@@ -37,13 +43,18 @@ class MemberManager(BaseUserManager):
         superuser = self.create_member(
             email=email,
             rfid=rfid,
-            first_name=first_name,
-            last_name=last_name,
-            phone_number=phone_number,
-            password=password
+            membership_duration=timedelta.max,
+            password=password,
         )
+
+        # Add the rest of the data about the superuser
         superuser.is_admin = True
         superuser.status = 7
+        superuser.first_name = "Master"
+        superuser.last_name = "Admin"
+        superuser.phone_number = '+15555555555'
+        superuser.certifications.set(Certification.objects.all())
+
         superuser.save(using=self._db)
         return superuser
 
@@ -59,7 +70,7 @@ class StafferManager(models.Manager):
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
         member.status = 5
-        member.date_expires = None
+        member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
             staffer = self.model(member=member, exc_email=exc_email, autobiography=autobiography)
@@ -89,9 +100,10 @@ class Member(AbstractBaseUser):
         ],
          ),
     ]
+    status = models.IntegerField(default=0, choices=status_choices)
 
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
     email = models.EmailField(
         verbose_name='email address',
         max_length=255,
@@ -100,27 +112,49 @@ class Member(AbstractBaseUser):
     rfid = models.CharField(
         verbose_name="RFID",
         max_length=10,
-        unique="True"
+        unique=True
     )
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/"
+        upload_to="ProfilePics/",
+        null=True
     )
-    phone_number = PhoneNumberField(unique=True)
+    phone_number = PhoneNumberField(unique=True, null=True)
+
     date_joined = models.DateField(auto_now_add=True)
-    date_expires = models.DateField(null=True)
+    date_expires = models.DateField(null=False)
+
     is_admin = models.BooleanField(default=False)
-    status = models.IntegerField(default=0, choices=status_choices)
     certifications = models.ManyToManyField(Certification)
 
-    print(picture.storage.url)
-
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['rfid', 'first_name', 'last_name', 'phone_number']
+    REQUIRED_FIELDS = ['rfid', 'date_expires']
+
+    @property
+    def can_rent(self):
+        """
+        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
+        """
+        return self.status >= 2
+
+    @property
+    def is_staff(self):
+        """
+        Property that allows and easy check for whether the member is a staffer
+        """
+        # If the member is an active staffer or better, then they are given staff privileges
+        return self.status >= 5
+
+    def has_name(self):
+        """Check whether the name of this member has been set"""
+        return self.first_name and self.last_name
 
     def get_full_name(self):
-        # The user is identified by their email address
-        return "{} {}".format(self.first_name, self.last_name)
+        """Return the full name if it is know, or 'New Member' if it is not"""
+        if self.has_name():
+            return "{first} {last}".format(first=self.first_name, last=self.last_name)
+        else:
+            return "New Member"
     get_full_name.short_description = "Full Name"
 
     def get_short_name(self):
@@ -128,7 +162,13 @@ class Member(AbstractBaseUser):
         return self.first_name
 
     def __str__(self):
-        return self.get_full_name()
+        """
+        If we know the name of the user, then display their name, otherwise use their email
+        """
+        if self.has_name():
+            return self.get_full_name()
+        else:
+            return self.email
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
@@ -144,6 +184,19 @@ class Member(AbstractBaseUser):
         elif self.status >= 5:
             self.status = 4
 
+    def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
+        """Sends an email to the member"""
+        send_mail(title, body, from_email, [self.email], fail_silently=False)
+
+    def send_intro_email(self, finish_signup_url):
+        """Send the introduction email with the link to finish signing up to the member"""
+        title = "Finish Signing Up"
+        # get the absolute path equivalent of going up one level and then into the templates directory
+        templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
+        template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
+        template = template_file.read()
+        body = template.format(finish_signup_url=finish_signup_url)
+        self.send_email(title, body, from_email='membership@excursionclubucsb.org')
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
@@ -154,21 +207,6 @@ class Member(AbstractBaseUser):
         """Does the user have permissions to view the app `app_label`?"""
         # Simplest possible answer: Yes, always
         return True
-
-    @property
-    def can_rent(self):
-        """
-        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
-        """
-        return self.status >= 2
-
-    @property
-    def is_staff(self):
-        """
-        Property that allows and easy check for whether the member is a staffer
-        """
-        # If the member is a prospective staffer or better, then they are given staff privileges
-        return self.status >= 4
 
 
 class Staffer(models.Model):

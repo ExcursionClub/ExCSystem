@@ -4,9 +4,11 @@ import names
 import progressbar
 
 from random import randint
+from random import choice
 
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
+from django.utils.timezone import timedelta
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings')
 django.setup()
@@ -39,41 +41,63 @@ def gen_rfid():
     return rfid
 
 
-def gen_phone():
+def gen_phone_num():
     """Generates a random and unique phone number"""
-    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 7000000))
+    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 9999999))
     if phone in used_phones:
-        phone = gen_rfid()
+        phone = gen_phone_num()
     else:
         used_phones.append(phone)
     return phone
 
 
+def gen_duration():
+    """Randomly pick a duration of either 90 or 365 days"""
+    durations = [timedelta(days=90), timedelta(days=365)]
+    return choice(durations)
+
+
 def pick_random(element_list):
     """Picks and returns a random element from the provided list"""
-    return element_list[randint(0, len(element_list)-1)]
+    return choice(element_list)
 
 
 def generate_rand_member():
     first_name = names.get_first_name()
     last_name = names.get_last_name()
-    email = '{}.{}@fakeemail.lol'.format(first_name, last_name)
-    phone = gen_phone()
+    membership_duration = gen_duration()
+    email = "{}.{}@fakeemail.lol".format(first_name, last_name)
     rfid = gen_rfid()
 
     try:
-        random_member = Member.objects.create_member(email, rfid, first_name, last_name, phone, password=PASSWORD)
+        random_member = Member.objects.create_member(
+            email,
+            rfid,
+            membership_duration=membership_duration,
+            password=PASSWORD
+        )
+        random_member.first_name = first_name
+        random_member.last_name = last_name
+        random_member.phone_number = gen_phone_num()
+        random_member.save()
+    # If anything goes wrong when making this member, try again
     except IntegrityError:
         random_member = generate_rand_member()
 
     return random_member
 
 
-# Add the master admin and excursion system accounts
-admin = Member.objects.create_superuser('admin@excursionclubucsb.org', ADMIN_RFID, 'Master', 'Admin', gen_phone(), PASSWORD)
-system = Member.objects.create_member('system@excursionclubucsb.org', SYSTEM_RFID, 'excursion', 'System', gen_phone(), PASSWORD)
-Staffer.objects.upgrade_to_staffer(system, 'ExCSystem', 'I am the Excursion computer system, and I do all the work nobody else can or wants to do')
-
+# Add the master admin  and excursion system accounts
+admin = Member.objects.create_superuser("admin@excursionclubucsb.org",
+                                        ADMIN_RFID,
+                                        password=PASSWORD)
+system = Member.objects.create_member("system@excursionclubucsb.org",
+                                      SYSTEM_RFID,
+                                      membership_duration=timedelta.max,
+                                      password=PASSWORD)
+Staffer.objects.upgrade_to_staffer(system,
+                                   "ExCSystem",
+                                   "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
 
 # Add dummy members
 print('Making members...')
@@ -119,7 +143,7 @@ member = generate_rand_member()
 member.rfid = 1234567890
 member_rfids.append(member.rfid)
 staffer_rfids.append(member.rfid)
-nickname = member.first_name + str(i)
+nickname = member.first_name + "RFIDKnown"
 member.save()
 staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
 staffer.save()
