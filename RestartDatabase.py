@@ -14,7 +14,7 @@ migrations_path = os.path.join(basepath, 'core', 'migrations')
 
 
 # Prepares python to be able to run django commands
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings.development")
 django.setup()
 
 
