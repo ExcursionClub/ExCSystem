@@ -1,0 +1,25 @@
+{% extends "kiosk/../base.html" %}
+
+{% block title %}Retag gear{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            {{ gear_form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+        {% if messages %}
+            <br>
+            <ul class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}" role="alert">
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            Error
+                        {% endif %} {{ message }}
+                    </div>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+{% endblock %}

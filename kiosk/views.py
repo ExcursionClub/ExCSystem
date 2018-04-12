@@ -7,7 +7,7 @@ from django.views import generic, View
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
 from kiosk.CheckoutLogic import do_checkin, do_checkout
-from kiosk.forms import HomeForm
+from kiosk.forms import DepartmentForm, GearForm, HomeForm
 
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
@@ -101,3 +101,29 @@ class CheckOutView(View):
         current_member = Member.objects.filter(rfid=member_rfid).first()
         checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
         return checked_out_gear
+
+
+class RetagDepartmentView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'kiosk/retag_department.html'
+    login_url = '/kiosk/login/'
+    redirect_field_name = ''
+
+    def get(self, request):
+        # Consider free text search for gear type
+        department_form = DepartmentForm()
+        gear_form = GearForm()
+        args = {'department_form': department_form, 'gear_form': gear_form}
+        return render(request, self.template_name, args)
+
+
+class RetagGearView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'kiosk/retag_gear_type.html'
+    login_url = '/kiosk/login/'
+    redirect_field_name = ''
+
+    def get(self, request):
+        # Consider free text search for gear type
+        department_form = DepartmentForm()
+        gear_form = GearForm()
+        args = {'department_form': department_form, 'gear_form': gear_form}
+        return render(request, self.template_name, args)
