@@ -14,7 +14,7 @@ $ pip install -r requirements/development.txt
 $ python manage.py runserver
 ```
 
-Or use Docker
+Or use docker-compose to run the production env locally
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ docker-compose up -d
