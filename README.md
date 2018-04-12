@@ -4,7 +4,7 @@ Bottom up re-design of the Excursion system
 
 ## Getting Started
 
-This project requires python3.6 and virtualenv.
+This project requires python3.6, virtualenv, docker, and docker-compose.
 
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
@@ -12,6 +12,12 @@ $ python3-6 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
 $ python manage.py runserver
+```
+
+Or use Docker
+```bash
+$ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
+$ docker-compose up -d
 ```
 
 ## Applying Changes</b>
@@ -22,8 +28,8 @@ that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
 ```bash
-python3 manage.py makemigrations core
-python3 manage.py migrate
+$ python3 manage.py makemigrations core
+$ python3 manage.py migrate
 ```
 
 This should be sufficient for small changes that do not cause conflicts.
@@ -41,8 +47,8 @@ using the ResetDatabase.py file.
 To restart he database:
 
 ```bash
-python3 RestartDatabase.py
-python3 PopulateDatabase.py
+$ python3 RestartDatabase.py
+$ python3 PopulateDatabase.py
 ```
 
 This will wipe everything that exists in the database, and generate random data for the new database
