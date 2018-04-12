@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
 django.setup()
 
 from core.models.MemberModels import Member, Staffer
