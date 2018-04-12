@@ -8,7 +8,7 @@ This project requires python3.6 and virtualenv.
 
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
-$ python3 -m venv venv
+$ python3-6 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
 $ python manage.py runserver

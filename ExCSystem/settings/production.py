@@ -7,9 +7,11 @@ ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'NAME': os.path.join(BASE_DIR, 'app_data'),
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres_user',
-        'PASSWORD': 's3krit'  # TODO: Get from env
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'secret',  # TODO: Get from env
+        'HOST': 'db',
+        'PORT': 5432
     }
 }
