@@ -1,7 +1,9 @@
 from ExCSystem.settings.base import *
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {

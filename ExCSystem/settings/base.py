@@ -11,9 +11,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
-
 SITE_ID = 1
 
 ALLOWED_HOSTS = []
@@ -63,7 +60,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ExCSystem.wsgi.application'
-
 
 AUTH_USER_MODEL = 'core.Member'
 
