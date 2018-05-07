@@ -5,6 +5,7 @@ import progressbar
 
 from random import randint
 from random import choice
+from typing import Any, List, Optional, Union
 
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -20,18 +21,17 @@ from core.models.TransactionModels import Transaction
 
 import kiosk.CheckoutLogic as logic
 
-
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
 PASSWORD = 'admin'
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
-used_phones = []
+used_phones: List[Optional[str]] = []
 
 RFIDS_TO_HAND_OUT = ['1000000000', '2000000000', '3000000000', '4000000000', '5000000000', '6000000000', '7000000000']
 
 
-def gen_rfid():
+def gen_rfid() -> str:
     """generates a random and unique rfid"""
     rfid = str(randint(1000000000, 9999999999))
     if rfid in used_rfids:
@@ -41,7 +41,7 @@ def gen_rfid():
     return rfid
 
 
-def gen_phone_num():
+def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
     phone = '+{}{}'.format(randint(1, 45), randint(1000000, 9999999))
     if phone in used_phones:
@@ -51,18 +51,18 @@ def gen_phone_num():
     return phone
 
 
-def gen_duration():
+def gen_duration() -> List[timedelta]:
     """Randomly pick a duration of either 90 or 365 days"""
     durations = [timedelta(days=90), timedelta(days=365)]
     return choice(durations)
 
 
-def pick_random(element_list):
+def pick_random(element_list: List[Any]) -> Any:
     """Picks and returns a random element from the provided list"""
     return choice(element_list)
 
 
-def generate_rand_member():
+def generate_rand_member() -> Member:
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     membership_duration = gen_duration()
@@ -122,7 +122,6 @@ for i in bar(range(total_number_members)):
 print('')
 print('Made members')
 
-
 # Add some staffers
 print('Making staffers...')
 number_staffers = 10
@@ -136,7 +135,6 @@ for i in bar(range(number_staffers)):
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
     staffer.save()
-
 
 # Add staffer with known rfid
 member = generate_rand_member()
@@ -168,7 +166,6 @@ sup_cert = Certification(title='Stand Up Paddleboarding',
                                       '5) Be able to bring the SUP back in to shore safely')
 sup_cert.save()
 
-
 # Add departments
 departments = ['Camping', 'Backpacking', 'Rock Climbing', 'Skiing/Snowboarding', 'Kayaking', 'Paddleboarding',
                'Surfing', 'Wetsuits', 'Mountaineering', 'Archery', 'Paintballing', 'Free Diving', 'Off-Road']
@@ -176,14 +173,13 @@ all_staffers = Staffer.objects.all()
 for dept in departments:
     name = dept
     details = 'All the gear related to {}'.format(name)
-    stl = pick_random(all_staffers)
+    stl: str = pick_random(all_staffers)
     department = Department(name=name, description=details)
     department.save()
     department.stls.add(stl)
     department.save()
 print('')
 print('Made departments')
-
 
 # Add gear
 print('Making Gear...')
@@ -196,8 +192,8 @@ gear_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
-    authorizer = pick_random(staffer_rfids)
-    gear_name = pick_random(gear_names)
+    authorizer: str = pick_random(staffer_rfids)
+    gear_name: str = pick_random(gear_names)
     department = pick_random(departments)  # TODO: Make this not be randomly assigned cause ie skis are not wetsuits
 
     transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
@@ -206,7 +202,6 @@ for i in bar(range(number_gear)):
 print('')
 print('Made gear')
 
-
 # Check out gear to random members
 print('Checking out random gear...')
 n_gear_to_checkout = int(number_gear / 2)
@@ -214,8 +209,8 @@ n_failed_checkouts = 0
 bar = progressbar.ProgressBar()
 for i in bar(range(n_gear_to_checkout)):
     gear_rfid = pick_random(gear_rfids)
-    member_rfid = pick_random(member_rfids)
-    authorizer = pick_random(staffer_rfids)
+    member_rfid: str = pick_random(member_rfids)
+    authorizer: str = pick_random(staffer_rfids)
 
     try:
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
@@ -224,7 +219,6 @@ for i in bar(range(n_gear_to_checkout)):
 print('')
 print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_gear_to_checkout))
 
-
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
@@ -232,7 +226,6 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     department = pick_random(departments)
     transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
     gear_rfids.append(gear_rfid)
-
 
 # Check out gear with known RFID
 for i in range(5):

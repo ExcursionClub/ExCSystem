@@ -20,10 +20,15 @@ $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ docker-compose up -d
 ```
 
+Use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
+```bash
+$ mypy <file> --ignore-missing-imports
+```
+
 ## Applying Changes</b>
 
 Most changes to the code will be incorporated into the website
-immediately. The exception to this rule are any changes to the models
+imm`ediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
