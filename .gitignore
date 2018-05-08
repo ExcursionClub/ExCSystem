@@ -21,3 +21,6 @@ venv/
 
 ### mypy ###
 .mypy_cache/
+
+### Env vars ###
+.env

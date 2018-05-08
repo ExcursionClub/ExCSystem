@@ -69,3 +69,5 @@ charts/
 
 # Vim swap files
 *.swp
+
+.env
