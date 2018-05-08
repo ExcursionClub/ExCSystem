@@ -17,8 +17,6 @@ from django.utils.timezone import timedelta
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
 django.setup()
 
-
-
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
 PASSWORD = 'admin'
@@ -26,7 +24,9 @@ PASSWORD = 'admin'
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
 
-RFIDS_TO_HAND_OUT = ['1000000000', '2000000000', '3000000000', '4000000000', '5000000000', '6000000000', '7000000000']
+RFIDS_TO_HAND_OUT = [
+    '1000000000', '2000000000', '3000000000', '4000000000', '5000000000', '6000000000', '7000000000'
+]
 
 
 def gen_rfid() -> str:
@@ -69,10 +69,7 @@ def generate_rand_member() -> Member:
 
     try:
         random_member = Member.objects.create_member(
-            email,
-            rfid,
-            membership_duration=membership_duration,
-            password=PASSWORD
+            email, rfid, membership_duration=membership_duration, password=PASSWORD
         )
         random_member.first_name = first_name
         random_member.last_name = last_name
@@ -86,16 +83,17 @@ def generate_rand_member() -> Member:
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser("admin@excursionclubucsb.org",
-                                        ADMIN_RFID,
-                                        password=PASSWORD)
-system = Member.objects.create_member("system@excursionclubucsb.org",
-                                      SYSTEM_RFID,
-                                      membership_duration=timedelta.max,
-                                      password=PASSWORD)
-Staffer.objects.upgrade_to_staffer(system,
-                                   "ExCSystem",
-                                   "I am the Excursion computer system, and I do all the work nobody else can or wants to do")
+admin = Member.objects.create_superuser(
+    "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
+)
+system = Member.objects.create_member(
+    "system@excursionclubucsb.org", SYSTEM_RFID, membership_duration=timedelta.max,
+    password=PASSWORD
+)
+Staffer.objects.upgrade_to_staffer(
+    system, "ExCSystem",
+    "I am the Excursion computer system, and I do all the work nobody else can or wants to do"
+)
 
 # Add dummy members
 print('Making members...')
@@ -148,25 +146,29 @@ print('')
 print('Made staffers')
 
 # Add certifications
-kayak_cert = Certification(title='Kayaking',
-                           requirements='1) Be able to swim god dammit '
-                                        '2) Have received the safety rant, know about wind and current '
-                                        '3) Be able to take the kayak out safely '
-                                        '4) Be able to get off of, flip, and get into a kayak out in the water '
-                                        '5) Be able to bring the kayak back in to shore safely')
+kayak_cert = Certification(
+    title='Kayaking', requirements='1) Be able to swim god dammit '
+    '2) Have received the safety rant, know about wind and current '
+    '3) Be able to take the kayak out safely '
+    '4) Be able to get off of, flip, and get into a kayak out in the water '
+    '5) Be able to bring the kayak back in to shore safely'
+)
 kayak_cert.save()
 
-sup_cert = Certification(title='Stand Up Paddleboarding',
-                         requirements='1) Be able to swim god dammit '
-                                      '2) Have received the safety rant, know about wind and current '
-                                      '3) Be able to take the SUP out safely '
-                                      '4) Be able to get off of, flip, and get into a SUP out in the water '
-                                      '5) Be able to bring the SUP back in to shore safely')
+sup_cert = Certification(
+    title='Stand Up Paddleboarding', requirements='1) Be able to swim god dammit '
+    '2) Have received the safety rant, know about wind and current '
+    '3) Be able to take the SUP out safely '
+    '4) Be able to get off of, flip, and get into a SUP out in the water '
+    '5) Be able to bring the SUP back in to shore safely'
+)
 sup_cert.save()
 
 # Add departments
-departments = ['Camping', 'Backpacking', 'Rock Climbing', 'Skiing/Snowboarding', 'Kayaking', 'Paddleboarding',
-               'Surfing', 'Wetsuits', 'Mountaineering', 'Archery', 'Paintballing', 'Free Diving', 'Off-Road']
+departments = [
+    'Camping', 'Backpacking', 'Rock Climbing', 'Skiing/Snowboarding', 'Kayaking', 'Paddleboarding',
+    'Surfing', 'Wetsuits', 'Mountaineering', 'Archery', 'Paintballing', 'Free Diving', 'Off-Road'
+]
 all_staffers = Staffer.objects.all()
 for dept in departments:
     name = dept
@@ -182,9 +184,28 @@ print('Made departments')
 # Add gear
 print('Making Gear...')
 number_gear = 120
-gear_names = ['Sleeping Bag', 'Sleeping Pad', 'Tent', 'Backpack', 'Climbing Shoes', 'Climbing Harness', 'Skis',
-              'Snowboard', 'Bow', 'Rope', 'Helmet', 'Camping Stove', 'Cooler', 'Ski Poles', 'Ski Boots',
-              'Snowboard Boots', 'Lantern', 'Water Filter', 'Crash Pad', 'Wetsuit', ]
+gear_names = [
+    'Sleeping Bag',
+    'Sleeping Pad',
+    'Tent',
+    'Backpack',
+    'Climbing Shoes',
+    'Climbing Harness',
+    'Skis',
+    'Snowboard',
+    'Bow',
+    'Rope',
+    'Helmet',
+    'Camping Stove',
+    'Cooler',
+    'Ski Poles',
+    'Ski Boots',
+    'Snowboard Boots',
+    'Lantern',
+    'Water Filter',
+    'Crash Pad',
+    'Wetsuit',
+]
 departments = Department.objects.all()
 gear_rfids = []
 bar = progressbar.ProgressBar()
@@ -192,7 +213,9 @@ for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
     gear_name: str = pick_random(gear_names)
-    department = pick_random(departments)  # TODO: Make this not be randomly assigned cause ie skis are not wetsuits
+    department = pick_random(
+        departments
+    )  # TODO: Make this not be randomly assigned cause ie skis are not wetsuits
 
     transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
     gear_rfids.append(gear_rfid)

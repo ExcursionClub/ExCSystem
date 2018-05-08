@@ -25,6 +25,17 @@ Use type hints to statically check types. These are optional, but serves as up-t
 $ mypy <file> --ignore-missing-imports
 ```
 
+This codebase uses the PEP 8 code style. We enforce this with isort, yapf & flake8.
+In addition to the standards outlined in PEP 8, we have a few guidelines
+(see `setup.cfg` for more info):
+We use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
+```bash
+$ mypy <file> --ignore-missing-imports
+$ flake8 <file>
+$ isort <file>
+$ yapf -i <file>
+```
+
 ## Applying Changes</b>
 
 Most changes to the code will be incorporated into the website
