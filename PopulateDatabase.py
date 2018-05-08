@@ -3,17 +3,16 @@ from random import choice, randint
 from typing import Any, List, Optional, Union
 
 import django
+import kiosk.CheckoutLogic as logic
 import names
 import progressbar
-from django.core.exceptions import ValidationError
-from django.db.utils import IntegrityError
-from django.utils.timezone import timedelta
-
-import kiosk.CheckoutLogic as logic
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
+from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
+from django.utils.timezone import timedelta
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
 django.setup()
