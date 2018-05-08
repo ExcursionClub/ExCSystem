@@ -1,12 +1,12 @@
 from typing import List
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
-from django.views import generic, View
 
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
+from django.shortcuts import redirect, render
+from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm
 
