@@ -1,25 +1,24 @@
 import os
+from random import choice, randint
+from typing import Any, List, Optional, Union
+
 import django
 import names
 import progressbar
-
-from random import randint
-from random import choice
-from typing import Any, List, Optional, Union
-
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
+import kiosk.CheckoutLogic as logic
+from core.models.CertificationModels import Certification
+from core.models.DepartmentModels import Department
+from core.models.MemberModels import Member, Staffer
+from core.models.TransactionModels import Transaction
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
 django.setup()
 
-from core.models.MemberModels import Member, Staffer
-from core.models.CertificationModels import Certification
-from core.models.DepartmentModels import Department
-from core.models.TransactionModels import Transaction
 
-import kiosk.CheckoutLogic as logic
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
