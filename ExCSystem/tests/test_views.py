@@ -9,7 +9,7 @@ class ViewTestCase(TestCase):
 
 
 class SmokeTest(ViewTestCase):
-    def test_home(self):
+    def test_view_url_by_name(self):
         """Redirect user to login page since not logged in"""
-        response = self.client.get(reverse('home'))
-        self.assertStatusCode(response, code=302)
+        response = self.client.get(reverse('home'), follow=True)
+        self.assertStatusCode(response, 200)
