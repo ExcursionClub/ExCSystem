@@ -24,6 +24,6 @@ admin.site.index_title = 'Admin Home'
 # admin.site.index_template = path/to/the/template.html
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
-    path('kiosk/', include('kiosk.urls'), name='kiosk'),
+    path('admin/', admin.site.urls),
+    path('kiosk/', include('kiosk.urls')),
 ]
