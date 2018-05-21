@@ -1,4 +1,4 @@
-# ExCSystem
+# ExCSystem [![Build Status](https://travis-ci.org/ExcursionClub/ExCSystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/ExCSystem)
 
 Bottom up re-design of the Excursion system
 
