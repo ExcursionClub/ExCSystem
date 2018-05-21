@@ -9,6 +9,7 @@ class ViewTestCase(TestCase):
 
 
 class SmokeTest(ViewTestCase):
-    def test_kiosk(self):
-        response = self.client.get(reverse('kiosk'))
-        self.assertStatusCode(response)
+    def test_home(self):
+        """Redirect user to login page since not logged in"""
+        response = self.client.get(reverse('home'))
+        self.assertStatusCode(response, code=302)
