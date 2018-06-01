@@ -60,12 +60,18 @@ class MemberAdmin(BaseUserAdmin):
 
         # Get all the urls automatically generated for a admin view of a model by django
         urls = super().get_urls()
-        info = self.model._meta.app_label, self.model._meta.model_name
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
 
         # Setup all the additional urls we want
         my_urls = [
-            path('<int:pk>/detail/', wrap(MemberDetailView.as_view()), name='{info}_{info}_detail'.format(info=info)),
-            path('<int:pk>/finish/', wrap(MemberFinishView.as_view()), name='{info}_{info}_finish'.format(info=info))
+            path('<int:pk>/detail/',
+                 wrap(MemberDetailView.as_view()),
+                 name='{app}_{model}_detail'.format(app=app_label, model=model_name)),
+
+            path('<int:pk>/finish/',
+                 wrap(MemberFinishView.as_view()),
+                 name='{app}_{model}_finish'.format(app=app_label, model=model_name))
         ]
 
         # Return all of our newly created urls along with all of the defaults
