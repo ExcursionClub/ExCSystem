@@ -8,7 +8,7 @@ This project requires python3.6, virtualenv, docker, and docker-compose.
 
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
-$ python3-6 -m venv venv
+$ python3.6 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
 $ python manage.py runserver
