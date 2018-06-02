@@ -7,13 +7,12 @@ from core.models.MemberModels import Member
 
 class LoginTest(TestCase):
     def setUp(self):
-        member = Member.objects.create_member(
+        Member.objects.create_member(
             email='testemail@test.com',
-            rfid=0o0000000001,
+            rfid='0000000001',
             membership_duration=timedelta(days=7),
             password='password'
         )
-        member.save()
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('home'))
@@ -26,6 +25,5 @@ class LoginTest(TestCase):
         response = c.get(reverse('home'))
         # Should not redirect to login page since logged in
         self.assertEqual(response.status_code, 200)
-
 
         # TODO: Test if the logged in user matches 'testemail@test.com'
