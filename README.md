@@ -15,6 +15,9 @@ $ python manage.py runserver
 ```
 
 Or use docker-compose to run the production env locally
+
+Install Docker and make sure the daemon is running before running:
+
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ docker-compose up -d
