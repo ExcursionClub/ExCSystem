@@ -41,7 +41,7 @@ $ isort <file>
 $ yapf -i <file>
 ```
 
-### Testing
+### Unit Tests
 
 TravisCI will run tests on all PRs.
 
@@ -49,6 +49,13 @@ To run tests locally:
 
 ```bash
 $ python3 manage.py test
+```
+
+### Functional Tests
+Install geckodriver and Firefox
+
+```bash
+python3 functional_tests.py
 ```
 
 ## Applying Changes to the Models</b>
