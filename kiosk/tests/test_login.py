@@ -19,11 +19,11 @@ class LoginTest(TestCase):
         self.assertRedirects(response, '/kiosk/login/')
 
     def test_user_login(self):
-        c = Client()
-        c.login(email='testemail@test.com', password='password')
+        self.client.login(email='testemail@test.com', password='password')
 
-        response = c.get(reverse('home'))
+        response = self.client.get(reverse('home'))
         # Should not redirect to login page since logged in
         self.assertEqual(response.status_code, 200)
 
-        # TODO: Test if the logged in user matches 'testemail@test.com'
+        # Logged in user should be the user that just logged in
+        self.assertEqual(str(response.context['user']), 'testemail@test.com')
