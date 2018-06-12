@@ -4,8 +4,9 @@ Bottom up re-design of the Excursion system
 
 ## Getting Started
 
-This project requires python3.6, virtualenv, docker, and docker-compose.
+This project requires python3.6, virtualenv. There are two ways to setup the project:
 
+### The Hard Way
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ python3.6 -m venv venv
@@ -14,9 +15,8 @@ $ pip install -r requirements/development.txt
 $ python manage.py runserver
 ```
 
-Or use docker-compose to run the production env locally
-
-Install Docker and make sure the daemon is running before running:
+### The Easy Way
+This requires Docker and docker-compose. Make sure the daemon is running before running:
 
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
@@ -54,8 +54,10 @@ $ python3 manage.py test
 ### Functional Tests
 Install geckodriver and Firefox
 
+Django has to be running to test with selenium. Run these two commands in different windows:
 ```bash
-python3 functional_tests.py
+$ python manage.py runserver
+$ python3 functional_tests.py
 ```
 
 ## Applying Changes to the Models</b>
