@@ -5,6 +5,7 @@
 __pycache__/
 local_settings.py
 db.sqlite3
+postgres-data/
 media
 migrations/
 
@@ -19,3 +20,8 @@ migrations/
 ### Virtualenv ###
 venv/
 
+### mypy ###
+.mypy_cache/
+
+### Env vars ###
+.env

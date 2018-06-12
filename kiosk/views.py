@@ -1,11 +1,12 @@
-from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ValidationError
-from django.shortcuts import render, redirect
-from django.views import generic, View
+from typing import List
 
 from core.models.GearModels import Gear
 from core.models.MemberModels import Member
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ValidationError
+from django.shortcuts import redirect, render
+from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm
 
@@ -61,7 +62,7 @@ class CheckOutView(View):
     """
     template_name = 'kiosk/check_out.html'
 
-    def get(self, request, rfid):
+    def get(self, request, rfid: str):
         form = HomeForm()
         name = self.get_name(rfid)
         checked_out_gear = self.get_checked_out_gear(rfid)
@@ -90,14 +91,14 @@ class CheckOutView(View):
 
             return redirect('check_out', member_rfid)
 
-    def get_name(self, member_rfid):
+    def get_name(self, member_rfid: str) -> str:
         name = Member.objects.filter(rfid=member_rfid).get().get_full_name()
         if name:
             return name
         else:
             raise ValidationError('This is not associated with a member')
 
-    def get_checked_out_gear(self, member_rfid):
+    def get_checked_out_gear(self, member_rfid: str) -> List[object]:
         current_member = Member.objects.filter(rfid=member_rfid).first()
         checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
         return checked_out_gear

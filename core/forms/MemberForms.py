@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.timezone import timedelta
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from ExCSystem.settings import WEB_BASE
+from ExCSystem.settings.base import WEB_BASE
 from core.models import Member, Staffer
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
