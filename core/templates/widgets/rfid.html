@@ -1,15 +1,15 @@
 {% extends "widgets/dynamicTwoState.html" %}
 
 {% block script %}
-    $("#click_to_scan_button").click(
-        function () {
-            $("#rfid").focus();
-        }
-    );
+
+    function focusRFID() {
+        $("#rfid").focus();
+    }
+
 {% endblock %}
 
 {% block original_display %}
-<input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}">
+    <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
 {% endblock %}
 
 {% block changed_display %}

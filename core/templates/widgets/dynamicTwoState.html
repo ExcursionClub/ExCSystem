@@ -1,29 +1,27 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
-    $("#change_button").click(
-        function() {
+    function changeMode() {
+            console.log("In change button js");
             $("#original_display").hide();
             $("#changed_display").show();
-        }
-    );
-    $("#revert_button").click(
-        function() {
-            $("#changed_display").hide();
-            $("#original_display").show();
-        }
-    );
+    }
+
+    function revertMode() {
+        $("#changed_display").hide();
+        $("#original_display").show();
+    }
+
     {% block script %}{% endblock %}
 </script>
 
 <br>
 <div id="original_display">
-    {% block original_display %}{% endblock %}
-    <input id="change_button" type="button" value="{{ widget.change_button_text }}">
+        {% block original_display %}{% endblock %}
+        <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
 </div>
-<br>
 <div id="changed_display" hidden>
     {% block changed_display %}{% endblock %}
     {% if widget.allow_revert %}
-        <input id="revert_button" type="button" value="{{ widget.revert_button_text }}">
+        <input id="revert_button" type="button" value="{{ widget.revert_button_text }}" onclick="revertMode()">
     {% endif %}
 </div>
