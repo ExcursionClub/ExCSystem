@@ -14,7 +14,9 @@
     {% block script %}{% endblock %}
 </script>
 
-<br>
+<div>
+    {% block shared_display %} {% endblock %}
+</div>
 <div id="original_display">
         {% block original_display %}{% endblock %}
         <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
