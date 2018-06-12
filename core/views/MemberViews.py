@@ -1,5 +1,5 @@
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import UpdateView
 from django.utils import timezone
 
 from core.models.MemberModels import Member
@@ -39,11 +39,11 @@ class MemberDetailView(DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class MemberFinishView(FormView):
+class MemberFinishView(UpdateView):
 
     model = Member
     form_class = MemberFinishForm
-    template_name = "admin/core/member/member_finish.html"
+    template_name_suffix = "_finish"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
