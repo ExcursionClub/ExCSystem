@@ -84,6 +84,9 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+
     class Meta:
         model = Member
         fields = ('first_name', 'last_name', 'phone_number', 'picture')
