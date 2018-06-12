@@ -15,11 +15,16 @@ $ python manage.py runserver
 ```
 
 Or use docker-compose to run the production env locally
+
+Install Docker and make sure the daemon is running before running:
+
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ docker-compose up -d
 ```
 
+## Development
+### Linting
 Use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
 ```bash
 $ mypy <file> --ignore-missing-imports
@@ -36,10 +41,27 @@ $ isort <file>
 $ yapf -i <file>
 ```
 
-## Applying Changes</b>
+### Unit Tests
+
+TravisCI will run tests on all PRs.
+
+To run tests locally:
+
+```bash
+$ python3 manage.py test
+```
+
+### Functional Tests
+Install geckodriver and Firefox
+
+```bash
+python3 functional_tests.py
+```
+
+## Applying Changes to the Models</b>
 
 Most changes to the code will be incorporated into the website
-imm`ediately. The exception to this rule are any changes to the models
+immediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
