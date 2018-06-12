@@ -6,6 +6,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from ExCSystem.settings.base import WEB_BASE
 from core.models import Member, Staffer
 from core.convinience import get_all_rfids
+from core.forms.fields.RFIDField import RFIDField
 
 
 class MemberCreationForm(forms.ModelForm):
@@ -18,8 +19,8 @@ class MemberCreationForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    username = forms.EmailField(label='Email', widget=forms.EmailInput)
-    rfid = forms.CharField(label='RFID', max_length=10, widget=forms.TextInput)
+    username = forms.EmailField(label='Email')
+    rfid = RFIDField(label='RFID')
     # membership_rfid = forms.CharField(label="Membership RFID", max_length=10, widget=forms.TextInput)
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)

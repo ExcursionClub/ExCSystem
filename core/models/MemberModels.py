@@ -6,8 +6,9 @@ from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 from phonenumber_field.modelfields import PhoneNumberField
-from .CertificationModels import Certification
 
+from .CertificationModels import Certification
+from .fields import RFIDField
 
 class MemberManager(BaseUserManager):
     def create_member(self, email, rfid, membership_duration, password=None):
@@ -109,11 +110,7 @@ class Member(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    rfid = models.CharField(
-        verbose_name="RFID",
-        max_length=10,
-        unique=True
-    )
+    rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
         upload_to="ProfilePics/",
