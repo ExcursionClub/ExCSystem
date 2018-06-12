@@ -43,6 +43,7 @@ class MemberFinishView(FormView):
 
     model = Member
     form_class = MemberFinishForm
+    template_name = "admin/core/member/member_finish.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
