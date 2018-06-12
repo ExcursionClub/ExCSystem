@@ -3,19 +3,17 @@ from django.forms import ValidationError
 
 from core.forms.widgets.RFIDWidget import RFIDWidget
 
-
 class RFIDField(forms.CharField):
     """
     Wrapper around CharField changing the default widget and adding validation
     """
-    widget = RFIDWidget
-    rfid_length = 10
+    # widget = RFIDWidget
+
+    def __init__(self, max_length=10, min_length=10, **kwargs):
+        super().__init__(max_length=max_length, min_length=min_length, **kwargs)
 
     def to_python(self, value):
         """Validate the RFID string is in fact a valid RFID"""
-
-        if value.length != 10:
-            raise ValidationError("An RFID must be exactly 10 digits long!")
 
         if not value.isdigit():
             raise ValidationError("RFIDs may only contain the digits 0-9")
