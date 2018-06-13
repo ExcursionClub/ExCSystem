@@ -119,6 +119,15 @@ class MemberFinishForm(forms.ModelForm):
             ("tell", "Shit happens. Just let us know so we can fix it")
         )
     )
+    staffers = forms.ChoiceField(
+        label="Who are our staffers?",
+        choices=(
+            ("volunteers", "Student volunteers who do this for fun"),
+            ("pros", "Well-paid professionals"),
+            ("blokes", "Random blokes we found on the street"),
+            ("fake", "Fake news. There are no staffers")
+        )
+    )
 
     # This meta class allows the django backend to
     class Meta:
