@@ -84,12 +84,25 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    first_name = forms.CharField()
-    last_name = forms.CharField()
-
     class Meta:
         model = Member
         fields = ('first_name', 'last_name', 'phone_number', 'picture')
+
+
+class MembershipQuizForm(forms.Form):
+    """
+    Form used to ensure that the members read through the club rules
+    """
+
+    punishment = forms.ChoiceField(
+        label="What is the punishment for breaking a club rule?",
+        choices=(
+            "Lose membership",
+            "Wallow in your own incompetence",
+            "We have you arrested",
+            "A dozen lashes before the mast"
+        )
+    )
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
