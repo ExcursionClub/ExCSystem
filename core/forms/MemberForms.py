@@ -87,7 +87,7 @@ class MemberFinishForm(forms.ModelForm):
     """
 
     member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
-    quiz_field_names = ['punishment']
+    quiz_field_names = ['punishment', 'gear_num', 'certifications', 'broken_gear']
 
     punishment = forms.ChoiceField(
         label="What is the punishment for breaking a club rule?",
@@ -96,6 +96,27 @@ class MemberFinishForm(forms.ModelForm):
             ("arrest", "We have you arrested"),
             ("membership", "Forfeit your membership"),
             ("lashes", "10 lashes before the mast")
+        )
+    )
+    gear_num = forms.IntegerField(
+        label="How many of each item type can you check out?"
+    )
+    certifications = forms.ChoiceField(
+        label="How do you get certified for kayaks and SUPS?",
+        choices=(
+            ("class", "Take a $500 class"),
+            ("trip", "Go on a trip with a staffer"),
+            ("date", "Bang a bunch of staffers"),
+            ("nudie", "Run naked around the block")
+        )
+    )
+    broken_gear = forms.ChoiceField(
+        label="What do you do when a piece of gear breaks?",
+        choices=(
+            ("hide", "Hide it and hope no one notices"),
+            ("run", "Run away, Simba! Run away and NEVER return!"),
+            ("fine", "Pay a $10 fine for broken gear"),
+            ("tell", "Shit happens. Just let us know so we can fix it")
         )
     )
 
