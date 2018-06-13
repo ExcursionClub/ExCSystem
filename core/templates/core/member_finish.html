@@ -108,7 +108,7 @@
                         <form>
                             <table>
                                 {% csrf_token %}
-                                {{ form.as_table }}
+                                {{ form.as_table_member }}
                             </table>
                         </form>
                     </article>
@@ -127,7 +127,7 @@
                         <form>
                             <table>
                                 {% csrf_token %}
-                                {{ quiz_form.as_table }}
+                                {{ form.as_table_quiz }}
                             </table>
                         </form>
                     </article>

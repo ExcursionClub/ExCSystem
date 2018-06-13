@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from django import forms
 from django.urls import reverse
 from django.utils.timezone import timedelta
@@ -84,25 +86,50 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    class Meta:
-        model = Member
-        fields = ('first_name', 'last_name', 'phone_number', 'picture')
-
-
-class MembershipQuizForm(forms.Form):
-    """
-    Form used to ensure that the members read through the club rules
-    """
+    member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
+    quiz_field_names = ['punishment']
 
     punishment = forms.ChoiceField(
         label="What is the punishment for breaking a club rule?",
         choices=(
-            "Lose membership",
-            "Wallow in your own incompetence",
-            "We have you arrested",
-            "A dozen lashes before the mast"
+            ("wallow", "Wallow in you own incompetence"),
+            ("arrest", "We have you arrested"),
+            ("membership", "Forfeit your membership"),
+            ("lashes", "10 lashes before the mast")
         )
     )
+
+    # This meta class allows the django backend to
+    class Meta:
+        model = Member
+        fields = ('first_name', 'last_name', 'phone_number', 'picture')
+
+    def as_table_member(self):
+        """Make it possible to get the HTML of just the member information section of this form"""
+        return self.as_table_subset(self.member_field_names)
+
+    def as_table_quiz(self):
+        """Make it possible to get the HTML of just the quiz information section of this form"""
+        return self.as_table_subset(self.quiz_field_names)
+
+    def as_table_subset(self, subset_field_names):
+        """Run the forms html generator, temporarily substituting a subset of the fields for all fields"""
+        original_fields = self.fields
+        html = ''
+
+        try:
+            self.fields = self.get_fields_subset(subset_field_names)
+            html = self.as_table()
+        finally:
+            self.fields = original_fields
+
+        return html
+
+    def get_fields_subset(self, field_name_list):
+        fields_subset = OrderedDict()
+        for name in field_name_list:
+            fields_subset[name] = self.fields[name]
+        return fields_subset
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
