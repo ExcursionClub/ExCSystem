@@ -129,7 +129,7 @@ class MemberFinishForm(forms.ModelForm):
         )
     )
 
-    # This meta class allows the django backend to
+    # This meta class allows the django backend to link this for to the model
     class Meta:
         model = Member
         fields = ('first_name', 'last_name', 'phone_number', 'picture')
@@ -160,6 +160,14 @@ class MemberFinishForm(forms.ModelForm):
         for name in field_name_list:
             fields_subset[name] = self.fields[name]
         return fields_subset
+
+    def clean_punishment(self):
+        if self.punishment != "membership":
+            raise forms.ValidationError("Nope! If you break a rule you lose your membership!")
+
+    def clean_gear_num(self):
+        if self.gear_num != 1:
+            raise forms.ValidationError("")
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
