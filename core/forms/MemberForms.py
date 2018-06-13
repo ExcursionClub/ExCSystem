@@ -87,7 +87,7 @@ class MemberFinishForm(forms.ModelForm):
     """
 
     member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
-    quiz_field_names = ['punishment', 'gear_num', 'certifications', 'broken_gear']
+    quiz_field_names = ['gear_num', 'certifications', 'broken_gear', 'staffers', 'punishment']
 
     punishment = forms.ChoiceField(
         label="What is the punishment for breaking a club rule?",
