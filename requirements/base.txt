@@ -3,3 +3,4 @@ django-phonenumber-field==2.0.0
 names==0.3.0
 progressbar2==3.34.3
 pillow==5.0.0
+psycopg2==2.7.3.2
