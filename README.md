@@ -3,8 +3,23 @@
 Bottom up re-design of the Excursion system
 
 ## Getting Started
+This project requires python3.6, virtualenv and postgres.
 
-This project requires python3.6, virtualenv. There are two ways to setup the project:
+### Create a local db
+```bash
+$ psql postgres
+$ CREATE DATABASE excsystem;
+$ CREATE USER admin WITH PASSWORD 'password';
+$ ALTER ROLE admin SET client_encoding TO 'utf8';
+$ ALTER ROLE admin SET default_transaction_isolation TO 'read committed';
+$ ALTER ROLE admin SET timezone TO 'UTC';
+$ GRANT ALL PRIVILEGES ON DATABASE excsystem TO admin;
+$ \q
+$ exit
+```
+
+There are two ways to setup the project:
+
 
 ### The Hard Way
 ```bash
