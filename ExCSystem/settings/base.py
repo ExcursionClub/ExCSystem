@@ -90,6 +90,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'US/Pacific'
