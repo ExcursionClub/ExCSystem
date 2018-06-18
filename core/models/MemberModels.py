@@ -8,7 +8,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .CertificationModels import Certification
-from .fields import RFIDField
+from .fields.RFIDField import RFIDField
+
 
 class MemberManager(BaseUserManager):
     def create_member(self, email, rfid, membership_duration, password=None):
