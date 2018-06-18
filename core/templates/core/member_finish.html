@@ -95,56 +95,55 @@
         <br><br>
     </article>
 
-    <div class="row justify-content-center">
+    <form method="post">
 
-        <!-- Membership info card (left side) -->
-        <div class="col-xs-6">
-            <div class="col-xs-10 pl-1 pr-4 pb-3">
-                <div class="card">
-                    <header class="card-header">
-                        <h4 class="card-title mt-2">Finish Sign up</h4>
-                    </header>
-                    <article class="card-body">
-                        <form>
-                            <table>
-                                {% csrf_token %}
-                                {{ form.as_table_member }}
-                            </table>
-                        </form>
-                    </article>
-                </div> <!-- card.// -->
-            </div>
-        </div>
+        <div class="row justify-content-center">
 
-        <!-- Membership quiz card (right side) -->
-        <div class="col-xs-6">
-            <div class="col-xs-10 pl-4 pr-1 pt-3">
-                <div class="card">
-                    <header class="card-header">
-                        <h4 class="card-title mt-2">Membership Quiz</h4>
-                    </header>
-                    <article class="card-body">
-                        <form>
-                            <table>
-                                {% csrf_token %}
-                                {{ form.as_table_quiz }}
-                            </table>
-                        </form>
-                    </article>
+            <!-- Membership info card (left side) -->
+            <div class="col-xs-6">
+                <div class="col-xs-10 pl-1 pr-4 pb-3">
+                    <div class="card">
+                        <header class="card-header">
+                            <h4 class="card-title mt-2">Finish Sign up</h4>
+                        </header>
+                        <article class="card-body">
+
+                                <table>
+                                    {% csrf_token %}
+                                    {{ form.as_table_member }}
+                                </table>
+                        </article>
+                    </div> <!-- card.// -->
                 </div>
             </div>
+
+            <!-- Membership quiz card (right side) -->
+            <div class="col-xs-6">
+                <div class="col-xs-10 pl-4 pr-1 pt-3">
+                    <div class="card">
+                        <header class="card-header">
+                            <h4 class="card-title mt-2">Membership Quiz</h4>
+                        </header>
+                        <article class="card-body">
+                                <table>
+                                    {% csrf_token %}
+                                    {{ form.as_table_quiz }}
+                                </table>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
         </div>
+        <br><br>
 
-    </div>
-    <br><br><br>
-
-    <div class="row justify-content-center">
-        <div class="col-xs-6">
-            <small class="text-muted">By clicking the 'Register' button, you confirm that you agree to oblige by all club policies.</small>
-            <br><br>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+        <div class="row justify-content-center">
+            <div class="col-xs-6">
+                <small class="text-muted">By clicking the 'Complete Registration' button, you confirm that you agree to oblige by all club policies.</small>
+                <br>
+                    <input type="submit" class="btn btn-primary btn-block" value="Complete Registration">
+                <br><br>
             </div>
         </div>
-    </div>
+    </form>
 </div>
