@@ -168,11 +168,11 @@ class MemberFinishForm(forms.ModelForm):
         return fields_subset
 
     def clean_punishment(self):
-        if self.punishment != "membership":
+        if self.cleaned_data['punishment'] != "membership":
             raise forms.ValidationError("Nope! If you break a rule you lose your membership!")
 
     def clean_gear_num(self):
-        if self.gear_num != 1:
+        if self.cleaned_data['gear_num'] != 1:
             raise forms.ValidationError("")
 
 
