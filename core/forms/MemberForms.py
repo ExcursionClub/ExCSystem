@@ -173,7 +173,19 @@ class MemberFinishForm(forms.ModelForm):
 
     def clean_gear_num(self):
         if self.cleaned_data['gear_num'] != 1:
-            raise forms.ValidationError("")
+            raise forms.ValidationError("Nope! You are only allowed to check out one piece each!")
+
+    def clean_certifications(self):
+        if self.cleaned_data['certifications'] != "trip":
+            raise forms.ValidationError("Nope! To get certified you need to go on a trip!")
+
+    def clean_broken_gear(self):
+        if self.cleaned_data['broken_gear'] != "tell":
+            raise forms.ValidationError("Nope! All you have to do is tell us so we can fix it!")
+
+    def clean_staffers(self):
+        if self.cleaned_data['staffers'] != "volunteers":
+            raise forms.ValidationError("Nope! All our staffers are just volunteers!")
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
