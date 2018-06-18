@@ -4,6 +4,8 @@ from django import forms
 from django.urls import reverse
 from django.utils.timezone import timedelta
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from ExCSystem.settings.base import WEB_BASE
 from core.models import Member, Staffer
@@ -89,6 +91,10 @@ class MemberFinishForm(forms.ModelForm):
     member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
     quiz_field_names = ['gear_num', 'certifications', 'broken_gear', 'staffers', 'punishment']
 
+    # Instantiate the non-default member data fields
+    phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
+
+    # Instantiate the quiz fields
     punishment = forms.ChoiceField(
         label="What is the punishment for breaking a club rule?",
         choices=(
