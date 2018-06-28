@@ -155,7 +155,13 @@ class MemberFinishForm(forms.ModelForm):
 
         try:
             self.fields = self.get_fields_subset(subset_field_names)
-            html = self.as_table()
+            html = self._html_output(
+                normal_row='<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>',
+                error_row='<tr><td colspan="2"><font color="red">%s</font></td></tr>',
+                row_ender='</td></tr>',
+                help_text_html='<br /><span class="helptext">%s</span>',
+                errors_on_separate_row=False
+            )
         finally:
             self.fields = original_fields
 
@@ -186,6 +192,19 @@ class MemberFinishForm(forms.ModelForm):
     def clean_staffers(self):
         if self.cleaned_data['staffers'] != "volunteers":
             raise forms.ValidationError("Nope! All our staffers are just volunteers!")
+
+    def save(self, commit=True):
+        # We will always commit the save, so make sure m2m fields are always saved
+        self.save_m2m = self._save_m2m
+
+        member = self.instance
+        member.first_name = self.cleaned_data['first_name']
+        member.last_name = self.cleaned_data['last_name']
+        member.phone_number = self.cleaned_data['phone_number']
+        member.picture = self.cleaned_data['picture']
+
+        member.save()
+        return member
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
