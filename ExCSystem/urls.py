@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls.static import static
+from django.conf import settings
 
 admin.site.site_header = 'Excursion Admin'
 admin.site.site_title = 'Excursion Admin'
@@ -26,4 +28,4 @@ admin.site.index_title = 'Admin Home'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('kiosk/', include('kiosk.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
