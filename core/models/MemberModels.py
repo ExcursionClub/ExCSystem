@@ -114,7 +114,7 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/",
+        upload_to="ProfilePics/%Y/",
         null=True
     )
     phone_number = PhoneNumberField(unique=True, null=True)
