@@ -117,7 +117,7 @@ class Member(AbstractBaseUser):
         upload_to="ProfilePics/%Y/",
         null=True
     )
-    phone_number = PhoneNumberField(unique=True, null=True)
+    phone_number = PhoneNumberField(unique=False, null=True)
 
     date_joined = models.DateField(auto_now_add=True)
     date_expires = models.DateField(null=False)
