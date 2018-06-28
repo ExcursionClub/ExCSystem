@@ -91,10 +91,10 @@ $ python3 RestartDatabase.py
 $ python3 PopulateDatabase.py
 ```
 
-This will wipe everything that exists in the database, and generate random data for the new database
+This will wipe everything that exists in the database, and generate random data for the new database.
 
 The server is now set up, and ready to run as if this was the first time
-ever running the project, though with the database populated with dummy data
+ever running the project, though with the database populated with dummy data. Running `PopulateDatabase.py` twice won't work as it tries to add users with the same RFID and that would violate the unique contstraint on the database.
 
 NOTE: Neither the database, nor anything in the migrations directory
 should ever be pushed to the git repo. The migrations directory on the

@@ -3,6 +3,11 @@ from random import choice, randint
 from typing import Any, List, Optional, Union
 
 import django
+# Will raise an exception if not run here
+# django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
+django.setup()
+
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
@@ -14,8 +19,6 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
-django.setup()
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
