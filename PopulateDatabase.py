@@ -100,7 +100,8 @@ def save_question(question_name=None, question_text=None, choices=None, correct_
         usage="membership",
         name=question_name,
         question_text=question_text,
-        correct_answer=answers[correct_answer_index]
+        correct_answer=answers[correct_answer_index],
+        error_message=error_message
     )
     question.answers.add(*answers)
     question.save()
