@@ -19,6 +19,8 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
+# Import (and therby run) the permissions script
+import buildPermissions
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
