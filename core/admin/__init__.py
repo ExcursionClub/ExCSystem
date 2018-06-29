@@ -22,6 +22,3 @@ admin.site.register(Staffer)
 
 # Now register the new MemberAdmin...
 admin.site.register(Member, MemberAdmin)
-# ... and, since we're not using Django's built-in permissions,
-# unregister the Group model from admin.
-admin.site.unregister(Group)
