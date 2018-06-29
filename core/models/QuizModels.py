@@ -26,8 +26,8 @@ class Question(models.Model):
     usage = models.CharField(max_length=20, choices=usages)
 
     question_text = models.CharField(max_length=100)
-    answers = models.ManyToManyField(to=Answer)
-    correct_answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='+')
+    answers = models.ManyToManyField(to=Answer, null=True)
+    correct_answer = models.OneToOneField(to=Answer, on_delete=models.CASCADE, related_name='+')
 
     def __str__(self):
         return self.question_text
