@@ -31,8 +31,10 @@ class MemberManager(BaseUserManager):
             rfid=rfid,
             date_expires=expiration_date
         )
-        member.groups.set([Group.objects.get(name="Just Joined")])
         member.set_password(password)
+        member.save(using=self._db)
+
+        member.groups.set([Group.objects.get(name="Just Joined")])
         member.save(using=self._db)
 
         return member
@@ -54,9 +56,10 @@ class MemberManager(BaseUserManager):
         superuser.first_name = "Master"
         superuser.last_name = "Admin"
         superuser.phone_number = '+15555555555'
-        superuser.groups.set([Group.objects.get(name="Admin")])
         superuser.certifications.set(Certification.objects.all())
+        superuser.save(using=self._db)
 
+        superuser.groups.set([Group.objects.get(name="Admin")])
         superuser.save(using=self._db)
         return superuser
 
