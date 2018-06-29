@@ -20,7 +20,6 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
-# Import (and therby run) the permissions script
 import buildPermissions
 
 ADMIN_RFID = '0000000000'
@@ -108,6 +107,9 @@ def save_question(question_name=None, question_text=None, choices=None, correct_
     question.answers.add(*answers)
     question.save()
 
+
+# Build all the groups and permissions
+buildPermissions.build_all()
 
 # Add the master admin  and excursion system accounts
 admin = Member.objects.create_superuser(
