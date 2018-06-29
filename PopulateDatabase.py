@@ -86,7 +86,7 @@ def generate_rand_member() -> Member:
     return random_member
 
 
-def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0):
+def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0, error_message="You're Wrong!"):
 
     # Make and save all of the answers
     answers = []
@@ -294,7 +294,8 @@ save_question(
         ("membership", "Forfeit your membership"),
         ("lashes", "10 lashes before the mast")
     ),
-    correct_answer_index=2
+    correct_answer_index=2,
+    error_message="If you break a rule you lose your membership!"
 )
 save_question(
     question_name="gear",
@@ -306,7 +307,8 @@ save_question(
         ("unlimited", "as many as you'd like")
 
     ),
-    correct_answer_index=1
+    correct_answer_index=1,
+    error_message="You can only check out one of each type of item!"
 )
 save_question(
     question_name="certification",
@@ -317,7 +319,8 @@ save_question(
         ("date", "Bang a bunch of staffers"),
         ("nudie", "Run naked around the block")
     ),
-    correct_answer_index=1
+    correct_answer_index=1,
+    error_message="To get certified just go on a trip with a staffer."
 )
 save_question(
     question_name="broken",
@@ -328,7 +331,8 @@ save_question(
         ("fine", "Pay a $10 fine for broken gear"),
         ("tell", "Shit happens. Just let us know so we can fix it")
     ),
-    correct_answer_index=3
+    correct_answer_index=3,
+    error_message="Just tell us it's broken so we can make sure it stays in good shape."
 )
 save_question(
     question_name="staffers",
@@ -339,7 +343,8 @@ save_question(
         ("blokes", "Random blokes we found on the street"),
         ("fake", "Fake news. There are no staffers")
     ),
-    correct_answer_index=0
+    correct_answer_index=0,
+    error_message="All our staffers are volunteers!"
 )
 
 print('Finished')
