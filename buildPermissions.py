@@ -70,7 +70,7 @@ def build_member():
 
 def build_staffer():
     """Create permissions for regular staffers"""
-    staffer = Group.objects.create(name="Staffer")
+    staffer = Group.objects.create(name="Staff")
     add_permission(
         codename="add_gear",
         name="Can add a piece of gear",
