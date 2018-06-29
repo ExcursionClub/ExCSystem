@@ -86,7 +86,7 @@ def generate_rand_member() -> Member:
     return random_member
 
 
-def save_question(question_text=None, choices=None, correct_answer_index=0):
+def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0):
 
     # Make and save all of the answers
     answers = []
@@ -96,8 +96,12 @@ def save_question(question_text=None, choices=None, correct_answer_index=0):
         answers.append(ans)
 
     # make the question and relate all the answers
-    question = Question.objects.create(question_text=question_text, correct_answer=answers[correct_answer_index])
-    question.usage = "membership"
+    question = Question.objects.create(
+        usage="membership",
+        name=question_name,
+        question_text=question_text,
+        correct_answer=answers[correct_answer_index]
+    )
     question.answers.add(*answers)
     question.save()
 
@@ -282,6 +286,7 @@ print('Writing questions...')
 
 # Write quiz questions
 save_question(
+    question_name="Punishment",
     question_text="What is the punishment for breaking a club rule?",
     choices=(
         ("wallow", "Wallow in you own incompetence"),
@@ -292,6 +297,7 @@ save_question(
     correct_answer_index=2
 )
 save_question(
+    question_name="gear",
     question_text="How many of each item type can you check out?",
     choices=(
         ("None", "Trick question, we don't check out gear"),
@@ -303,6 +309,7 @@ save_question(
     correct_answer_index=1
 )
 save_question(
+    question_name="certification",
     question_text="How do you get certified for kayaks and SUPS?",
     choices=(
         ("class", "Take a $500 class"),
@@ -313,6 +320,7 @@ save_question(
     correct_answer_index=1
 )
 save_question(
+    question_name="broken",
     question_text="What do you do when a piece of gear breaks?",
     choices=(
         ("hide", "Hide it and hope no one notices"),
@@ -323,6 +331,7 @@ save_question(
     correct_answer_index=3
 )
 save_question(
+    question_name="staffers",
     question_text="Who are our staffers?",
     choices=(
         ("volunteers", "Student volunteers who do this for fun"),

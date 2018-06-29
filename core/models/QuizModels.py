@@ -25,12 +25,20 @@ class Question(models.Model):
               ("other", "yeah, not sure. something else"))
     usage = models.CharField(max_length=20, choices=usages)
 
+    name = models.CharField(max_length=20, unique=True)
     question_text = models.CharField(max_length=100)
-    answers = models.ManyToManyField(to=Answer, null=True)
+    answers = models.ManyToManyField(to=Answer)
     correct_answer = models.OneToOneField(to=Answer, on_delete=models.CASCADE, related_name='+')
 
     def __str__(self):
         return self.question_text
+
+    def get_choices(self):
+        """Get all the answer options as a list of tuples for the choices attribute of a form or model field"""
+        choices = []
+        for ans in self.answers.all():
+            choices.append(ans.as_choice)
+        return choices
 
     def is_correct(self, selected_answer_phrase):
         return selected_answer_phrase == self.correct_answer.answer_phrase
