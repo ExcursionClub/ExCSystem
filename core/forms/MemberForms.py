@@ -9,6 +9,7 @@ from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from ExCSystem.settings.base import WEB_BASE
 from core.models import Member, Staffer
+from core.models.QuizModels import Question, Answer
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
 
@@ -89,51 +90,20 @@ class MemberFinishForm(forms.ModelForm):
     """
 
     member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
-    quiz_field_names = ['gear_num', 'certifications', 'broken_gear', 'staffers', 'punishment']
 
     # Instantiate the non-default member data fields
     phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
 
     # Instantiate the quiz fields
-    punishment = forms.ChoiceField(
-        label="What is the punishment for breaking a club rule?",
-        choices=(
-            ("wallow", "Wallow in you own incompetence"),
-            ("arrest", "We have you arrested"),
-            ("membership", "Forfeit your membership"),
-            ("lashes", "10 lashes before the mast")
-        )
-    )
-    gear_num = forms.IntegerField(
-        label="How many of each item type can you check out?"
-    )
-    certifications = forms.ChoiceField(
-        label="How do you get certified for kayaks and SUPS?",
-        choices=(
-            ("class", "Take a $500 class"),
-            ("trip", "Go on a trip with a staffer"),
-            ("date", "Bang a bunch of staffers"),
-            ("nudie", "Run naked around the block")
-        )
-    )
-    broken_gear = forms.ChoiceField(
-        label="What do you do when a piece of gear breaks?",
-        choices=(
-            ("hide", "Hide it and hope no one notices"),
-            ("run", "Run away, Simba! Run away and NEVER return!"),
-            ("fine", "Pay a $10 fine for broken gear"),
-            ("tell", "Shit happens. Just let us know so we can fix it")
-        )
-    )
-    staffers = forms.ChoiceField(
-        label="Who are our staffers?",
-        choices=(
-            ("volunteers", "Student volunteers who do this for fun"),
-            ("pros", "Well-paid professionals"),
-            ("blokes", "Random blokes we found on the street"),
-            ("fake", "Fake news. There are no staffers")
-        )
-    )
+    questions = Question.objects.filter(usage="membership")
+
+    def __init__(self, *args, **kwargs):
+        super(MemberFinishForm, self).__init__(*args, **kwargs)
+
+        self.quiz_field_names = []
+        for question in self.questions:
+            self.fields[question.name] = forms.ChoiceField(label=question.question_text, choices=question.get_choices())
+            self.quiz_field_names.append(question.name)
 
     # This meta class allows the django backend to link this for to the model
     class Meta:
@@ -173,21 +143,9 @@ class MemberFinishForm(forms.ModelForm):
             fields_subset[name] = self.fields[name]
         return fields_subset
 
-    def clean_punishment(self):
-        if self.cleaned_data['punishment'] != "membership":
-            raise forms.ValidationError("Nope! If you break a rule you lose your membership!")
-
-    def clean_gear_num(self):
-        if self.cleaned_data['gear_num'] != 1:
-            raise forms.ValidationError("Nope! You are only allowed to check out one piece each!")
-
-    def clean_certifications(self):
-        if self.cleaned_data['certifications'] != "trip":
-            raise forms.ValidationError("Nope! To get certified you need to go on a trip!")
-
-    def clean_broken_gear(self):
-        if self.cleaned_data['broken_gear'] != "tell":
-            raise forms.ValidationError("Nope! All you have to do is tell us so we can fix it!")
+    def clean_quiz(self):
+        for question in self.questions:
+            self.clean()
 
     def clean_staffers(self):
         if self.cleaned_data['staffers'] != "volunteers":
