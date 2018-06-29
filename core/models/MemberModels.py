@@ -31,7 +31,7 @@ class MemberManager(BaseUserManager):
             rfid=rfid,
             date_expires=expiration_date
         )
-
+        member.groups.set([Group.objects.get(name="Just Joined")])
         member.set_password(password)
         member.save(using=self._db)
 
@@ -54,7 +54,7 @@ class MemberManager(BaseUserManager):
         superuser.first_name = "Master"
         superuser.last_name = "Admin"
         superuser.phone_number = '+15555555555'
-        superuser.groups.set(Group.objects.get(name="Admin"))
+        superuser.groups.set([Group.objects.get(name="Admin")])
         superuser.certifications.set(Certification.objects.all())
 
         superuser.save(using=self._db)
@@ -71,7 +71,7 @@ class StafferManager(models.Manager):
         :return: Staffer
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
-        member.groups.add(Group.objects.get(name="Staff"))
+        member.groups.set([Group.objects.get(name="Staff")])
         member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
@@ -86,23 +86,6 @@ class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
     objects = MemberManager()
 
-    status_choices = [
-        ('Member', [
-            (0, "Just Joined"),
-            (1, "Expired Member"),
-            (2, "Active Member"),
-        ],
-         ),
-        ('Staffer', [
-            (3, "Prospective Staffer"),
-            (4, "Expired Staffer"),
-            (5, "Active Staffer"),
-            (6, "Board Member"),
-            (7, "Admin")
-        ],
-         ),
-    ]
-    # status = models.IntegerField(default=0, choices=status_choices)
     groups = models.ManyToManyField(to=Group)
 
     first_name = models.CharField(max_length=50, null=True)
