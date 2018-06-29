@@ -20,7 +20,8 @@ admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Certification, CertificationAdmin)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Staffer)
-admin.site.register(Question, Answer)
+admin.site.register(Question)
+admin.site.register(Answer)
 
 # Now register the new MemberAdmin...
 admin.site.register(Member, MemberAdmin)
