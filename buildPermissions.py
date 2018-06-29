@@ -32,7 +32,7 @@ def build_all():
 
 def build_just_joined():
     """Create all the permissions for the lowest group, of freshly joined members"""
-    just_joined = Group.objects.create("Just Joined")
+    just_joined = Group.objects.create(name="Just Joined")
     all_permissions.append(
         Permission.objects.create(
             codename="view_staffer",
@@ -51,14 +51,14 @@ def build_just_joined():
 
 def build_expired():
     """Create permissions for expired members"""
-    expired = Group.objects.create("Expired")
+    expired = Group.objects.create(name="Expired")
     expired.groups.set(*all_permissions)
     expired.save()
 
 
 def build_member():
     """Create permissions for regular, active members"""
-    member = Group.objects.create("Member")
+    member = Group.objects.create(name="Member")
     all_permissions.append(
         Permission.objects.create(
             codename="rent_gear",
@@ -77,7 +77,7 @@ def build_member():
 
 def build_staffer():
     """Create permissions for regular staffers"""
-    staffer = Group.objects.create("Staffer")
+    staffer = Group.objects.create(name="Staffer")
     all_permissions.append(
         Permission.objects.create(
             codename="add_gear",
@@ -124,7 +124,7 @@ def build_staffer():
 
 def build_board():
     """Create a group of the board members who have extra permissions on a club-wide scale"""
-    board = Group.objects.create("Board")
+    board = Group.objects.create(name="Board")
     all_permissions.append(
         Permission.objects.create(
             codename="add_staffer",
@@ -146,6 +146,6 @@ def build_board():
 
 def build_admin():
     """Create the admin group, which has all possible permissions"""
-    admin = Group.objects.create("Admin")
+    admin = Group.objects.create(name="Admin")
     admin.permissions.set(Permission.objects.all())
     admin.save()
