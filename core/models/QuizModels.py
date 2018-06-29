@@ -20,6 +20,6 @@ class Question(models.Model):
 
     question_text = models.CharField(max_length=100)
     answers = models.ManyToManyField(to=Answer)
-    correct_answer = models.OneToOneField(to=Answer, on_delete=models.CASCADE)
+    correct_answer = models.ForeignKey(to=Answer, on_delete=models.CASCADE, related_name='+')
 
 
