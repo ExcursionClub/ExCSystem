@@ -288,6 +288,6 @@ class MemberChangeForm(forms.ModelForm):
                   'last_name',
                   'phone_number',
                   'rfid',
-                  'status',
+                  'groups',
                   'picture')
 
