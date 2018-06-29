@@ -102,8 +102,13 @@ class MemberFinishForm(forms.ModelForm):
 
         self.quiz_field_names = []
         for question in self.questions:
+
+            # Dynamically insert a choice field for each of the questions
             self.fields[question.name] = forms.ChoiceField(label=question.question_text, choices=question.get_choices())
             self.quiz_field_names.append(question.name)
+
+            # Dynamically insert a function for django to call to validate the answer for each of these fields
+            setattr(self, "clean_{}".format(question.name), self.get_question_cleaner(question.name))
 
     # This meta class allows the django backend to link this for to the model
     class Meta:
@@ -143,13 +148,17 @@ class MemberFinishForm(forms.ModelForm):
             fields_subset[name] = self.fields[name]
         return fields_subset
 
-    def clean_quiz(self):
-        for question in self.questions:
-            self.clean()
+    def get_question_cleaner(self, question_name):
+        """Generic function that validates whether a quiz question was answered correctly"""
 
-    def clean_staffers(self):
-        if self.cleaned_data['staffers'] != "volunteers":
-            raise forms.ValidationError("Nope! All our staffers are just volunteers!")
+        def cleaner():
+            given_answer = self.cleaned_data[question_name]
+            question = Question.objects.get(name=question_name)
+
+            if not question.is_correct(given_answer):
+                raise forms.ValidationError(question.error_message)
+
+        return cleaner
 
     def save(self, commit=True):
         # We will always commit the save, so make sure m2m fields are always saved
