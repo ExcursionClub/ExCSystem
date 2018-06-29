@@ -162,6 +162,13 @@ class Member(AbstractBaseUser):
         else:
             return self.email
 
+    def get_group(self):
+        """Get's a string representing this members group membership"""
+        group_name = ""
+        for group in self.groups.all():
+            group_name += group.name + " "
+        return group_name
+
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
         if self.groups.get(name="Admin"):
