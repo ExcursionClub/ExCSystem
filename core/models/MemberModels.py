@@ -3,7 +3,7 @@ import os
 from django.db import models
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -51,10 +51,10 @@ class MemberManager(BaseUserManager):
 
         # Add the rest of the data about the superuser
         superuser.is_admin = True
-        superuser.status = 7
         superuser.first_name = "Master"
         superuser.last_name = "Admin"
         superuser.phone_number = '+15555555555'
+        superuser.groups.set(Group.objects.get(name="Admin"))
         superuser.certifications.set(Certification.objects.all())
 
         superuser.save(using=self._db)
@@ -71,7 +71,7 @@ class StafferManager(models.Manager):
         :return: Staffer
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
-        member.status = 5
+        member.groups.add(Group.objects.get(name="Staff"))
         member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
@@ -102,7 +102,8 @@ class Member(AbstractBaseUser):
         ],
          ),
     ]
-    status = models.IntegerField(default=0, choices=status_choices)
+    # status = models.IntegerField(default=0, choices=status_choices)
+    groups = models.ManyToManyField(to=Group)
 
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
@@ -129,19 +130,12 @@ class Member(AbstractBaseUser):
     REQUIRED_FIELDS = ['rfid', 'date_expires']
 
     @property
-    def can_rent(self):
-        """
-        Property that allows a quick and easy check to see if the Member is allowed to rent out gear
-        """
-        return self.status >= 2
-
-    @property
     def is_staff(self):
         """
         Property that allows and easy check for whether the member is a staffer
         """
         # If the member is an active staffer or better, then they are given staff privileges
-        return self.status >= 5
+        return bool(self.groups.get(name='Staff'))
 
     def has_name(self):
         """Check whether the name of this member has been set"""
@@ -170,17 +164,14 @@ class Member(AbstractBaseUser):
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
-        if self.status == 7:
+        if self.groups.get(name="Admin"):
             self.is_admin = True
         else:
             self.is_admin = False
 
     def expire(self):
         """Expires this member's membership"""
-        if self.status == 2 or self.status == 3:
-            self.status = 1
-        elif self.status >= 5:
-            self.status = 4
+        self.groups.set(Group.objects.get(name="Expired"))
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""

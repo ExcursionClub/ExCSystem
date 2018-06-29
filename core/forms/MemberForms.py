@@ -133,7 +133,7 @@ class MemberUpdateContactForm(forms.ModelForm):
         fields = ('email', 'phone_number')
 
 
-class MemberChangeStatusForm(forms.ModelForm):
+class MemberChangeGroupsForm(forms.ModelForm):
     """
     Form to change the status of a member, and dispatch any additional data requirements
 
@@ -148,7 +148,7 @@ class MemberChangeStatusForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('status', )
+        fields = ('groups', )
 
 
 class StafferDataForm(forms.ModelForm):

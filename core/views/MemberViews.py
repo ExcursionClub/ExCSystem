@@ -5,7 +5,7 @@ from django.utils import timezone
 from core.models.MemberModels import Member
 
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
-    MemberChangeRFIDForm, MemberChangeStatusForm, StafferDataForm)
+                                    MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
 
 
 def get_default_context(obj, context):
