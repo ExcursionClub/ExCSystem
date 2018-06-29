@@ -16,11 +16,11 @@ def validate_auth(authorizer):
         raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.name))
 
 
-def validate_can_checkout(member):
+def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
-    if not member.can_rent:
+    if not member.has_perm('can_rent'):
         raise ValidationError("{} is not allowed to check out gear, because their status is {}".format(
-            member.get_full_name(), member.status))
+            member.get_full_name(), member.get_group()))
 
 
 def validate_available(gear):
@@ -101,7 +101,7 @@ class TransactionManager(models.Manager):
 
         # Run all the necessary validations
         validate_available(gear)
-        validate_can_checkout(member)
+        validate_can_rent(member)
         validate_required_certs(member, gear)
 
         # If everything validated, we can try to make the transaction
