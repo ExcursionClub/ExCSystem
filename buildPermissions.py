@@ -20,113 +20,132 @@ transaction_type = ContentType.objects.get_for_model(Transaction)
 gear_type = ContentType.objects.get_for_model(Gear)
 
 
-# Create all the permissions for the lowest group, of freshly joined members
-just_joined = Group.objects.create("Just Joined")
-all_permissions.append(
-    Permission.objects.create(
-        codename="view_staffer",
-        name="Can see staffer information",
-        content_type=staffer_type)
-)
-all_permissions.append(
-    Permission.objects.create(
-        codename="check_availability_gear",
-        name="Check to see if the club has gear available",
-        content_type=gear_type)
-)
-just_joined.permissions.set(*all_permissions)
-just_joined.save()
-
-# Create permissions for expired members
-expired = Group.objects.create("Expired")
-expired.groups.set(*all_permissions)
-expired.save()
+def build_all():
+    """Build all the groups. Must be done in ascending order of power"""
+    build_just_joined()
+    build_expired()
+    build_member()
+    build_staffer()
+    build_board()
+    build_admin()
 
 
-# Create permissions for regular, active members
-member = Group.objects.create("Member")
-all_permissions.append(
-    Permission.objects.create(
-        codename="rent_gear",
-        name="Allowed to rent gear",
-        content_type=gear_type)
-)
-all_permissions.append(
-    Permission.objects.create(
-        codename="view_gear",
-        name="Can see and search the gear list",
-        content_type=gear_type)
-)
-member.permissions.set(*all_permissions)
-member.save()
+def build_just_joined():
+    """Create all the permissions for the lowest group, of freshly joined members"""
+    just_joined = Group.objects.create("Just Joined")
+    all_permissions.append(
+        Permission.objects.create(
+            codename="view_staffer",
+            name="Can see staffer information",
+            content_type=staffer_type)
+    )
+    all_permissions.append(
+        Permission.objects.create(
+            codename="check_availability_gear",
+            name="Check to see if the club has gear available",
+            content_type=gear_type)
+    )
+    just_joined.permissions.set(*all_permissions)
+    just_joined.save()
 
 
-# Create permissions for regular staffers
-staffer = Group.objects.create("Staffer")
-all_permissions.append(
-    Permission.objects.create(
-        codename="add_gear",
-        name="Can add a piece of gear",
-        content_type=gear_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="change_gear",
-        name="Can change the info on gear",
-        content_type=gear_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="checkout_gear",
-        name="Can check gear out to somone else",
-        content_type=gear_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="checkin_gear",
-        name="Can check returned gear back in",
-        content_type=gear_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="view_member",
-        name="Can view all member info",
-        content_type=member_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="add_member",
-        name="Can add new members",
-        content_type=member_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="change_info_member",
-        name="Can change member personal information",
-        content_type=member_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="change_membership",
-        name="Can change member membership",
-        content_type=member_type))
-staffer.permissions.set(*all_permissions)
-staffer.save()
+def build_expired():
+    """Create permissions for expired members"""
+    expired = Group.objects.create("Expired")
+    expired.groups.set(*all_permissions)
+    expired.save()
 
 
-# Create a group of the board members who have extra permissions on a club-wide scale
-board = Group.objects.create("Board")
-all_permissions.append(
-    Permission.objects.create(
-        codename="add_staffer",
-        name="Can promote members to staffers",
-        content_type=staffer_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="add_department",
-        name="Can add departments to the club",
-        content_type=department_type))
-all_permissions.append(
-    Permission.objects.create(
-        codename="change_member",
-        name="Can do arbitrary changes to change member",
-        content_type=member_type))
+def build_member():
+    """Create permissions for regular, active members"""
+    member = Group.objects.create("Member")
+    all_permissions.append(
+        Permission.objects.create(
+            codename="rent_gear",
+            name="Allowed to rent gear",
+            content_type=gear_type)
+    )
+    all_permissions.append(
+        Permission.objects.create(
+            codename="view_gear",
+            name="Can see and search the gear list",
+            content_type=gear_type)
+    )
+    member.permissions.set(*all_permissions)
+    member.save()
 
 
-# Create the admin group, which has all possible permissions
-admin = Group.objects.create("Admin")
-admin.permissions.set(Permission.objects.all())
-admin.save()
+def build_staffer():
+    """Create permissions for regular staffers"""
+    staffer = Group.objects.create("Staffer")
+    all_permissions.append(
+        Permission.objects.create(
+            codename="add_gear",
+            name="Can add a piece of gear",
+            content_type=gear_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="change_gear",
+            name="Can change the info on gear",
+            content_type=gear_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="checkout_gear",
+            name="Can check gear out to somone else",
+            content_type=gear_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="checkin_gear",
+            name="Can check returned gear back in",
+            content_type=gear_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="view_member",
+            name="Can view all member info",
+            content_type=member_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="add_member",
+            name="Can add new members",
+            content_type=member_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="change_info_member",
+            name="Can change member personal information",
+            content_type=member_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="change_membership",
+            name="Can change member membership",
+            content_type=member_type))
+    staffer.permissions.set(*all_permissions)
+    staffer.save()
+
+
+def build_board():
+    """Create a group of the board members who have extra permissions on a club-wide scale"""
+    board = Group.objects.create("Board")
+    all_permissions.append(
+        Permission.objects.create(
+            codename="add_staffer",
+            name="Can promote members to staffers",
+            content_type=staffer_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="add_department",
+            name="Can add departments to the club",
+            content_type=department_type))
+    all_permissions.append(
+        Permission.objects.create(
+            codename="change_member",
+            name="Can do arbitrary changes to change member",
+            content_type=member_type))
+    board.permissions.set(*all_permissions)
+    board.save()
+
+
+def build_admin():
+    """Create the admin group, which has all possible permissions"""
+    admin = Group.objects.create("Admin")
+    admin.permissions.set(Permission.objects.all())
+    admin.save()
