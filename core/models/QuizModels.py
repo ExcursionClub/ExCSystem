@@ -37,7 +37,7 @@ class Question(models.Model):
         """Get all the answer options as a list of tuples for the choices attribute of a form or model field"""
         choices = []
         for ans in self.answers.all():
-            choices.append(ans.as_choice)
+            choices.append(ans.as_choice())
         return choices
 
     def is_correct(self, selected_answer_phrase):
