@@ -7,7 +7,7 @@ from core.models.MemberModels import Member
 
 from ExCSystem.settings.base import WEB_BASE
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
-    MemberChangeRFIDForm, MemberChangeStatusForm, StafferDataForm)
+                                    MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
 
 
 def get_default_context(obj, context):
