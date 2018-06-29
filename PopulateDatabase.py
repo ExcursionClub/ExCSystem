@@ -16,6 +16,7 @@ from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.QuizModels import Question, Answer
 from core.models.TransactionModels import Transaction
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
@@ -138,11 +139,11 @@ for i in bar(range(total_number_members)):
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
     if number_new < i < (number_new + number_expired):
-        member.status = 2
+        member.groups.set([Group.objects.get(name="Expired")])
         member.save()
     # The rest of the members should be active
-    else:
-        member.status = 1
+    elif i > (number_new + number_expired):
+        member.groups.set([Group.objects.get(name="Active")])
         member.save()
 print('')
 print('Made members')
