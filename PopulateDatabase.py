@@ -121,7 +121,7 @@ for i in bar(range(total_number_members)):
         member.save()
     # The rest of the members should be active
     elif i > (number_new + number_expired):
-        member.groups.set([Group.objects.get(name="Active")])
+        member.groups.set([Group.objects.get(name="Member")])
         member.save()
 print('')
 print('Made members')
