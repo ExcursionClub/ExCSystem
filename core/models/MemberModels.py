@@ -114,10 +114,10 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/",
+        upload_to="ProfilePics/%Y/",
         null=True
     )
-    phone_number = PhoneNumberField(unique=True, null=True)
+    phone_number = PhoneNumberField(unique=False, null=True)
 
     date_joined = models.DateField(auto_now_add=True)
     date_expires = models.DateField(null=False)

@@ -1,9 +1,11 @@
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import UpdateView
 from django.utils import timezone
+from django.urls import reverse
 
 from core.models.MemberModels import Member
 
+from ExCSystem.settings.base import WEB_BASE
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
     MemberChangeRFIDForm, MemberChangeStatusForm, StafferDataForm)
 
@@ -39,12 +41,16 @@ class MemberDetailView(DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class MemberFinishView(FormView):
+class MemberFinishView(UpdateView):
 
     model = Member
     form_class = MemberFinishForm
+    template_name_suffix = "_finish"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context = get_default_context(self, context)
         return context
+
+    def get_success_url(self):
+        return WEB_BASE + reverse("admin:core_member_detail", kwargs={'pk': self.object.pk})

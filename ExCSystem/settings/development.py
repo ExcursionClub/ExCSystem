@@ -9,3 +9,10 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+MEDIA_URL = '/media/'
+
+# Email host settings
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1024
+

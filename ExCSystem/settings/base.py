@@ -2,7 +2,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 
 # Quick-start development settings - unsuitable for production
@@ -91,6 +91,8 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
+PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'US/Pacific'
@@ -108,10 +110,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-
-# Email host settings
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = 1024
 
 # Base address of where the page is available
 WEB_BASE = "http://127.0.0.1:8000"

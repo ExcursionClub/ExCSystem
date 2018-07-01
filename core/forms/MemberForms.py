@@ -1,10 +1,15 @@
+from collections import OrderedDict
+
 from django import forms
 from django.urls import reverse
 from django.utils.timezone import timedelta
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from ExCSystem.settings.base import WEB_BASE
 from core.models import Member, Staffer
+from core.models.QuizModels import Question, Answer
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
 
@@ -84,9 +89,90 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
+    member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
+
+    # Instantiate the non-default member data fields
+    phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
+
+    # Instantiate the quiz fields
+    questions = Question.objects.filter(usage="membership")
+
+    def __init__(self, *args, **kwargs):
+        super(MemberFinishForm, self).__init__(*args, **kwargs)
+
+        self.quiz_field_names = []
+        for question in self.questions:
+
+            # Dynamically insert a choice field for each of the questions
+            self.fields[question.name] = forms.ChoiceField(label=question.question_text, choices=question.get_choices())
+            self.quiz_field_names.append(question.name)
+
+            # Dynamically insert a function for django to call to validate the answer for each of these fields
+            setattr(self, "clean_{}".format(question.name), self.get_question_cleaner(question.name))
+
+    # This meta class allows the django backend to link this for to the model
     class Meta:
         model = Member
         fields = ('first_name', 'last_name', 'phone_number', 'picture')
+
+    def as_table_member(self):
+        """Make it possible to get the HTML of just the member information section of this form"""
+        return self.as_table_subset(self.member_field_names)
+
+    def as_table_quiz(self):
+        """Make it possible to get the HTML of just the quiz information section of this form"""
+        return self.as_table_subset(self.quiz_field_names)
+
+    def as_table_subset(self, subset_field_names):
+        """Run the forms html generator, temporarily substituting a subset of the fields for all fields"""
+        original_fields = self.fields
+        html = ''
+
+        try:
+            self.fields = self.get_fields_subset(subset_field_names)
+            html = self._html_output(
+                normal_row='<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>',
+                error_row='<tr><td colspan="2"><font color="red">%s</font></td></tr>',
+                row_ender='</td></tr>',
+                help_text_html='<br /><span class="helptext">%s</span>',
+                errors_on_separate_row=False
+            )
+        finally:
+            self.fields = original_fields
+
+        return html
+
+    def get_fields_subset(self, field_name_list):
+        fields_subset = OrderedDict()
+        for name in field_name_list:
+            fields_subset[name] = self.fields[name]
+        return fields_subset
+
+    def get_question_cleaner(self, question_name):
+        """Generic function that validates whether a quiz question was answered correctly"""
+
+        def cleaner():
+            given_answer = self.cleaned_data[question_name]
+            question = Question.objects.get(name=question_name)
+
+            if not question.is_correct(given_answer):
+                raise forms.ValidationError(question.error_message)
+
+        return cleaner
+
+    def save(self, commit=True):
+        # We will always commit the save, so make sure m2m fields are always saved
+        self.save_m2m = self._save_m2m
+
+        member = self.instance
+        member.first_name = self.cleaned_data['first_name']
+        member.last_name = self.cleaned_data['last_name']
+        member.phone_number = self.cleaned_data['phone_number']
+        member.picture = self.cleaned_data['picture']
+        member.status = 2
+
+        member.save()
+        return member
 
 
 class MemberChangeRFIDForm(forms.ModelForm):
