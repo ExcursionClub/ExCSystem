@@ -10,7 +10,7 @@ class Answer(models.Model):
     answer_phrase.description = "Short one word summary of the answer to be used by the system"
 
     def __str__(self):
-        return "{phrase}: {text}".format(phrase=self.answer_phrase, text=self.answer_text)
+        return f'{self.answer_phrase}: {self.answer_text}'
 
     def as_choice(self):
         """Return a tuple, as one choice tuple for the choices attribute for a char field"""
