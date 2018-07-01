@@ -118,10 +118,11 @@ class Member(AbstractBaseUser):
     @property
     def is_staff(self):
         """
-        Property that allows and easy check for whether the member is a staffer
+        Property that is used by django to determine whether a user is allowed to log in to the admin
         """
-        # If the member is an active staffer or better, then they are given staff privileges
-        return bool(self.groups.get(name='Staff'))
+        just_joined = self.groups.get(name='Just Joined')
+        expired = self.groups.get(name='Expired')
+        return not (just_joined or expired)
 
     def has_name(self):
         """Check whether the name of this member has been set"""
