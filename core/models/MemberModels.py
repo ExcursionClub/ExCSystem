@@ -29,12 +29,10 @@ class MemberManager(BaseUserManager):
         member = self.model(
             email=self.normalize_email(email),
             rfid=rfid,
-            date_expires=expiration_date
+            date_expires=expiration_date,
+            group=Group.objects.get(name="Just Joined")
         )
         member.set_password(password)
-        member.save(using=self._db)
-
-        member.groups.set([Group.objects.get(name="Just Joined")])
         member.save(using=self._db)
 
         return member
@@ -57,10 +55,9 @@ class MemberManager(BaseUserManager):
         superuser.last_name = "Admin"
         superuser.phone_number = '+15555555555'
         superuser.certifications.set(Certification.objects.all())
+        superuser.group = Group.objects.get(name='Admin')
         superuser.save(using=self._db)
 
-        superuser.groups.set([Group.objects.get(name="Admin")])
-        superuser.save(using=self._db)
         return superuser
 
 
@@ -74,7 +71,7 @@ class StafferManager(models.Manager):
         :return: Staffer
         """
         exc_email = "{}@excursionclubucsb.org".format(staffname)
-        member.groups.set([Group.objects.get(name="Staff")])
+        member.group = Group.objects.get(name="Staff")
         member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
@@ -89,7 +86,7 @@ class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
     objects = MemberManager()
 
-    groups = models.ManyToManyField(to=Group)
+    group = models.ForeignKey(to=Group, on_delete=models.PROTECT)
 
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
@@ -120,10 +117,10 @@ class Member(AbstractBaseUser):
         """
         Property that is used by django to determine whether a user is allowed to log in to the admin
         """
-        member_group = self.groups.filter(name='Member')
-        staffer_group = self.groups.filter(name='Staff')
-        board_group = self.groups.filter(name='Board')
-        admin_group = self.groups.filter(name='Admin')
+        member_group = self.group.filter(name='Member')
+        staffer_group = self.group.filter(name='Staff')
+        board_group = self.group.filter(name='Board')
+        admin_group = self.group.filter(name='Admin')
 
         can_login = member_group or staffer_group or board_group or admin_group
         return can_login
@@ -131,9 +128,9 @@ class Member(AbstractBaseUser):
     @property
     def is_staffer(self):
         """Returns true if this member has staffer privileges"""
-        staffer_group = self.groups.filter(name='Staff')
-        board_group = self.groups.filter(name='Board')
-        admin_group = self.groups.filter(name='Admin')
+        staffer_group = self.group.filter(name='Staff')
+        board_group = self.group.filter(name='Board')
+        admin_group = self.group.filter(name='Admin')
         return staffer_group or board_group or admin_group
 
     def has_name(self):
@@ -164,20 +161,20 @@ class Member(AbstractBaseUser):
     def get_group(self):
         """Get's a string representing this members group membership"""
         group_name = ""
-        for group in self.groups.all():
+        for group in self.group.all():
             group_name += group.name + " "
         return group_name
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
-        if self.groups.get(name="Admin"):
+        if self.group.get(name="Admin"):
             self.is_admin = True
         else:
             self.is_admin = False
 
     def expire(self):
         """Expires this member's membership"""
-        self.groups.set(Group.objects.get(name="Expired"))
+        self.group.set(Group.objects.get(name="Expired"))
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""
