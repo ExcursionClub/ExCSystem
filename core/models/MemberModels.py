@@ -120,16 +120,16 @@ class Member(AbstractBaseUser):
         """
         Property that is used by django to determine whether a user is allowed to log in to the admin
         """
-        just_joined = self.groups.get(name='Just Joined')
-        expired = self.groups.get(name='Expired')
+        just_joined = self.groups.filter(name='Just Joined')
+        expired = self.groups.filter(name='Expired')
         return not (just_joined or expired)
 
     @property
     def is_staffer(self):
         """Returns true if this member has staffer privileges"""
-        staffer_group = self.groups.get(name='Staff')
-        board_group = self.groups.get(name='Board')
-        admin_group = self.groups.get(name='Admin')
+        staffer_group = self.groups.filter(name='Staff')
+        board_group = self.groups.filter(name='Board')
+        admin_group = self.groups.filter(name='Admin')
         return staffer_group or board_group or admin_group
 
     def has_name(self):
