@@ -124,6 +124,14 @@ class Member(AbstractBaseUser):
         expired = self.groups.get(name='Expired')
         return not (just_joined or expired)
 
+    @property
+    def is_staffer(self):
+        """Returns true if this member has staffer privileges"""
+        staffer_group = self.groups.get(name='Staff')
+        board_group = self.groups.get(name='Board')
+        admin_group = self.groups.get(name='Admin')
+        return staffer_group or board_group or admin_group
+
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
