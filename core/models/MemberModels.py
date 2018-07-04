@@ -117,21 +117,17 @@ class Member(AbstractBaseUser):
         """
         Property that is used by django to determine whether a user is allowed to log in to the admin
         """
-        member_group = self.group.filter(name='Member')
-        staffer_group = self.group.filter(name='Staff')
-        board_group = self.group.filter(name='Board')
-        admin_group = self.group.filter(name='Admin')
-
-        can_login = member_group or staffer_group or board_group or admin_group
-        return can_login
+        return self.group.name == "Member" \
+            or self.group.name == "Staff" \
+            or self.group.name == "Board" \
+            or self.group.name == "Admin"
 
     @property
     def is_staffer(self):
         """Returns true if this member has staffer privileges"""
-        staffer_group = self.group.filter(name='Staff')
-        board_group = self.group.filter(name='Board')
-        admin_group = self.group.filter(name='Admin')
-        return staffer_group or board_group or admin_group
+        return self.group.name == "Staff" \
+            or self.group.name == "Board" \
+            or self.group.name == "Admin"
 
     def has_name(self):
         """Check whether the name of this member has been set"""
@@ -160,21 +156,15 @@ class Member(AbstractBaseUser):
 
     def get_group(self):
         """Get's a string representing this members group membership"""
-        group_name = ""
-        for group in self.group.all():
-            group_name += group.name + " "
-        return group_name
+        return self.group.name
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
-        if self.group.get(name="Admin"):
-            self.is_admin = True
-        else:
-            self.is_admin = False
+        self.is_admin = self.group.name == "Admin"
 
     def expire(self):
         """Expires this member's membership"""
-        self.group.set(Group.objects.get(name="Expired"))
+        self.group = Group.objects.get(name="Expired")
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""
