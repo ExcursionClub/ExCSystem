@@ -117,11 +117,11 @@ for i in bar(range(total_number_members)):
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
     if number_new < i < (number_new + number_expired):
-        member.groups.set([Group.objects.get(name="Expired")])
+        member.group = Group.objects.get(name="Expired")
         member.save()
     # The rest of the members should be active
     elif i > (number_new + number_expired):
-        member.groups.set([Group.objects.get(name="Member")])
+        member.group = Group.objects.get(name="Member")
         member.save()
 print('')
 print('Made members')
