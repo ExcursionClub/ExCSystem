@@ -1,0 +1,33 @@
+{ 
+    "Just Joined": {
+        "core" : [
+            ["view_staffer", "Can see staffer information"],
+            ["check_availability_gear", "Check to see if the club has gear available"]
+        ]
+    },
+    "Expired": {
+    },
+    "Member": {
+        "kiosk": [
+            ["rent_gear", "Allowed to rent gear"],
+        ],
+        "core": [
+            ["view_gear", "Can see and search the gear list"]
+        ]
+    },
+    "Staffer": {
+        "core": [
+            ["add_gear", "Can add a piece of gear"],
+            ["change_gear", "Can change the info on gear"],
+            ["checkout_gear", "Can check gear out to somone else"],
+            ["checkin_gear", "Can check returned gear back in"],
+            ["view_member", "Can view all member info"],
+            ["add_member", "Can add new members"],
+            ["change_member", "Can change member info"],
+        ]
+        
+    },
+    "Board": {
+    },
+    "Admin": {}
+}

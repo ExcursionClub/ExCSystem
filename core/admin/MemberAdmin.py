@@ -17,8 +17,8 @@ class MemberAdmin(BaseUserAdmin):
     # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'status')
-    list_filter = ('status',)
+    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'group')
+    list_filter = ('group',)
 
     add_fieldsets = (
         (None, {
@@ -37,7 +37,7 @@ class MemberAdmin(BaseUserAdmin):
         }),
         ('Club  Info', {
             'classes': ('wide',),
-            'fields': ('rfid', 'status',)
+            'fields': ('rfid', 'groups',)
         })
     )
 
