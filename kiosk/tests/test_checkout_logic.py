@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.utils.timezone import timedelta
+from django.core.exceptions import ValidationError
 
 from core.models.MemberModels import Member
 from core.models.DepartmentModels import Department
@@ -42,4 +43,16 @@ class CheckoutLogicTest(TestCase):
         gear = Gear.objects.get(rfid='0123456789')
         self.assertEqual(gear.is_available(), True)
         do_checkout(ADMIN_RFID, MEMBER_RFID, gear.rfid)
+        gear = Gear.objects.get(rfid='0123456789')
         self.assertEqual(gear.is_rented_out(), True)
+
+    def test_checkout_to_unauthorized_member(self):
+        member = Member.objects.get(rfid=MEMBER_RFID)
+        member.status = 0
+        member.save()
+        gear = Gear.objects.get(rfid='0123456789')
+        self.assertEqual(gear.is_available(), True)
+        with self.assertRaises(ValidationError):
+            do_checkout(ADMIN_RFID, MEMBER_RFID, gear.rfid)
+        gear = Gear.objects.get(rfid='0123456789')
+        self.assertEqual(gear.is_rented_out(), False)
