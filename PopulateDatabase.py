@@ -108,7 +108,6 @@ def save_question(question_name=None, question_text=None, choices=None, correct_
     question.answers.add(*answers)
     question.save()
 
-
 # Build all the groups and permissions
 buildPermissions.build_all()
 
