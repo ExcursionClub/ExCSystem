@@ -134,9 +134,14 @@ class Member(AbstractBaseUser):
         return self.first_name and self.last_name
 
     def has_permission(self, permission_name):
-        all_perms = self.group.permissions.all()
-        this_perm = Permission.objects.get(name=permission_name)
-        return this_perm in all_perms
+        """Loop through all the permissions of the group associated with this member to see if they have this one"""
+        try:
+            self.group.permissions.all().get(name=permission_name)
+        except Permission.DoesNotExist:
+            return False
+        else:
+            return True
+
 
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
