@@ -1,4 +1,4 @@
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
@@ -136,7 +136,8 @@ def build_admin():
 def add_permission(codename=None, name=None, content_type=None):
     """Add the permission, only creating if it does not already exist"""
     try:
-        permission = Permission.objects.create(codename=codename, name=name, content_type=content_type)
+        with transaction.atomic():  # Resolves a quirk with how django handles the test database
+            permission = Permission.objects.create(codename=codename, name=name, content_type=content_type)
     except IntegrityError:
         permission = Permission.objects.get(codename=codename)
     
