@@ -26,7 +26,7 @@ def get_default_context(obj, context):
     return context
 
 
-class MemberDetailView(DetailView, UserPassesTestMixin):
+class MemberDetailView(UserPassesTestMixin, DetailView):
     """Simple view that displays the all details of a user and provides access to specific change forms"""
 
     model = Member
@@ -36,7 +36,7 @@ class MemberDetailView(DetailView, UserPassesTestMixin):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
         member_to_view = self.get_object()
         is_self = self.request.user.rfid == member_to_view.rfid
-        is_staffer = self.request.user.is_staffer()
+        is_staffer = self.request.user.is_staffer
         return is_staffer or is_self
 
     def get_context_data(self, **kwargs):
