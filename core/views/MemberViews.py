@@ -34,8 +34,9 @@ class MemberDetailView(DetailView, UserPassesTestMixin):
 
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
+        member_to_view = self.get_object()
+        is_self = self.request.user.rfid == member_to_view.rfid
         is_staffer = self.request.user.is_staffer()
-        is_self = self.request.user.rfid == self.get_object().rfid
         return is_staffer or is_self
 
     def get_context_data(self, **kwargs):
