@@ -32,6 +32,9 @@ class MemberDetailView(UserPassesTestMixin, DetailView):
     model = Member
     template_name = "admin/core/member/member_detail.html"
 
+    raise_exception = True
+    permission_denied_message = "You are not allowed to view another member's personal details!"
+
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
         member_to_view = self.get_object()
