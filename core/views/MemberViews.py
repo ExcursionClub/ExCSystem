@@ -52,11 +52,20 @@ class MemberDetailView(UserPassesTestMixin, DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class MemberFinishView(UpdateView):
+class MemberFinishView(UserPassesTestMixin, UpdateView):
 
     model = Member
     form_class = MemberFinishForm
     template_name_suffix = "_finish"
+
+    raise_exception = True
+    permission_denied_message = "You are not allowed complete the sign up process for anyone but yourself!"
+
+    def test_func(self):
+        """Only the member themselves is allowed to see the member finish page"""
+        member_to_finish = self.get_object()
+        is_self = self.request.user.rfid == member_to_finish.rfid
+        return is_self
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
