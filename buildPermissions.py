@@ -111,6 +111,10 @@ def build_board():
     """Create a group of the board members who have extra permissions on a club-wide scale"""
     board = Group.objects.create(name="Board")
     add_permission(
+        codename="view_all_gear",
+        name="Can view gear with any status",
+        content_type=gear_type)
+    add_permission(
         codename="add_staffer",
         name="Can promote members to staffers",
         content_type=staffer_type)
