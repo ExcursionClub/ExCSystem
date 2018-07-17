@@ -3,7 +3,7 @@ import os
 from django.db import models
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -132,6 +132,11 @@ class Member(AbstractBaseUser):
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
+
+    def has_permission(self, permission_name):
+        all_perms = self.group.permissions.all()
+        this_perm = Permission.objects.get(name=permission_name)
+        return this_perm in all_perms
 
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
