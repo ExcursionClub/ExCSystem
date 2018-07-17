@@ -4,9 +4,10 @@ from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from core.models.MemberModels import Member
-
 from ExCSystem.settings.base import WEB_BASE
+
+from core.views.ViewList import RestrictedViewList
+from core.models.MemberModels import Member
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
                                     MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
 
@@ -24,6 +25,20 @@ def get_default_context(obj, context):
     context['has_change_permission'] = False
     context['has_add_permission'] = False
     return context
+
+
+class MemberListView(RestrictedViewList):
+
+    def can_view_all(self):
+
+        # A staffer can see all members
+        if self.request.user.is_staffer:
+            return True
+
+        # Non-staffers should only be able to see themselves
+        else:
+            self.restriction_filters["pk__exact"] = self.request.user.pk
+            return False
 
 
 class MemberDetailView(UserPassesTestMixin, DetailView):

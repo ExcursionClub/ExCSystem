@@ -4,8 +4,7 @@ from django.urls import path, reverse
 from functools import update_wrapper
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.ViewList import ViewList
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, )
+from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, )
 
 
 # Replace the option to create users with the option to create members
@@ -46,7 +45,7 @@ class MemberAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
     def get_changelist(self, request, **kwargs):
-        return ViewList
+        return MemberListView
 
     def get_urls(self):
         """Get all the urls admin related urls for member. Overridden here to add the detail view url"""
