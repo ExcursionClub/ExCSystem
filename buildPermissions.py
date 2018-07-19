@@ -9,8 +9,10 @@ from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
 
 
-# As permissions are created, they are appended here. Then, all these permissions are appended to the next group. That
-# way, every group also contains the permissions of all the lower groups
+"""
+As permissions are created, they are appended here. Then, all these permissions are appended to the next group. That
+way, every group also contains the permissions of all the lower groups
+"""
 all_permissions = []
 
 certification_type = ContentType.objects.get_for_model(Certification)
@@ -147,3 +149,4 @@ def add_permission(codename=None, name=None, content_type=None):
     
     all_permissions.append(permission)
     return permission
+
