@@ -79,8 +79,7 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         """Only the member themselves is allowed to see the member finish page"""
         member_to_finish = self.get_object()
-        is_self = self.request.user.rfid == member_to_finish.rfid
-        return is_self
+        return self.request.user.rfid == member_to_finish.rfid
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
