@@ -142,7 +142,6 @@ class Member(AbstractBaseUser):
         else:
             return True
 
-
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
         if self.has_name():
@@ -185,16 +184,6 @@ class Member(AbstractBaseUser):
         template = template_file.read()
         body = template.format(finish_signup_url=finish_signup_url)
         self.send_email(title, body, from_email='membership@excursionclubucsb.org')
-
-    def has_perm(self, perm, obj=None):
-        """Does the user have a specific permission?"""
-        # Simplest possible answer: Yes, always
-        return True
-
-    def has_module_perms(self, app_label):
-        """Does the user have permissions to view the app `app_label`?"""
-        # Simplest possible answer: Yes, always
-        return True
 
 
 class Staffer(models.Model):
