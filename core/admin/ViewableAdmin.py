@@ -1,5 +1,9 @@
+from functools import update_wrapper
+from django.urls import path
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
+from django.views.generic.detail import DetailView
+
 from core.views.ViewList import ViewList
 
 
@@ -9,6 +13,11 @@ class ViewableModelAdmin(ModelAdmin):
     """
 
     list_view = ViewList
+    detail_view_class = DetailView
+
+    @property
+    def detail_view(self):
+        return self.detail_view_class.as_view()
 
     def has_view_permission(self, request):
         opts = self.opts
@@ -30,3 +39,21 @@ class ViewableModelAdmin(ModelAdmin):
 
     def get_changelist(self, request, **kwargs):
         return self.list_view
+
+    def get_urls(self):
+
+        urlpatterns = super().get_urls()
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+
+            wrapper.model_admin = self
+            return update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        view_urls = [
+            path('<path:object_id>/detail/', wrap(self.detail_view), name='%s_%s_detail' % info),
+        ]
+        return urlpatterns + view_urls

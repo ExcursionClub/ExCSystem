@@ -45,35 +45,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     ordering = ('first_name',)
     filter_horizontal = ()
     list_view = MemberListView
-
-    def get_urls(self):
-        """Get all the urls admin related urls for member. Overridden here to add the detail view url"""
-
-        # Using this wrapper to call the view allows us to check permissions
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view)(*args, **kwargs)
-            wrapper.model_admin = self
-            return update_wrapper(wrapper, view)
-
-        # Get all the urls automatically generated for a admin view of a model by django
-        urls = super().get_urls()
-        app_label = self.model._meta.app_label
-        model_name = self.model._meta.model_name
-
-        # Setup all the additional urls we want
-        my_urls = [
-            path('<int:pk>/detail/',
-                 wrap(MemberDetailView.as_view()),
-                 name='{app}_{model}_detail'.format(app=app_label, model=model_name)),
-
-            path('<int:pk>/finish/',
-                 wrap(MemberFinishView.as_view()),
-                 name='{app}_{model}_finish'.format(app=app_label, model=model_name))
-        ]
-
-        # Return all of our newly created urls along with all of the defaults
-        return my_urls + urls
+    detail_view = MemberDetailView
 
     def response_add(self, request, obj, post_url_continue=None):
         """Redirect to the detail page after saving the new member, unless we're adding another"""

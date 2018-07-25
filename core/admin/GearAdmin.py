@@ -13,4 +13,5 @@ class GearAdmin(ViewableModelAdmin):
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
     list_view = GearViewList
+    detail_view_class = GearDetailView
 
