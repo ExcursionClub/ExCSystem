@@ -159,3 +159,11 @@ class CheckoutLogicTest(TestCase):
             do_checkin('0000010002',GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_rented_out(), True)
+
+    def test_checkin_of_already_returned_gear(self):
+        """Test checkin of available gear by valid staffer is fine"""
+        gear = Gear.objects.get(rfid=GEAR_RFID)
+        self.assertEqual(gear.is_available(), True)
+        do_checkin(ADMIN_RFID,GEAR_RFID)
+        gear = Gear.objects.get(rfid=GEAR_RFID)
+        self.assertEqual(gear.is_available(), True)
