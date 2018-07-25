@@ -12,6 +12,7 @@ class TransactionListView(RestrictedViewList):
         self.request.user.has_permission("view_all_transactions")
 
     def set_restriction_filters(self):
+        """If a member cannot see all transactions, they can only see those related to themselves"""
         self.restriction_filters["member_id__exact"] = self.request.user.pk
 
 
