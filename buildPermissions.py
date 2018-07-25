@@ -94,6 +94,10 @@ def build_staffer():
         name="Can view all member info",
         content_type=member_type)
     add_permission(
+        codename="view_all_transactions",
+        name="Can see all the gear transactions ever created",
+        content_type=transaction_type)
+    add_permission(
         codename="add_member",
         name="Can add new members",
         content_type=member_type)
