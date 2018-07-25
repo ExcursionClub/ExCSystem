@@ -3,8 +3,7 @@ from django.views.generic import RedirectView
 from functools import update_wrapper
 # from django.urls import path
 
-from core.views.GearViews import GearDetailView
-from core.views.ViewList import ViewList
+from core.views.GearViews import GearDetailView, GearViewList
 
 
 class GearAdmin(admin.ModelAdmin):
@@ -18,5 +17,5 @@ class GearAdmin(admin.ModelAdmin):
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
     def get_changelist(self, request, **kwargs):
-        return ViewList
+        return GearViewList
 

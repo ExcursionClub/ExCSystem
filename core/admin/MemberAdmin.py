@@ -4,8 +4,7 @@ from django.urls import path, reverse
 from functools import update_wrapper
 
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.ViewList import ViewList
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, )
+from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, )
 
 
 # Replace the option to create users with the option to create members
@@ -17,8 +16,8 @@ class MemberAdmin(BaseUserAdmin):
     # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'status')
-    list_filter = ('status',)
+    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'group')
+    list_filter = ('group',)
 
     add_fieldsets = (
         (None, {
@@ -37,7 +36,7 @@ class MemberAdmin(BaseUserAdmin):
         }),
         ('Club  Info', {
             'classes': ('wide',),
-            'fields': ('rfid', 'status',)
+            'fields': ('rfid', 'groups',)
         })
     )
 
@@ -46,7 +45,7 @@ class MemberAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
     def get_changelist(self, request, **kwargs):
-        return ViewList
+        return MemberListView
 
     def get_urls(self):
         """Get all the urls admin related urls for member. Overridden here to add the detail view url"""

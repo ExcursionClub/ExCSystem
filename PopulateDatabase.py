@@ -16,10 +16,12 @@ from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.QuizModels import Question, Answer
 from core.models.TransactionModels import Transaction
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
+import buildPermissions
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
@@ -106,6 +108,8 @@ def save_question(question_name=None, question_text=None, choices=None, correct_
     question.answers.add(*answers)
     question.save()
 
+# Build all the groups and permissions
+buildPermissions.build_all()
 
 # Add the master admin  and excursion system accounts
 admin = Member.objects.create_superuser(
@@ -134,11 +138,11 @@ for i in bar(range(total_number_members)):
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
     if number_new < i < (number_new + number_expired):
-        member.status = 2
+        member.group = Group.objects.get(name="Expired")
         member.save()
     # The rest of the members should be active
-    else:
-        member.status = 1
+    elif i > (number_new + number_expired):
+        member.group = Group.objects.get(name="Member")
         member.save()
 print('')
 print('Made members')

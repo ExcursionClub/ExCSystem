@@ -2,12 +2,14 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.utils import timezone
 from django.urls import reverse
-
-from core.models.MemberModels import Member
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 from ExCSystem.settings.base import WEB_BASE
+
+from core.views.ViewList import RestrictedViewList
+from core.models.MemberModels import Member
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
-    MemberChangeRFIDForm, MemberChangeStatusForm, StafferDataForm)
+                                    MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
 
 
 def get_default_context(obj, context):
@@ -25,11 +27,35 @@ def get_default_context(obj, context):
     return context
 
 
-class MemberDetailView(DetailView):
+class MemberListView(RestrictedViewList):
+
+    def can_view_all(self):
+
+        # A staffer can see all members
+        if self.request.user.is_staffer:
+            return True
+
+        # Non-staffers should only be able to see themselves
+        else:
+            self.restriction_filters["pk__exact"] = self.request.user.pk
+            return False
+
+
+class MemberDetailView(UserPassesTestMixin, DetailView):
     """Simple view that displays the all details of a user and provides access to specific change forms"""
 
     model = Member
     template_name = "admin/core/member/member_detail.html"
+
+    raise_exception = True
+    permission_denied_message = "You are not allowed to view another member's personal details!"
+
+    def test_func(self):
+        """Only allow members to see the detail page if it is for themselves, or they are staffers"""
+        member_to_view = self.get_object()
+        is_self = self.request.user.rfid == member_to_view.rfid
+        is_staffer = self.request.user.is_staffer
+        return is_staffer or is_self
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,11 +67,19 @@ class MemberDetailView(DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class MemberFinishView(UpdateView):
+class MemberFinishView(UserPassesTestMixin, UpdateView):
 
     model = Member
     form_class = MemberFinishForm
     template_name_suffix = "_finish"
+
+    raise_exception = True
+    permission_denied_message = "You are not allowed complete the sign up process for anyone but yourself!"
+
+    def test_func(self):
+        """Only the member themselves is allowed to see the member finish page"""
+        member_to_finish = self.get_object()
+        return self.request.user.rfid == member_to_finish.rfid
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
