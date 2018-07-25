@@ -12,15 +12,17 @@ def validate_auth(authorizer):
     # TODO: should this be given a second argument of min status level?
 
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
-    if not authorizer.is_staff:
-        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.name))
+    required_perm = 'authorize_transactions'
+    if not authorizer.has_permission(required_perm):
+        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.get_short_name))
 
 
 def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
-    if not member.has_permission('can_rent'):
-        raise ValidationError("{} is not allowed to check out gear, because their status is {}".format(
-            member.get_full_name(), member.get_group()))
+    required_perm = 'rent_gear'
+    if not member.has_permission(required_perm):
+        raise ValidationError("{} is not allowed to check out gear, because they do not have the {} permission".format(
+            member.get_full_name(), required_perm))
 
 
 def validate_available(gear):
