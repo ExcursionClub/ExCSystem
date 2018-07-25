@@ -8,10 +8,17 @@ from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
 from kiosk.CheckoutLogic import do_checkout, do_checkin
 
+from buildPermissions import build_all as build_permissions
+
 ADMIN_RFID = '0000000000'
 MEMBER_RFID = '0000000001'
 
+
 class CheckoutLogicTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        build_permissions()
 
     def setUp(self):
         Member.objects.create_superuser(
