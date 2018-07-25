@@ -136,7 +136,10 @@ class Member(AbstractBaseUser):
     def has_permission(self, permission_name):
         """Loop through all the permissions of the group associated with this member to see if they have this one"""
         try:
-            self.group.permissions.all().get(name=permission_name)
+            # all_permissions and all_perms_list for debugging purposes only
+            all_permissions = self.group.permissions.all()
+            all_perms_list = list(all_permissions)
+            self.group.permissions.get(codename=permission_name)
         except Permission.DoesNotExist:
             return False
         else:
