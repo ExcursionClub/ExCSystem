@@ -188,6 +188,13 @@ class Member(AbstractBaseUser):
         body = template.format(finish_signup_url=finish_signup_url)
         self.send_email(title, body, from_email='membership@excursionclubucsb.org')
 
+    def has_perm(self, perm, obj=None):
+        if '.' in perm:
+            # Perms passed by system are in the form 'app_label.permission_name'
+            return self.has_permission(perm.split('.').pop())
+        else:
+            return self.has_permission(perm)
+
     def has_module_perms(self, app_label):
         """This is required by django, determine whether the user is allowed to view the app"""
         return True
