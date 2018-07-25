@@ -41,9 +41,11 @@ class ViewableModelAdmin(ModelAdmin):
         return self.list_view
 
     def get_urls(self):
+        """Override that adds the url for the detail page of the model"""
 
         urlpatterns = super().get_urls()
 
+        # Wrapper allows automatic checking of permissions
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
@@ -51,9 +53,11 @@ class ViewableModelAdmin(ModelAdmin):
             wrapper.model_admin = self
             return update_wrapper(wrapper, view)
 
-        info = self.model._meta.app_label, self.model._meta.model_name
+        app_label = self.model._meta.app_label
+        model_name = self.model._meta.model_name
 
+        # Register the url that will show the detail page for this model
         view_urls = [
-            path('<path:object_id>/detail/', wrap(self.detail_view), name='%s_%s_detail' % info),
+            path('<int:pk>/detail/', wrap(self.detail_view), name=f'{app_label}_{model_name}_detail'),
         ]
         return urlpatterns + view_urls
