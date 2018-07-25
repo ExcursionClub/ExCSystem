@@ -82,13 +82,9 @@ def build_staffer():
         name="Can change the info on gear",
         content_type=gear_type)
     add_permission(
-        codename="checkout_gear",
-        name="Can check gear out to somone else",
-        content_type=gear_type)
-    add_permission(
-        codename="checkin_gear",
-        name="Can check returned gear back in",
-        content_type=gear_type)
+        codename="authorize_transactions",
+        name="Can authorize transactions",
+        content_type=transaction_type)
     add_permission(
         codename="view_member",
         name="Can view all member info",

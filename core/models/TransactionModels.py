@@ -12,8 +12,9 @@ def validate_auth(authorizer):
     # TODO: should this be given a second argument of min status level?
 
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
-    if not authorizer.is_staff:
-        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.name))
+    required_perm = 'authorize_transactions'
+    if not authorizer.has_permission(required_perm):
+        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.get_short_name))
 
 
 def validate_can_rent(member):
