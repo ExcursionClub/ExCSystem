@@ -7,6 +7,7 @@ from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
+from core.models.QuizModels import Question, Answer
 
 
 """
@@ -21,7 +22,9 @@ member_type = ContentType.objects.get_for_model(Member)
 staffer_type = ContentType.objects.get_for_model(Staffer)
 transaction_type = ContentType.objects.get_for_model(Transaction)
 gear_type = ContentType.objects.get_for_model(Gear)
-
+group_type = ContentType.objects.get_for_model(Group)
+question_type = ContentType.objects.get_for_model(Question)
+answer_type = ContentType.objects.get_for_model(Answer)
 
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
@@ -121,13 +124,46 @@ def build_board():
         name="Can view gear with any status",
         content_type=gear_type)
     add_permission(
+        codename="remove_gear",
+        name="Can set gear to removed status",
+        content_type=gear_type
+    )
+    add_permission(
         codename="add_staffer",
         name="Can promote members to staffers",
         content_type=staffer_type)
     add_permission(
+        codename="change_staffer",
+        name="Can change staffer data",
+        content_type=staffer_type
+    )
+    add_permission(
         codename="add_department",
         name="Can add departments to the club",
         content_type=department_type)
+    add_permission(
+        codename="change_department",
+        name="Can change departments at the club",
+        content_type=department_type)
+    add_permission(
+        codename="delete_department",
+        name="Can delete departments from the club",
+        content_type=department_type)
+    add_permission(
+        codename='add_certification',
+        name="Can add gear checkout certifications",
+        content_type=certification_type
+    )
+    add_permission(
+        codename='change_certification',
+        name="Can change gear checkout certifications",
+        content_type=certification_type
+    )
+    add_permission(
+        codename='delete_certification',
+        name="Can delete gear checkout certifications",
+        content_type=certification_type
+    )
     add_permission(
         codename="change_member",
         name="Can do arbitrary changes to change member",
@@ -139,6 +175,61 @@ def build_board():
 def build_admin():
     """Create the admin group, which has all possible permissions"""
     admin = Group.objects.create(name="Admin")
+    add_permission(
+        codename="add_group",
+        name="Can add permission groups",
+        content_type=group_type
+    )
+    add_permission(
+        codename="change_group",
+        name="Can change permission groups",
+        content_type=group_type
+    )
+    add_permission(
+        codename="delete_group",
+        name="Can delete permission groups",
+        content_type=group_type
+    )
+    add_permission(
+        codename="delete_gear",
+        name="Can permanently delete gear from the database (DANGER)",
+        content_type=gear_type
+    )
+    add_permission(
+        codename="delete_staffer",
+        name="Can delete staffers",
+        content_type=staffer_type
+    )
+    add_permission(
+        codename="add_question",
+        name="Can add quiz questions",
+        content_type=question_type
+    )
+    add_permission(
+        codename="change_question",
+        name="Can change quiz questions",
+        content_type=question_type
+    )
+    add_permission(
+        codename="delete_question",
+        name="Can delete quiz questions",
+        content_type=question_type
+    )
+    add_permission(
+        codename="add_answer",
+        name="Can add quiz answers",
+        content_type=answer_type
+    )
+    add_permission(
+        codename="change_answer",
+        name="Can change quiz answers",
+        content_type=answer_type
+    )
+    add_permission(
+        codename="delete_answer",
+        name="Can delete quiz answers",
+        content_type=answer_type
+    )
     admin.permissions.set(Permission.objects.all())
     admin.save()
     
