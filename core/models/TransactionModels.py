@@ -18,9 +18,10 @@ def validate_auth(authorizer):
 
 def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
-    if not member.has_permission('rent_gear'):
-        raise ValidationError("{} is not allowed to check out gear, because their status is {}".format(
-            member.get_full_name(), member.group.name))
+    required_perm = 'rent_gear'
+    if not member.has_permission(required_perm):
+        raise ValidationError("{} is not allowed to check out gear, because they do not have the {} permission".format(
+            member.get_full_name(), required_perm))
 
 
 def validate_available(gear):
