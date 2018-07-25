@@ -188,6 +188,10 @@ class Member(AbstractBaseUser):
         body = template.format(finish_signup_url=finish_signup_url)
         self.send_email(title, body, from_email='membership@excursionclubucsb.org')
 
+    def has_module_perms(self, app_label):
+        """This is required by django, determine whether the user is allowed to view the app"""
+        return True
+
 
 class Staffer(models.Model):
     """This model provides the staffer profile (all the extra data that needs to be known about staffers)"""
