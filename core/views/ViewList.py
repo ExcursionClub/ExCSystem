@@ -43,10 +43,14 @@ class RestrictedViewList(UserPassesTestMixin, ViewList):
     def can_view_all(self):
         """
         Override this to determine when a user is allowed to view all list elements
-
-        You can also set the restriction filters to be different based on the user in this method
         """
         return self.request.user.is_staffer
+
+    def set_restriction_filters(self):
+        """
+        If a member is not allowed to view the whole list, the filters set here will be applied to the listed items
+        """
+        pass
 
     def get_queryset(self, request):
 
@@ -54,6 +58,7 @@ class RestrictedViewList(UserPassesTestMixin, ViewList):
 
         # If the user is not allowed to view all the items, additionally filter the gotten queryset before returning it
         if not self.can_view_all():
+            self.set_restriction_filters()
             queryset = queryset.filter(**self.restriction_filters)
 
         return queryset

@@ -30,15 +30,12 @@ def get_default_context(obj, context):
 class MemberListView(RestrictedViewList):
 
     def can_view_all(self):
+        """Only staffers should be a"""
+        return self.request.user.has_permission("view_all_members")
 
-        # A staffer can see all members
-        if self.request.user.is_staffer:
-            return True
-
-        # Non-staffers should only be able to see themselves
-        else:
-            self.restriction_filters["pk__exact"] = self.request.user.pk
-            return False
+    def set_restriction_filters(self):
+        """Non-staffers should only be able to see themselves"""
+        self.restriction_filters["pk__exact"] = self.request.user.pk
 
 
 class MemberDetailView(UserPassesTestMixin, DetailView):
