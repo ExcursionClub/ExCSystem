@@ -7,13 +7,11 @@ class TransactionAdmin(ViewableModelAdmin):
     list_filter = ("type", )
     search_fields = ("gear__name", "member__first_name", "member__last_name",
                      "authorizer__first_name", "authorizer__last_name")
+    list_view = TransactionListView
 
     def __init__(self, *args, **kwargs):
         super(TransactionAdmin, self).__init__(*args, **kwargs)
         self.list_display_links = []
-
-    def get_changelist(self, request, **kwargs):
-        return TransactionListView
 
     def has_add_permission(self, request):
         """Nobody should be allowed to manually add transactions"""

@@ -12,6 +12,5 @@ class GearAdmin(ViewableModelAdmin):
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
-    def get_changelist(self, request, **kwargs):
-        return GearViewList
+    list_view = GearViewList
 

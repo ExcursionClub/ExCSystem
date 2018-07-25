@@ -1,11 +1,14 @@
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
+from core.views.ViewList import ViewList
 
 
 class ViewableModelAdmin(ModelAdmin):
     """
     A model admin that has an additional view_<model> permission, that allows viewing without editing
     """
+
+    list_view = ViewList
 
     def has_view_permission(self, request):
         opts = self.opts
@@ -24,3 +27,6 @@ class ViewableModelAdmin(ModelAdmin):
             'delete': self.has_delete_permission(request),
             'view': self.has_view_permission(request)
         }
+
+    def get_changelist(self, request, **kwargs):
+        return self.list_view

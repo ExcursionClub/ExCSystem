@@ -44,9 +44,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
     filter_horizontal = ()
-
-    def get_changelist(self, request, **kwargs):
-        return MemberListView
+    list_view = MemberListView
 
     def get_urls(self):
         """Get all the urls admin related urls for member. Overridden here to add the detail view url"""
