@@ -1,9 +1,8 @@
-from django.contrib import admin
-
+from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.TransactionViews import TransactionListView
 
 
-class TransactionAdmin(admin.ModelAdmin):
+class TransactionAdmin(ViewableModelAdmin):
     list_display = ("type", "timestamp", "gear", "member", "authorizer", "comments")
     list_filter = ("type", )
     search_fields = ("gear__name", "member__first_name", "member__last_name",
@@ -14,7 +13,7 @@ class TransactionAdmin(admin.ModelAdmin):
         self.list_display_links = []
 
     def get_changelist(self, request, **kwargs):
-        return TransactionViewList
+        return TransactionListView
 
     def has_add_permission(self, request):
         """Nobody should be allowed to manually add transactions"""

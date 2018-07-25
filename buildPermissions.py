@@ -66,9 +66,22 @@ def build_member():
         name="Allowed to rent gear",
         content_type=gear_type)
     add_permission(
+        codename="view_department",
+        name="Can see department information",
+        content_type=department_type)
+    add_permission(
+        codename="view_certification",
+        name="Can see certification information",
+        content_type=certification_type)
+    add_permission(
         codename="view_gear",
         name="Can see and search the gear list",
         content_type=gear_type)
+    add_permission(
+        codename='view_transaction',
+        name="Can view transactions",
+        content_type=transaction_type
+    )
     member.permissions.set(all_permissions)
     member.save()
 

@@ -1,12 +1,8 @@
-from django.contrib import admin
-from django.views.generic import RedirectView
-from functools import update_wrapper
-# from django.urls import path
-
+from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.GearViews import GearDetailView, GearViewList
 
 
-class GearAdmin(admin.ModelAdmin):
+class GearAdmin(ViewableModelAdmin):
     # Make all the data about a certification be shown in the list display
     list_display = ("name", "department", "status", "checked_out_to", "due_date")
 

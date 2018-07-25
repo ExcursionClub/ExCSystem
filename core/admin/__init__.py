@@ -8,7 +8,7 @@ from ..models.CertificationModels import Certification
 from ..models.DepartmentModels import Department
 from ..models.QuizModels import Question, Answer
 
-from .MemberAdmin import MemberAdmin
+from .MemberAdmin import MemberAdmin, StafferAdmin
 from .GearAdmin import GearAdmin
 from .TransactionAdmin import TransactionAdmin
 from .OtherAdmins import CertificationAdmin, DepartmentAdmin
@@ -19,7 +19,7 @@ admin.site.register(Gear, GearAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Certification, CertificationAdmin)
 admin.site.register(Department, DepartmentAdmin)
-admin.site.register(Staffer)
+admin.site.register(Staffer, StafferAdmin)
 admin.site.register(Question)
 admin.site.register(Answer)
 

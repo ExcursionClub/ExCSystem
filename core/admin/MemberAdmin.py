@@ -3,12 +3,13 @@ from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from functools import update_wrapper
 
+from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
 from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, )
 
 
 # Replace the option to create users with the option to create members
-class MemberAdmin(BaseUserAdmin):
+class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     # The forms to add and change member instances
     form = MemberChangeForm
     add_form = MemberCreationForm
@@ -82,3 +83,7 @@ class MemberAdmin(BaseUserAdmin):
             return HttpResponseRedirect(reverse("admin:core_member_detail", kwargs={'pk': obj.pk}))
         else:
             return super(MemberAdmin, self).response_add(request, obj, post_url_continue)
+
+
+class StafferAdmin(ViewableModelAdmin):
+    pass
