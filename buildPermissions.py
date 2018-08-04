@@ -118,12 +118,8 @@ def build_staffer():
         name="Can add new members",
         content_type=member_type)
     add_permission(
-        codename="change_info_member",
-        name="Can change member personal information",
-        content_type=member_type)
-    add_permission(
-        codename="change_membership",
-        name="Can change member membership",
+        codename="change_member",
+        name="Can do arbitrary changes to members",
         content_type=member_type)
     staffer.permissions.set(all_permissions)
     staffer.save()
@@ -177,10 +173,6 @@ def build_board():
         name="Can delete gear checkout certifications",
         content_type=certification_type
     )
-    add_permission(
-        codename="change_member",
-        name="Can do arbitrary changes to change member",
-        content_type=member_type)
     board.permissions.set(all_permissions)
     board.save()
 
