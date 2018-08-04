@@ -9,7 +9,7 @@ class TransactionListView(RestrictedViewList):
 
     def can_view_all(self):
         """Non-staffers should only be able to see transactions related to themselves"""
-        self.request.user.has_permission("view_all_transactions")
+        return self.request.user.has_permission("view_all_transactions")
 
     def set_restriction_filters(self):
         """If a member cannot see all transactions, they can only see those related to themselves"""
