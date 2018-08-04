@@ -1,10 +1,9 @@
 from functools import update_wrapper
 
-from django.contrib.auth.admin import csrf_protect_m
 from django.urls import path
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
-from django.views.generic import DetailView, RedirectView
+from django.views.generic import DetailView
 
 from core.views.ViewList import ViewList
 
