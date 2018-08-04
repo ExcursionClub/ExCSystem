@@ -37,7 +37,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         }),
         ('Club  Info', {
             'classes': ('wide',),
-            'fields': ('rfid', 'groups',)
+            'fields': ('rfid', 'group',)
         })
     )
 
