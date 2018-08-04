@@ -11,6 +11,7 @@ class ViewList(ChangeList):
 
     def __init__(self, *args, **kwargs):
         super(ViewList, self).__init__(*args, **kwargs)
+        self.title = f'Select the {self.opts.verbose_name} to view'
 
     def url_for_result(self, result):
         pk = getattr(result, self.pk_attname)
