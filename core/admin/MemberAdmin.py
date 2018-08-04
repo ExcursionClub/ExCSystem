@@ -45,7 +45,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     ordering = ('first_name',)
     filter_horizontal = ()
     list_view = MemberListView
-    detail_view = MemberDetailView
+    detail_view_class = MemberDetailView
 
     def get_urls(self):
         """Get all the urls admin related urls for member. Overridden here to add the detail view url"""
