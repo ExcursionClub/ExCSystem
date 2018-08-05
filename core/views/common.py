@@ -1,5 +1,6 @@
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
 
 from ExCSystem.settings import WEB_BASE
@@ -86,7 +87,7 @@ class ModelDetailView(DetailView):
 
         lines.append("</table>")
 
-        html = "\n".join(lines)
+        html = mark_safe("\n".join(lines))
         return html
 
     def get_context_data(self, **kwargs):
