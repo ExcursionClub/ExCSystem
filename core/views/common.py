@@ -4,6 +4,7 @@ from django.views.generic import DetailView
 
 from ExCSystem.settings import WEB_BASE
 
+
 def get_default_context(obj, context):
     """Convenience function for getting the default context data of a member"""
     context['now'] = timezone.now()
@@ -24,60 +25,74 @@ class ModelDetailView(DetailView):
     template_name = "admin/core/detail.html"
     field_sets = None
 
-    def get_field_data(self, obj):
+    def get_html_repr(self, obj):
         """
-        Turn the provided field_sets into a similar structure that makes the field names and values available
+        Get the HTML to render the provided fields sets as a table
 
         will have the structure:
-        [
-            (
-                "<field_set_name_1",
-                [
-                    ("<name_1>", value_1, link),
-                    ("<name_2>", value_2, link),
-                    ...
-                    ("<name_n>", value_n, link)
-                ]
-            ),
-            (
-                "field_set_name_2",
-                [
-                    ("<name_1>", value_1, link)
-                    ("<name_2>", value_2, link),
-                    ...
-                    ("<name_n>", value_n, link)
-                ]
-            ),
-        ]
+
+        <table>
+            <tr><td>{{set_name}}</td></tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td width="10px"></td>
+                            <td>{field_name}</td>
+                            <td><a href="field url">{field_value}</a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td>{{set_name}}</td></tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td width="10px"></td>
+                            <td>{field_name}</td>
+                            <td><a href="field url">{field_value}</a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
 
         values will be the string representations of the values saved for the given field
         if the value is a model object, then link will be the url to the related object
         """
-        field_data = []
+        lines = []
+        lines.append("<table>")
         for set in self.field_sets:
-            set_data = []
             set_name = set[0]
+            lines.append(f"<tr><td>{set_name}</td></tr>")
+            lines.append("<tr>\n<td>\n<table>")
             fields = set[1]["fields"]
-            data_in_set = []
             for field_name in fields:
+                lines.append("<tr>")
+                lines.append("<td width=\"10px\"></td>")
+                lines.append(f"<td>{field_name}: </td>")
                 value = getattr(obj, field_name)
                 if hasattr(value, "DoesNotExist"):  # This allows us to check if the object is a model
                     app = value._meta.app_label
                     model = value._meta.model_name
                     link = WEB_BASE + reverse(f"admin:{app}_{model}_detail", kwargs={"pk": value.pk})
+                    lines.append(f"<td><a href=\"{link}\">{str(value)}</a></td>")
                 else:
-                    link = None
-                data_in_set.append((field_name, str(value), link))
-            set_data.append(set_name)
-            set_data.append(data_in_set)
-            field_data.append(set_data)
+                    lines.append(f"<td>{str(value)}</td>")
+                lines.append("</tr>")
+            lines.append("</table>\n</td>\n</tr>")
 
-        return field_data
+        lines.append("</table>")
+
+        html = "\n".join(lines)
+        return html
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context = get_default_context(self, context)
-        context['field_data'] = self.get_field_data(kwargs['object'])
+        context['html_representation'] = self.get_html_repr(kwargs['object'])
         return context
 
 
