@@ -1,4 +1,3 @@
-from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -6,7 +5,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from ExCSystem.settings.base import WEB_BASE
 
 from core.views.ViewList import RestrictedViewList
-from core.views import get_default_context
+from core.views.common import get_default_context, ModelDetailView
 from core.models.MemberModels import Member
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
                                     MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
@@ -23,7 +22,7 @@ class MemberListView(RestrictedViewList):
         self.restriction_filters["pk__exact"] = self.request.user.pk
 
 
-class MemberDetailView(UserPassesTestMixin, DetailView):
+class MemberDetailView(UserPassesTestMixin, ModelDetailView):
     """Simple view that displays the all details of a user and provides access to specific change forms"""
 
     model = Member
@@ -38,11 +37,6 @@ class MemberDetailView(UserPassesTestMixin, DetailView):
         is_self = self.request.user.rfid == member_to_view.rfid
         view_others = self.request.user.has_permission('view_member')
         return view_others or is_self
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context = get_default_context(self, context)
-        return context
 
     def post(self, request, *args, **kwargs):
         """Treat post requests as get requests"""
@@ -72,7 +66,7 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
         return WEB_BASE + reverse("admin:core_member_detail", kwargs={'pk': self.object.pk})
 
 
-class StafferDetailView(UserPassesTestMixin, DetailView):
+class StafferDetailView(UserPassesTestMixin, ModelDetailView):
 
     model = Member
     template_name = "admin/core/member/staffer_detail.html"

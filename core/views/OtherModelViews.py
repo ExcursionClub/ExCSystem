@@ -1,11 +1,10 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic import DetailView
-
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
+from core.views.common import ModelDetailView
 
 
-class CertificationDetailView(UserPassesTestMixin, DetailView):
+class CertificationDetailView(UserPassesTestMixin, ModelDetailView):
 
     model = Certification
     template_name = "admin/core/detail.html"
@@ -21,7 +20,7 @@ class CertificationDetailView(UserPassesTestMixin, DetailView):
         return self.get(request, *args, **kwargs)
 
 
-class DepartmentDetailView(UserPassesTestMixin, DetailView):
+class DepartmentDetailView(UserPassesTestMixin, ModelDetailView):
     model = Department
     template_name = "admin/core/detail.html"
 

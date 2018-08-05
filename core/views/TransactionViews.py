@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.views.generic.detail import DetailView
 
 from core.views.ViewList import RestrictedViewList
+from core.views.common import ModelDetailView
 from core.models.TransactionModels import Transaction
 
 
@@ -16,10 +16,9 @@ class TransactionListView(RestrictedViewList):
         self.restriction_filters["member_id__exact"] = self.request.user.pk
 
 
-class TransactionDetailView(UserPassesTestMixin, DetailView):
+class TransactionDetailView(UserPassesTestMixin, ModelDetailView):
 
     model = Transaction
-    template_name = "admin/core/member/transaction_detail.html"
 
     def test_func(self):
         """Can view the detail of transaction of member is a staffer or transaction involves the member"""
