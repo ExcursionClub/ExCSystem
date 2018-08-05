@@ -1,3 +1,5 @@
+from django.contrib.auth.models import Group
+
 from ..models.MemberModels import Member, Staffer
 from ..models.GearModels import Gear
 from ..models.TransactionModels import Transaction
@@ -23,6 +25,7 @@ admin_site.register(Department, DepartmentAdmin)
 admin_site.register(Staffer, StafferAdmin)
 admin_site.register(Question)
 admin_site.register(Answer)
+admin_site.register(Group)
 
 # Now register the new MemberAdmin...
 admin_site.register(Member, MemberAdmin)
