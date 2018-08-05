@@ -1,10 +1,15 @@
 from functools import update_wrapper
 
+from django.contrib.admin.options import csrf_protect_m, IncorrectLookupParameters
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.template.response import TemplateResponse, SimpleTemplateResponse
 from django.urls import path
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
+from django.utils.translation import gettext as _, ngettext
 
-from core.views.ViewList import ViewList
+from core.views.ViewList import RestrictedViewList
 from core.views.common import ModelDetailView
 
 
@@ -13,7 +18,7 @@ class ViewableModelAdmin(ModelAdmin):
     A model admin that has an additional view_<model> permission, that allows viewing without editing
     """
 
-    list_view = ViewList
+    list_view = RestrictedViewList
     detail_view_class = ModelDetailView
 
     def get_detail_view(self):
@@ -50,6 +55,73 @@ class ViewableModelAdmin(ModelAdmin):
 
     def get_changelist(self, request, **kwargs):
         return self.list_view
+
+    @csrf_protect_m
+    def viewlist_view(self, request):
+        """Same as the change list, but no actions and does not accept post"""
+
+        from django.contrib.admin.views.main import ERROR_FLAG
+        opts = self.model._meta
+        app_label = opts.app_label
+        if not self.has_view_permission(request):
+            raise PermissionDenied
+
+        try:
+            cl = self.get_changelist_instance(request)
+        except IncorrectLookupParameters:
+            # Wacky lookup parameters were given, so redirect to the main
+            # changelist page, without parameters, and pass an 'invalid=1'
+            # parameter via the query string. If wacky parameters were given
+            # and the 'invalid=1' parameter was already in the query string,
+            # something is screwed up with the database, so display an error
+            # page.
+            if ERROR_FLAG in request.GET:
+                return SimpleTemplateResponse('admin/invalid_setup.html', {
+                    'title': _('Database error'),
+                })
+            return HttpResponseRedirect(request.path + '?' + ERROR_FLAG + '=1')
+
+        selection_note_all = ngettext(
+            '%(total_count)s selected',
+            'All %(total_count)s selected',
+            cl.result_count
+        )
+
+        context = dict(
+            self.admin_site.each_context(request),
+            module_name=str(opts.verbose_name_plural),
+            selection_note=_('0 of %(cnt)s selected') % {'cnt': len(cl.result_list)},
+            selection_note_all=selection_note_all % {'total_count': cl.result_count},
+            title=cl.title,
+            is_popup=cl.is_popup,
+            to_field=cl.to_field,
+            cl=cl,
+            has_add_permission=self.has_add_permission(request),
+            opts=cl.opts,
+            actions_on_top=self.actions_on_top,
+            actions_on_bottom=self.actions_on_bottom,
+            actions_selection_counter=self.actions_selection_counter,
+            preserved_filters=self.get_preserved_filters(request),
+        )
+
+        request.current_app = self.admin_site.name
+
+        return TemplateResponse(request, self.change_list_template or [
+            'admin/%s/%s/change_list.html' % (app_label, opts.model_name),
+            'admin/%s/change_list.html' % app_label,
+            'admin/change_list.html'
+        ], context)
+
+    @csrf_protect_m
+    def changelist_view(self, request, extra_context=None):
+        """
+        The 'change list' admin view for this model.
+        """
+        if self.has_change_permission(request):
+            return super(ViewableModelAdmin, self).changelist_view(request, extra_context=extra_context)
+        else:
+            return self.viewlist_view(request)
+
 
     def get_urls(self):
         """Override that adds the url for the detail page of the model"""
