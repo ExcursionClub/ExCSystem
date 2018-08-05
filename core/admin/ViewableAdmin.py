@@ -3,9 +3,9 @@ from functools import update_wrapper
 from django.urls import path
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_permission_codename
-from django.views.generic import DetailView
 
 from core.views.ViewList import ViewList
+from core.views.common import ModelDetailView
 
 
 class ViewableModelAdmin(ModelAdmin):
@@ -14,7 +14,7 @@ class ViewableModelAdmin(ModelAdmin):
     """
 
     list_view = ViewList
-    detail_view_class = DetailView
+    detail_view_class = ModelDetailView
 
     def get_detail_view(self):
         """Get the detail view as a view (function) wrapped to automatically check permissions"""
@@ -25,8 +25,10 @@ class ViewableModelAdmin(ModelAdmin):
             wrapper.model_admin = self
             return update_wrapper(wrapper, view)
 
-        detail = self.detail_view_class.as_view()
-        return wrap(detail)
+        detail = self.detail_view_class
+        detail.field_sets = self.fieldsets
+        detail_view = detail.as_view()
+        return wrap(detail_view)
 
     def has_view_permission(self, request):
         opts = self.opts
