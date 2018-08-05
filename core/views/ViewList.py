@@ -45,7 +45,7 @@ class RestrictedViewList(UserPassesTestMixin, ViewList):
         """
         Override this to determine when a user is allowed to view all list elements
         """
-        return self.request.user.is_staffer
+        return True
 
     def set_restriction_filters(self):
         """
