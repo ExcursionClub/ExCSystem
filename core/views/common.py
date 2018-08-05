@@ -2,6 +2,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
+from django.urls.exceptions import NoReverseMatch
 
 from ExCSystem.settings import WEB_BASE
 
@@ -81,13 +82,18 @@ class ModelDetailView(DetailView):
                 lines.append("<td width=\"10px\"></td>")
                 lines.append(f"<td>{field_name}: </td>")
                 value = getattr(obj, field_name)
+                simple_line = f"<td>{str(value)}</td>"
                 if hasattr(value, "DoesNotExist"):  # This allows us to check if the object is a model
                     app = value._meta.app_label
                     model = value._meta.model_name
-                    link = WEB_BASE + reverse(f"admin:{app}_{model}_detail", kwargs={"pk": value.pk})
-                    lines.append(f"<td><a href=\"{link}\">{str(value)}</a></td>")
+                    try:
+                        link = WEB_BASE + reverse(f"admin:{app}_{model}_detail", kwargs={"pk": value.pk})
+                    except NoReverseMatch:
+                        lines.append(simple_line)
+                    else:
+                        lines.append(f"<td><a href=\"{link}\">{str(value)}</a></td>")
                 else:
-                    lines.append(f"<td>{str(value)}</td>")
+                    lines.append(simple_line)
                 lines.append("</tr>")
             lines.append("</table>\n</td>\n</tr>")
 
@@ -106,7 +112,6 @@ class ModelDetailView(DetailView):
                  'fields': field_names,
              }),
         )
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
