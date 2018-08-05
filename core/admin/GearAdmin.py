@@ -12,6 +12,17 @@ class GearAdmin(ViewableModelAdmin):
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
+    fieldsets = (
+        ('Gear Info', {
+            'classes': ('wide',),
+            'fields': ("rfid", "name", "department"),
+        }),
+        ('Checkout Info', {
+            'classes': ('wide',),
+            'fields': ("status", "checked_out_to", "due_date")
+        })
+    )
+
     list_view = GearViewList
     detail_view_class = GearDetailView
 
