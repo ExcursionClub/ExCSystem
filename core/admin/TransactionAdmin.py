@@ -1,5 +1,5 @@
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.views.TransactionViews import TransactionListView
+from core.views.TransactionViews import TransactionListView, TransactionDetailView
 
 
 class TransactionAdmin(ViewableModelAdmin):
@@ -8,6 +8,7 @@ class TransactionAdmin(ViewableModelAdmin):
     search_fields = ("gear__name", "member__first_name", "member__last_name",
                      "authorizer__first_name", "authorizer__last_name")
     list_view = TransactionListView
+    detail_view_class = TransactionDetailView
 
     def __init__(self, *args, **kwargs):
         super(TransactionAdmin, self).__init__(*args, **kwargs)
