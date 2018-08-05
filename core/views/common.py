@@ -63,9 +63,15 @@ class ModelDetailView(DetailView):
         values will be the string representations of the values saved for the given field
         if the value is a model object, then link will be the url to the related object
         """
+
+        if self.field_sets:
+            field_sets = self.field_sets
+        else:
+            field_sets  = self.get_field_sets(obj)
+
         lines = []
         lines.append("<table>")
-        for set in self.field_sets:
+        for set in field_sets:
             set_name = set[0]
             lines.append(f"<tr><td>{set_name}</td></tr>")
             lines.append("<tr>\n<td>\n<table>")
@@ -89,6 +95,18 @@ class ModelDetailView(DetailView):
 
         html = mark_safe("\n".join(lines))
         return html
+
+    @staticmethod
+    def get_field_sets(obj):
+        field_names =[]
+        for field in obj._meta.fields:
+            field_names.append(field.name)
+        return (
+            (f"All {obj._meta.model_name} data", {
+                 'fields': field_names,
+             }),
+        )
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
