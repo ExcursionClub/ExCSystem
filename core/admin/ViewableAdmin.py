@@ -81,6 +81,10 @@ class ViewableModelAdmin(ModelAdmin):
                 })
             return HttpResponseRedirect(request.path + '?' + ERROR_FLAG + '=1')
 
+        # This is used in the backend, do not remove
+        FormSet = self.get_changelist_formset(request)
+        formset = cl.formset = FormSet(queryset=cl.result_list)
+
         selection_note_all = ngettext(
             '%(total_count)s selected',
             'All %(total_count)s selected',
