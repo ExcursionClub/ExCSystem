@@ -1,30 +1,15 @@
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
-from django.utils import timezone
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from ExCSystem.settings.base import WEB_BASE
 
 from core.views.ViewList import RestrictedViewList
+from core.views import get_default_context
 from core.models.MemberModels import Member
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
                                     MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
-
-
-def get_default_context(obj, context):
-    """Convenience function for getting the default context data of a member"""
-    context['now'] = timezone.now()
-    context['opts'] = obj.model._meta
-    context['app_label'] = obj.model._meta.app_label
-    context['change'] = False
-    context['is_popup'] = False
-    context['add'] = False
-    context['save_as'] = False
-    context['has_delete_permission'] = False
-    context['has_change_permission'] = False
-    context['has_add_permission'] = False
-    return context
 
 
 class MemberListView(RestrictedViewList):
@@ -85,3 +70,17 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return WEB_BASE + reverse("admin:core_member_detail", kwargs={'pk': self.object.pk})
+
+
+class StafferDetailView(UserPassesTestMixin, DetailView):
+
+    model = Member
+    template_name = "admin/core/member/staffer_detail.html"
+
+    raise_exception = True
+    permission_denied_message = "You are not allowed to view staffer details!"
+
+    def test_func(self):
+        """Only allow members to see the detail page if it is for themselves, or they are staffers"""
+        return self.request.user.has_permission('view_staffer')
+
