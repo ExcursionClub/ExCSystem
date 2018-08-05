@@ -5,7 +5,7 @@ from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, )
+from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, StafferDetailView, )
 
 
 # Replace the option to create users with the option to create members
@@ -77,4 +77,5 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
 
 class StafferAdmin(ViewableModelAdmin):
-    pass
+
+    detail_view_class = StafferDetailView
