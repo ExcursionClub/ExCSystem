@@ -6,7 +6,7 @@ from ExCSystem.settings.base import WEB_BASE
 
 from core.views.ViewList import RestrictedViewList
 from core.views.common import get_default_context, ModelDetailView
-from core.models.MemberModels import Member
+from core.models.MemberModels import Member, Staffer
 from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
                                     MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
 
@@ -68,8 +68,7 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
 
 class StafferDetailView(UserPassesTestMixin, ModelDetailView):
 
-    model = Member
-    template_name = "admin/core/member/staffer_detail.html"
+    model = Staffer
 
     raise_exception = True
     permission_denied_message = "You are not allowed to view staffer details!"
