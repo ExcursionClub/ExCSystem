@@ -7,6 +7,9 @@ from core.models.TransactionModels import Transaction
 
 class TransactionListView(RestrictedViewList):
 
+    def test_func(self):
+        return self.request.user.has_permission("view_transaction")
+
     def can_view_all(self):
         """Non-staffers should only be able to see transactions related to themselves"""
         return self.request.user.has_permission("view_all_transactions")
@@ -23,7 +26,10 @@ class TransactionDetailView(UserPassesTestMixin, ModelDetailView):
     def test_func(self):
         """Can view the detail of transaction of member is a staffer or transaction involves the member"""
         transaction_to_view = self.get_object()
-        related_to_self = self.request.user.pk == transaction_to_view.member.pk
+        try:
+            related_to_self = self.request.user.pk == transaction_to_view.member.pk
+        except AttributeError:  # Transaction need not have a member
+            related_to_self = False
         is_staffer = self.request.user.is_staffer
         return is_staffer or related_to_self
 
