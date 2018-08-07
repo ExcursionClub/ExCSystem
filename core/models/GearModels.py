@@ -1,3 +1,5 @@
+import importlib
+
 from django.db import models
 from .MemberModels import Member
 from .DepartmentModels import Department
@@ -113,7 +115,13 @@ class CustomDataField:
         """Returns the object currently stored by this field"""
         if self.data_type == "choice":
             selected = data["value"]
-            return data[]
+            return data["choices"][selected]
+        elif self.data_type == "reference":
+            obj_type = data["object_type"]
+            model = importlib.import_module(f"core.models.{obj_type}")
+            return model.objects.get(pk=data["pk"])
+        else:
+            return data["value"]
 
     def get_field(self, data):
         """Returns the appropriate FormField for the current data type"""
