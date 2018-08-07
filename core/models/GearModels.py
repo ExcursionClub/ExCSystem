@@ -78,9 +78,12 @@ class CustomDataField:
         }
 
     def serialize_choice(self, value, choices=(("None", "No choices provided"),)):
+        choice_dict = {}
+        for choice in choices:
+            choice_dict[choice[0]] = choice[1]
         return {
             "value": value,
-            "choices": choices
+            "choices": choice_dict
         }
 
     def serialize_reference(self, obj, object_type=None, selectable_objects=None):
@@ -89,7 +92,8 @@ class CustomDataField:
         if selectable_objects:
             selectable_objects = object_type.objects.all()
         return {
-            "value": obj.pk,
+            "value": obj.name,
+            "pk": obj.pk,
             "object_type": str(object_type),
             "selectable_objects": serializers.serialize("json", selectable_objects)
         }
@@ -107,8 +111,9 @@ class CustomDataField:
 
     def get_value(self, data):
         """Returns the object currently stored by this field"""
-        serialize_function = getattr(self, f"deserialize_{self.data_type}")
-        return serialize_function(data)
+        if self.data_type == "choice":
+            selected = data["value"]
+            return data[]
 
     def get_field(self, data):
         """Returns the appropriate FormField for the current data type"""
