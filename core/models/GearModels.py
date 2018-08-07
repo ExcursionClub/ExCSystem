@@ -111,19 +111,19 @@ class CustomDataField:
         serialized["initial"] = initial
         serialized["help_text"] = help_text
 
-    def get_value(self, data):
+    def get_value(self, data_dict):
         """Returns the object currently stored by this field"""
         if self.data_type == "choice":
-            selected = data["value"]
-            return data["choices"][selected]
+            selected = data_dict["value"]
+            return data_dict["choices"][selected]
         elif self.data_type == "reference":
-            obj_type = data["object_type"]
+            obj_type = data_dict["object_type"]
             model = importlib.import_module(f"core.models.{obj_type}")
-            return model.objects.get(pk=data["pk"])
+            return model.objects.get(pk=data_dict["pk"])
         else:
-            return data["value"]
+            return data_dict["value"]
 
-    def get_field(self, data):
+    def get_field(self, json_data):
         """Returns the appropriate FormField for the current data type"""
 
 
