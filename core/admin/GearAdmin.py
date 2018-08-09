@@ -1,13 +1,8 @@
-from django.contrib import admin
-from django.views.generic import RedirectView
-from functools import update_wrapper
-# from django.urls import path
-
-from core.views.GearViews import GearDetailView
-from core.views.ViewList import ViewList
+from core.admin.ViewableAdmin import ViewableModelAdmin
+from core.views.GearViews import GearDetailView, GearViewList
 
 
-class GearAdmin(admin.ModelAdmin):
+class GearAdmin(ViewableModelAdmin):
     # Make all the data about a certification be shown in the list display
     list_display = ("name", "department", "status", "checked_out_to", "due_date")
 
@@ -17,6 +12,17 @@ class GearAdmin(admin.ModelAdmin):
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
-    def get_changelist(self, request, **kwargs):
-        return ViewList
+    fieldsets = (
+        ('Gear Info', {
+            'classes': ('wide',),
+            'fields': ("rfid", "name", "department"),
+        }),
+        ('Checkout Info', {
+            'classes': ('wide',),
+            'fields': ("status", "checked_out_to", "due_date")
+        })
+    )
+
+    list_view = GearViewList
+    detail_view_class = GearDetailView
 

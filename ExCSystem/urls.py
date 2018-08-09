@@ -13,19 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
 
-admin.site.site_header = 'Excursion Admin'
-admin.site.site_title = 'Excursion Admin'
-admin.site.index_title = 'Admin Home'
+from core.admin import admin_site
 
 # If you want to change the template to use for the admin set it here
 # admin.site.index_template = path/to/the/template.html
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin_site.urls),
     path('kiosk/', include('kiosk.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

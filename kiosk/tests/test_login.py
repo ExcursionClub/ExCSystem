@@ -4,8 +4,15 @@ from django.utils.timezone import timedelta
 
 from core.models.MemberModels import Member
 
+from buildPermissions import build_all as build_permissions
+
 
 class LoginTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        build_permissions()
+
     def setUp(self):
         Member.objects.create_member(
             email='testemail@test.com',
