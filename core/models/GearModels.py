@@ -55,6 +55,10 @@ class CustomDataField(models.Model):
     name = models.CharField(max_length=30)
     data_type = models.CharField(max_length=20, choices=data_types)
 
+    def __str__(self):
+        name = self.name
+        return name.replace('_', ' ').title()
+
     def serialize_rfid(self, rfid):
         return {
             "initial": rfid,
@@ -163,7 +167,7 @@ class CustomDataField(models.Model):
 
 class GearType(models.Model):
 
-    name = models.CharField(max_length="30")
+    name = models.CharField(max_length=30)
 
     #: The department to which this type of gear belongs (roughly corresponds to STL positions)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
@@ -172,7 +176,7 @@ class GearType(models.Model):
     data_fields = models.ManyToManyField(CustomDataField)
 
     def __str__(self):
-        return self
+        return self.name
 
 
 class GearManager(models.Manager):
