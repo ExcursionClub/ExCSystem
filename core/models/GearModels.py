@@ -198,44 +198,16 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    @staticmethod
-    def generate_name(gear_type, **gear_data):
-        """
-        Auto-generate a name that can (semi-uniquely) identify this piece of gear
-
-        Name will be in the form: <GearType> - <attr 1>, <attr 2>, etc...
-        """
-
-        # Get all custom data fields for this data_type, except those that contain a reference
-        attr_fields = CustomDataField.objects.filter(geartype=gear_type).exclude(data_type='reference')
-        attributes = []
-        for field in attr_fields:
-            string = field.get_str(gear_data[field.name])
-            if string:
-                attributes.append(str(string))
-
-        if attributes:
-            attr_string = ", ".join(attributes)
-            name = f'{gear_type.name} - {attr_string}'
-        else:
-            name = gear_type.name
-
-        return name
-
-    def _create(self, rfid, gear_type, name=None, **gear_data):
+    def _create(self, rfid, gear_type, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the gear_type
 
         NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
 
-        if not name:
-            name = self.generate_name(gear_type, **gear_data)
-
         # Create a simple piece of gear without any extra gear data
         gear = Gear(
             rfid=rfid,
-            name=name,
             status=0,
             geartype=gear_type
         )
@@ -273,7 +245,6 @@ class Gear(models.Model):
         verbose_name_plural = "Gear"
 
     rfid = models.CharField(max_length=10, unique=True)
-    name = models.CharField(max_length=50)
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
@@ -302,6 +273,30 @@ class Gear(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def name(self):
+        """
+        Auto-generate a name that can (semi-uniquely) identify this piece of gear
+
+        Name will be in the form: <GearType> - <attr 1>, <attr 2>, etc...
+        """
+
+        # Get all custom data fields for this data_type, except those that contain a reference
+        attr_fields = CustomDataField.objects.filter(geartype=self.geartype).exclude(data_type='reference')
+        attributes = []
+        for field in attr_fields:
+            string = field.get_str(self.gear_data[field.name])
+            if string:
+                attributes.append(str(string))
+
+        if attributes:
+            attr_string = ", ".join(attributes)
+            name = f'{self.geartype.name} - {attr_string}'
+        else:
+            name = self.geartype.name
+
+        return name
 
     def get_department(self):
         return self.geartype.department
