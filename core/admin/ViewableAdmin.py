@@ -1,6 +1,7 @@
 from functools import update_wrapper
 
 from django.contrib.admin.options import csrf_protect_m, IncorrectLookupParameters
+from django.contrib.admin.views.main import ERROR_FLAG
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse, SimpleTemplateResponse
@@ -58,9 +59,12 @@ class ViewableModelAdmin(ModelAdmin):
 
     @csrf_protect_m
     def viewlist_view(self, request):
-        """Same as the change list, but no actions and does not accept post"""
+        """
+        Same as the change list, but no actions and does not accept post
 
-        from django.contrib.admin.views.main import ERROR_FLAG
+        Note most of this method is a simplification of the overridden method. Blame django for any wackiness
+        """
+
         opts = self.model._meta
         app_label = opts.app_label
         if not self.has_view_permission(request):
@@ -79,7 +83,7 @@ class ViewableModelAdmin(ModelAdmin):
                 return SimpleTemplateResponse('admin/invalid_setup.html', {
                     'title': _('Database error'),
                 })
-            return HttpResponseRedirect(request.path + '?' + ERROR_FLAG + '=1')
+            return HttpResponseRedirect(f'{request.path}?ERROR_FLAG=1')
 
         # This is used in the backend, do not remove
         FormSet = self.get_changelist_formset(request)
@@ -94,7 +98,7 @@ class ViewableModelAdmin(ModelAdmin):
         context = dict(
             self.admin_site.each_context(request),
             module_name=str(opts.verbose_name_plural),
-            selection_note=_('0 of %(cnt)s selected') % {'cnt': len(cl.result_list)},
+            selection_note=_(f'0 of {len(cl.result_list)} selected'),
             selection_note_all=selection_note_all % {'total_count': cl.result_count},
             title=cl.title,
             is_popup=cl.is_popup,
@@ -111,8 +115,8 @@ class ViewableModelAdmin(ModelAdmin):
         request.current_app = self.admin_site.name
 
         return TemplateResponse(request, self.change_list_template or [
-            'admin/%s/%s/change_list.html' % (app_label, opts.model_name),
-            'admin/%s/change_list.html' % app_label,
+            f'admin/{app_label}/{opts.model_name}/change_list.html',
+            f'admin/{app_label}/change_list.html',
             'admin/change_list.html'
         ], context)
 
@@ -125,7 +129,6 @@ class ViewableModelAdmin(ModelAdmin):
             return super(ViewableModelAdmin, self).changelist_view(request, extra_context=extra_context)
         else:
             return self.viewlist_view(request)
-
 
     def get_urls(self):
         """Override that adds the url for the detail page of the model"""
