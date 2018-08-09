@@ -13,6 +13,7 @@ from django.forms.models import ModelChoiceField
 from core.forms.fields.RFIDField import RFIDField
 
 from django.core import serializers
+from django.apps import apps
 
 # TODO: subclass Gear for all the different types of gear
 # TODO: figure out how to "subclass" via the django admin, so a new type of gear could be added if necessary
@@ -105,14 +106,19 @@ class CustomDataField(models.Model):
         if not selectable_objects:
             selectable_objects = object_type.objects.all()
         return {
-            "initial": obj.name,
+            "initial": str(obj),
             "pk": obj.pk,
-            "object_type": str(object_type),
+            "app_label": object_type._meta.app_label,
+            "model_name": object_type.__name__,
             "selectable_objects": serializers.serialize("json", selectable_objects)
         }
     
-    def get_reference_field(self, initial=None, pk=None, object_type=None, selectable_objects=None, **init_data):
-        pass
+    def get_reference_field(self, pk=None, app_label=None, model_name=None, selectable_objects=None, **init_data):
+        object_type = apps.get_model(app_label, model_name)
+        init_data["initial"] = object_type.objects.get(pk=pk)
+        if selectable_objects:
+            selectable_objects = serializers.deserialize('json', selectable_objects)
+        return ModelChoiceField(selectable_objects, **init_data)
 
     def serialize(self, required=False, label="", initial=None, help_text="", **kwargs):
         """Execute the serialize function appropriate for the current data type"""
