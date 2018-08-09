@@ -106,13 +106,18 @@ class CustomDataField(models.Model):
         }
 
     def serialize_reference(self, obj, object_type=None, selectable_objects=None, **kwargs):
-        if object_type is None:
-            raise ValueError("Object Type must be specified when serializing an object reference")
+        if object_type:
+            kwargs['app_label'] = object_type._meta.app_label
+            kwargs['model_name'] = object_type.__name__
+        elif 'app_label' in kwargs and 'model_name' in kwargs:
+            object_type = importlib.import_module(f"{kwargs['app_label']}.models.{kwargs['model_name']}")
+
         if not selectable_objects:
             selectable_objects = object_type.objects.all()
+
         return {
             "initial": str(obj),
-            "pk": obj.pk,
+            "pk": obj.pk if obj else None,
             "app_label": object_type._meta.app_label,
             "model_name": object_type.__name__,
             "selectable_objects": serializers.serialize("json", selectable_objects)
@@ -220,9 +225,9 @@ class GearManager(models.Manager):
 
         # Filter out any passed data that is not referenced by the gear type
         extra_fields = CustomDataField.objects.filter(geartype=gear_type)
-        data_dict = {
-            field.name: field.serialize(gear_data[field.name]) for field in extra_fields
-        }
+        data_dict = {}
+        for field in extra_fields:
+            data_dict[field.name] = field.serialize(**gear_data[field.name])
 
         # Add in the additional data as a string before saving the piece of gear
         gear.gear_data = json.dumps(data_dict)
