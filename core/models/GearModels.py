@@ -59,12 +59,12 @@ class CustomDataField(models.Model):
         name = self.name
         return name.replace('_', ' ').title()
 
-    def serialize_rfid(self, rfid):
+    def serialize_rfid(self, rfid, **kwargs):
         return {
             "initial": rfid,
         }
 
-    def serialize_text(self, text, max_length=300, min_length=0, strip=True):
+    def serialize_text(self, text, max_length=300, min_length=0, strip=True, **kwargs):
         return {
             "initial": text,
             "max_length": max_length,
@@ -72,7 +72,7 @@ class CustomDataField(models.Model):
             "strip": strip
         }
 
-    def serialize_string(self, string, max_length=50, min_length=0, strip=True):
+    def serialize_string(self, string, max_length=50, min_length=0, strip=True, **kwargs):
         return {
             "initial": string,
             "max_length": max_length,
@@ -80,32 +80,32 @@ class CustomDataField(models.Model):
             "strip": strip
         }
 
-    def serialize_boolean(self, boolean):
+    def serialize_boolean(self, boolean, **kwargs):
         return {
             "initial": boolean,
         }
 
-    def serialize_int(self, value, min_value=-100, max_value=100):
+    def serialize_int(self, value, min_value=-100, max_value=100, **kwargs):
         return {
             "initial": value,
             "min_value": min_value,
             "max_value": max_value
         }
 
-    def serialize_float(self, value, min_value=-1000, max_value=1000):
+    def serialize_float(self, value, min_value=-1000, max_value=1000, **kwargs):
         return {
             "initial": value,
             "min_value": min_value,
             "max_value": max_value
         }
 
-    def serialize_choice(self, value, choices=(("None", "No choices provided"),)):
+    def serialize_choice(self, value, choices=(("None", "No choices provided"),), **kwargs):
         return {
             "initial": value,
             "choices": choices
         }
 
-    def serialize_reference(self, obj, object_type=None, selectable_objects=None):
+    def serialize_reference(self, obj, object_type=None, selectable_objects=None, **kwargs):
         if object_type is None:
             raise ValueError("Object Type must be specified when serializing an object reference")
         if not selectable_objects:
