@@ -20,6 +20,10 @@ class GearAdmin(ViewableModelAdmin):
         ('Checkout Info', {
             'classes': ('wide',),
             'fields': ("status", "checked_out_to", "due_date")
+        }),
+        ('Additional Info', {
+            'classes': ('wide', ),
+            'fields': ('gear_data',)
         })
     )
 

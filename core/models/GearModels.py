@@ -54,6 +54,7 @@ class CustomDataField(models.Model):
 
     name = models.CharField(max_length=30)
     data_type = models.CharField(max_length=20, choices=data_types)
+    suffix = models.CharField(max_length=10)
 
     def __str__(self):
         name = self.name
@@ -146,13 +147,23 @@ class CustomDataField(models.Model):
         """Returns the object currently stored by this field"""
         if self.data_type == "choice":
             selected = data_dict["initial"]
-            return data_dict["choices"][selected]
+            for choice in data_dict["choices"]:
+                if choice[0] == selected:
+                    return choice [1]
+            raise KeyError(f"Selected choice ({selected}) not found for {self.name} field!")
         elif self.data_type == "reference":
             obj_type = data_dict["object_type"]
             model = importlib.import_module(f"core.models.{obj_type}")
             return model.objects.get(pk=data_dict["pk"])
         else:
             return data_dict["initial"]
+
+    def get_str(self, data_dict):
+        value = self.get_value(data_dict)
+        if value:
+            return f'{value} {self.suffix}'
+        else:
+            return None
 
     def get_field(self, init_data, current=None):
         """Returns the appropriate FormField for the current data type"""
@@ -199,9 +210,9 @@ class GearManager(models.Manager):
         attr_fields = CustomDataField.objects.filter(geartype=gear_type).exclude(data_type='reference')
         attributes = []
         for field in attr_fields:
-            value = gear_data[field.name]['initial']
-            if value:
-                attributes.append(value)
+            string = field.get_str(gear_data[field.name])
+            if string:
+                attributes.append(str(string))
 
         if attributes:
             attr_string = ", ".join(attributes)
