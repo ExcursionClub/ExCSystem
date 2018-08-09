@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
-from core.models.GearModels import Gear
+from core.models.GearModels import Gear, GearType, CustomDataField
 from core.models.TransactionModels import Transaction
 from core.models.QuizModels import Question, Answer
 
@@ -22,6 +22,8 @@ member_type = ContentType.objects.get_for_model(Member)
 staffer_type = ContentType.objects.get_for_model(Staffer)
 transaction_type = ContentType.objects.get_for_model(Transaction)
 gear_type = ContentType.objects.get_for_model(Gear)
+geartype_type = ContentType.objects.get_for_model(GearType)
+custom_field_type = ContentType.objects.get_for_model(CustomDataField)
 group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
@@ -121,6 +123,11 @@ def build_staffer():
         codename="change_member",
         name="Can do arbitrary changes to members",
         content_type=member_type)
+    add_permission(
+        codename="view_gear_type",
+        name="Can view gear types",
+        content_type=geartype_type
+    )
     staffer.permissions.set(all_permissions)
     staffer.save()
 
@@ -136,6 +143,36 @@ def build_board():
         codename="remove_gear",
         name="Can set gear to removed status",
         content_type=gear_type
+    )
+    add_permission(
+        codename="change_geartype",
+        name="Can change gear types",
+        content_type=geartype_type
+    )
+    add_permission(
+        codename="add_geartype",
+        name="Can change gear types",
+        content_type=geartype_type
+    )
+    add_permission(
+        codename="delete_geartype",
+        name="Can delete gear types",
+        content_type=geartype_type
+    )
+    add_permission(
+        codename="add_customdatafield",
+        name="Can add custom data fields",
+        content_type=custom_field_type
+    )
+    add_permission(
+        codename="change_customdatafield",
+        name="Can change custom data fields",
+        content_type=custom_field_type
+    )
+    add_permission(
+        codename="delete_customdatafield",
+        name="Can delete custom data fields",
+        content_type=custom_field_type
     )
     add_permission(
         codename="add_staffer",
