@@ -194,9 +194,11 @@ class GearManager(models.Manager):
         name += ", ".join(attributes)
         return name
 
-    def create(self, rfid, gear_type, name=None, **gear_data):
+    def _create(self, rfid, gear_type, name=None, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the gear_type
+
+        NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
 
         if not name:
@@ -222,8 +224,13 @@ class GearManager(models.Manager):
 
         return gear
 
-    def add(self, rfid, name, gear_type, **gear_data):
-        """Alias for gear creation"""
+    def _add(self, rfid, name, gear_type, **gear_data):
+        """
+        Alias for gear creation
+
+
+        NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
+        """
         return self.create(rfid, gear_type, name=name, **gear_data)
 
 
