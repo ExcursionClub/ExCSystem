@@ -147,10 +147,6 @@ class CustomDataField(models.Model):
         """Returns the object currently stored by this field"""
         if self.data_type == "choice":
             selected = data_dict["initial"]
-            for choice in data_dict["choices"]:
-                if choice[0] == selected:
-                    return choice [1]
-            raise KeyError(f"Selected choice ({selected}) not found for {self.name} field!")
         elif self.data_type == "reference":
             obj_type = data_dict["object_type"]
             model = importlib.import_module(f"core.models.{obj_type}")
@@ -159,9 +155,19 @@ class CustomDataField(models.Model):
             return data_dict["initial"]
 
     def get_str(self, data_dict):
+        """Get the string representation of the value of this field"""
         value = self.get_value(data_dict)
-        if value:
-            return f'{value} {self.suffix}'
+
+        # The string of choice should be the human readable version, not the actual value
+        if value and self.data_type == 'choice':
+            for choice in data_dict["choices"]:
+                if choice[0] == value:
+                    return choice[1]
+            raise KeyError(f"Selected choice ({value}) not found for {self.name} field!")
+
+        # If we got a value, connect it with the suffix to get the string representation
+        elif value:
+            return " ".join([str(value), self.suffix]).strip()
         else:
             return None
 
@@ -281,12 +287,14 @@ class Gear(models.Model):
 
         gear_data = json.loads(self.__getattribute__('gear_data'))
 
-        if item in gear_data.keys():
+        if item is None:
+            return self
+        elif item in gear_data.keys():
             gear_type = self.__getattribute__('geartype')
             field = gear_type.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
-            raise AttributeError(f'No field {item} for {self.__getattribute__("__name__")}!')
+            raise AttributeError(f'No field {item} for {repr(self)}!')
 
     @property
     def name(self):
