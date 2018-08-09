@@ -4,7 +4,7 @@ from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailVie
 
 class GearAdmin(ViewableModelAdmin):
     # Make all the data about a certification be shown in the list display
-    list_display = ("name", "geartype", "status", "checked_out_to", "due_date")
+    list_display = ("name", "status", "get_department", "checked_out_to", "due_date")
 
     # Choose which fields appear on the side as filters
     list_filter = ('status', "geartype__department", "geartype")

@@ -292,6 +292,10 @@ class Gear(models.Model):
     def __str__(self):
         return self.name
 
+    def get_department(self):
+        return self.geartype.department
+    get_department.short_description = "Department"
+
     def is_available(self):
         """Returns True if the gear is available for renting"""
         if self.status == 0:
