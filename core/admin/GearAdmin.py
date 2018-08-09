@@ -1,5 +1,5 @@
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.views.GearViews import GearDetailView, GearViewList
+from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
 
 
 class GearAdmin(ViewableModelAdmin):
@@ -25,4 +25,9 @@ class GearAdmin(ViewableModelAdmin):
 
     list_view = GearViewList
     detail_view_class = GearDetailView
+
+
+class GearTypeAdmin(ViewableModelAdmin):
+    detail_view_class = GearTypeDetailView
+
 
