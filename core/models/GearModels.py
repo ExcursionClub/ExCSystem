@@ -52,7 +52,7 @@ class CustomDataField(models.Model):
         "reference": ModelChoiceField
     }
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     data_type = models.CharField(max_length=20, choices=data_types)
     suffix = models.CharField(max_length=10)
 
@@ -274,6 +274,20 @@ class Gear(models.Model):
     def __str__(self):
         return self.name
 
+    def __getattr__(self, item):
+        """
+        Allows the values of CustomDataFields stored in GearType to be accessed as if they were attributes of Gear
+        """
+
+        gear_data = json.loads(self.__getattribute__('gear_data'))
+
+        if item in gear_data.keys():
+            gear_type = self.__getattribute__('geartype')
+            field = gear_type.data_fields.get(name=item)
+            return field.get_value(gear_data[item])
+        else:
+            raise AttributeError(f'No field {item} for {self.__getattribute__("__name__")}!')
+
     @property
     def name(self):
         """
@@ -283,10 +297,11 @@ class Gear(models.Model):
         """
 
         # Get all custom data fields for this data_type, except those that contain a reference
-        attr_fields = CustomDataField.objects.filter(geartype=self.geartype).exclude(data_type='reference')
+        attr_fields = self.geartype.data_fields.exclude(data_type='reference')
         attributes = []
+        gear_data = json.loads(self.gear_data)
         for field in attr_fields:
-            string = field.get_str(self.gear_data[field.name])
+            string = field.get_str(gear_data[field.name])
             if string:
                 attributes.append(str(string))
 
