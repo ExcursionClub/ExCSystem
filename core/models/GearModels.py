@@ -195,7 +195,6 @@ class GearManager(models.Manager):
         Name will be in the form: <GearType> - <attr 1>, <attr 2>, etc...
         """
 
-        name = f"{gear_type.name} - "
         # Get all custom data fields for this data_type, except those that contain a reference
         attr_fields = CustomDataField.objects.filter(geartype=gear_type).exclude(data_type='reference')
         attributes = []
@@ -203,7 +202,13 @@ class GearManager(models.Manager):
             value = gear_data[field.name]['initial']
             if value:
                 attributes.append(value)
-        name += ", ".join(attributes)
+
+        if attributes:
+            attr_string = ", ".join(attributes)
+            name = f'{gear_type.name} - {attr_string}'
+        else:
+            name = gear_type.name
+
         return name
 
     def _create(self, rfid, gear_type, name=None, **gear_data):
