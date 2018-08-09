@@ -215,7 +215,8 @@ print('Made departments')
 field_data = {
     "length": {
         "data_type": "float",
-        "initial": 0,
+        "suffix": "cm",
+        "initial": 12.5,
         "label": "length",
         "name": "length",
         "required": True,
@@ -223,7 +224,8 @@ field_data = {
     },
     "capacity": {
         "data_type": "int",
-        "initial": 0,
+        "initial": 3,
+        "suffix": "person",
         "label": "Number of people",
         "name": "capacity",
         "required": True,
@@ -233,7 +235,7 @@ field_data = {
     },
     "size": {
         "data_type": "choice",
-        "initial": "--",
+        "initial": "S",
         "label": "Size",
         "name": "size",
         "required": True,
@@ -247,7 +249,7 @@ field_data = {
     },
     "manufacturer": {
         "data_type": "string",
-        "initial": "Unknown",
+        "initial": "Patagonia",
         "label": "Manufacturer",
         "name": "manufacturer",
         "required": True,
@@ -284,7 +286,12 @@ field_data = {
 }
 custom_fields = []
 for field_name in field_data.keys():
-    field = CustomDataField(name=field_name, data_type=field_data[field_name]['data_type'])
+    field = CustomDataField(
+        name=field_name,
+        data_type=field_data[field_name]['data_type']
+    )
+    if 'suffix' in field_data[field_name].keys():
+        field.suffix = field_data[field_name]['suffix']
     field.save()
     custom_fields.append(field)
 
@@ -320,8 +327,8 @@ for name in bar(gear_type_names):
         department=pick_random(departments),
     )
     gear_type.save()
-    # Add between 1 and 3 custom fields
-    for i in range(1, randint(2, 4)):
+    # Add between 1 and 4 custom fields
+    for i in range(1, randint(2, 5)):
         gear_type.data_fields.add(pick_random(custom_fields))
     gear_type.save()
     gear_types.append(gear_type)
