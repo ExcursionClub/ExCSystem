@@ -109,8 +109,9 @@ class CustomDataField(models.Model):
         if object_type:
             kwargs['app_label'] = object_type._meta.app_label
             kwargs['model_name'] = object_type.__name__
-        elif 'app_label' in kwargs and 'model_name' in kwargs:
-            object_type = importlib.__import__(f"{kwargs['app_label']}.models", fromlist=(kwargs['model_name'],))
+        elif 'app_label' in kwargs.keys() and 'model_name' in kwargs.keys():
+            module = importlib.import_module(f"{kwargs['app_label']}.models")
+            object_type = getattr(module, kwargs['model_name'])
 
         if not selectable_objects:
             selectable_objects = object_type.objects.all()
@@ -118,8 +119,8 @@ class CustomDataField(models.Model):
         return {
             "initial": str(obj) if obj else None,
             "pk": obj.pk if obj else None,
-            "app_label": object_type._meta.app_label,
-            "model_name": object_type.__name__,
+            "app_label": kwargs['app_label'],
+            "model_name": kwargs['model_name'],
             "selectable_objects": serializers.serialize("json", selectable_objects)
         }
     
