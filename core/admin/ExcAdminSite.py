@@ -62,7 +62,7 @@ class ExcursionAdmin(AdminSite):
 
             if perms.get('add'):
                 try:
-                    model_dict['add_url'] = reverse(f'admin{app_label}_{model_name}_add', current_app=self.name)
+                    model_dict['add_url'] = reverse(f'admin:{app_label}_{model_name}_add', current_app=self.name)
                 except NoReverseMatch:
                     pass
 
