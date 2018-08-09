@@ -140,7 +140,8 @@ class TransactionManager(models.Manager):
 
         # Create the gear, because it is needed for creating the transaction
         gear = Gear.objects._create(gear_rfid, gear_type, **init_data)
-        gear.min_required_certs.add(required_certs)
+        if required_certs:
+            gear.min_required_certs.add(required_certs)
         gear.save()
         if is_new:
             comment = "Newly Acquired"
