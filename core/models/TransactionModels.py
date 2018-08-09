@@ -118,7 +118,7 @@ class TransactionManager(models.Manager):
 
         return transaction
 
-    def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs, is_new=True):
+    def add_gear(self, authorizer_rfid, gear_rfid, gear_type, *required_certs, is_new=True, **init_data):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -127,21 +127,20 @@ class TransactionManager(models.Manager):
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being added
-        :param gear_name: string, the name of the piece of gear to be checked out
-        :param gear_department: the department this gear belongs in
+        :param gear_type: the type of gear that this is
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :param is_new: bool, notes whether this piece of gear was just acquired by the club. If the piece of gear is not
             newly acquired by the club, then it might be a piece of gear that lost it's tag!
+        :param init_data: any additional data about the gear
+
         :return: Transaction (the transaction logging this gear addition), gear (the new piece of gear)
         """
         # First must make sure that the rfid is not in use by anything
         validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
-        gear = Gear(rfid=gear_rfid, name=gear_name, department=gear_department, status=0)
-        gear.save()
-        for cert in required_certs:
-            gear.min_required_certs.add(cert)
+        gear = Gear.objects.create(gear_rfid, gear_type, **init_data)
+        gear.min_required_certs.add(required_certs)
         gear.save()
         if is_new:
             comment = "Newly Acquired"
