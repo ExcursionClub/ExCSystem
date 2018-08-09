@@ -191,10 +191,12 @@ class GearManager(models.Manager):
 
         name = f"{gear_type.name} - "
         # Get all custom data fields for this data_type, except those that contain a reference
-        attr_fields = CustomDataField.objects.filter(gear_type=gear_type).exclude(data_type='reference')
+        attr_fields = CustomDataField.objects.filter(geartype=gear_type).exclude(data_type='reference')
         attributes = []
         for field in attr_fields:
-            attributes.append(gear_data[field.name])
+            value = gear_data[field.name]['initial']
+            if value:
+                attributes.append(value)
         name += ", ".join(attributes)
         return name
 
@@ -213,11 +215,11 @@ class GearManager(models.Manager):
             rfid=rfid,
             name=name,
             status=0,
-            gear_type=gear_type
+            geartype=gear_type
         )
 
         # Filter out any passed data that is not referenced by the gear type
-        extra_fields = CustomDataField.objects.filter(gear_type=gear_type)
+        extra_fields = CustomDataField.objects.filter(geartype=gear_type)
         data_dict = {
             field.name: field.serialize(gear_data[field.name]) for field in extra_fields
         }
@@ -243,7 +245,7 @@ class Gear(models.Model):
     The base model for a piece of gear
     """
 
-    objects = GearManager
+    objects = GearManager()
 
     class Meta:
         verbose_name_plural = "Gear"
@@ -270,7 +272,7 @@ class Gear(models.Model):
     #: The date at which this gear is due to be returned, null if not checked out
     due_date = models.DateField(null=True, default=None)
 
-    gear_type = models.ForeignKey(GearType, on_delete=models.CASCADE)
+    geartype = models.ForeignKey(GearType, on_delete=models.CASCADE)
 
     gear_data = models.CharField(max_length=2000)
 
