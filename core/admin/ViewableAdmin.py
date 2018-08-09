@@ -39,7 +39,7 @@ class ViewableModelAdmin(ModelAdmin):
     def has_view_permission(self, request):
         opts = self.opts
         codename = get_permission_codename('view', opts)
-        return request.user.has_perm("%s.%s" % (opts.app_label, codename))
+        return request.user.has_perm(f'{opts.app_label}.{codename}')
 
     def get_model_perms(self, request):
         """
