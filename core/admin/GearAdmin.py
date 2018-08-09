@@ -7,7 +7,7 @@ class GearAdmin(ViewableModelAdmin):
     list_display = ("name", "geartype", "status", "checked_out_to", "due_date")
 
     # Choose which fields appear on the side as filters
-    list_filter = ('status', "geartype", "geartype__department")
+    list_filter = ('status', "geartype__department", "geartype")
 
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
