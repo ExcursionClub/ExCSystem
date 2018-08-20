@@ -41,14 +41,14 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                 gear = gear.get()
                 if gear.is_rented_out():
                     do_checkin(staffer_rfid, rfid)
-                    alert_message = gear.name + " was checked in successfully"
+                    alert_message = f'{gear.name} was checked in successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = gear.name + " is already checked in"
+                    alert_message = f'{gear.name} is already checked in'
                     messages.add_message(request, messages.INFO, alert_message)
                     return redirect('home')
             else:
-                alert_message = "The RFID tag is not registered to a user or gear"
+                alert_message = 'The RFID tag is not registered to a user or gear'
                 messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('home')
@@ -80,13 +80,13 @@ class CheckOutView(View):
                 gear = gear.get()
                 if gear.is_available():
                     do_checkout(staffer_rfid, member_rfid, gear.rfid)
-                    alert_message = gear.name + " was checked out successfully"
+                    alert_message = f'{gear.name} was checked out successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = "Gear is already rented out"
+                    alert_message = 'Gear is already rented out'
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = "The RFID tag is not registered to a piece of gear"
+                alert_message = 'The RFID tag is not registered to a piece of gear'
                 messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('check_out', member_rfid)
