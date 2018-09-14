@@ -5,7 +5,7 @@ from typing import Any, List, Optional, Union
 import django
 # Will raise an exception if not run here
 # django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.production')
 django.setup()
 
 import kiosk.CheckoutLogic as logic
