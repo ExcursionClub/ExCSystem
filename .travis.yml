@@ -12,7 +12,6 @@ before_script:
   - psql -c "CREATE DATABASE testdb;" -U postgres
   - psql -c "CREATE USER myuser WITH PASSWORD 'password';" -U postgres
   - psql -c "ALTER USER myuser CREATEDB;" -U postgres
-  - python manage.py migrate
 script:
   - python manage.py test
 addons:
