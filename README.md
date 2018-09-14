@@ -99,3 +99,123 @@ ever running the project, though with the database populated with dummy data. Ru
 NOTE: Neither the database, nor anything in the migrations directory
 should ever be pushed to the git repo. The migrations directory on the
  git repo is intentionally there and empty to simplify initial setup.
+
+## AWS Deployment
+Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH into the instance
+
+### Upgrade packages and install dependencies
+```
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get install python3.7 nginx python3-pip libpq-dev python3.7-dev postgresql postgresql-contrib  -y
+
+# Update symlink to point to Python3.7
+sudo rm /usr/bin/python3
+sudo ln -s /usr/bin/python3.7 /usr/bin/python3
+```
+
+### Nginx config
+
+Edit the ngingx config file so it looks like this:
+
+
+```
+# sudo vim /etc/nginx/sites-available/excsystem.conf
+
+server {
+
+  listen 80;
+  # Type your domain name below
+  server_name _;
+
+# Always serve index.html for any request
+  location / {
+      proxy_pass http://localhost:8000;
+      proxy_http_version 1.1;
+      proxy_set_header Host $host;
+  }
+  location /static/ {
+      alias   /var/www/static/;
+  }
+
+  location /media/ {
+      alias   /var/www/media/;
+  }
+
+  location /admin/ {
+    proxy_pass http://localhost:8000/admin/;
+    proxy_http_version 1.1;
+    proxy_set_header Host $host;
+  }
+}
+```
+
+
+```
+sudo ln -s /etc/nginx/sites-available/excsystem.conf /etc/nginx/sites-enabled/excsystem.conf
+sudo rm sites-enabled/default
+sudo nginx -t
+sudo service nginx reload
+```
+
+### Update AWS security groups to enable HTTP traffic
+
+
+### Postgres
+
+Get newest server code:
+`git clone https://github.com/ExcursionClub/ExCSystem.git
+`
+
+```
+sudo -su postgres
+createuser --interactive -P
+
+###
+# If you need to delete the db run:
+psql
+drop database excsystem;
+create database excsystem;
+grant ALL ON database excsystem to admin;
+###
+
+sudo -su postgres
+createuser --interactive -P
+Enter name of role to add: admin
+Enter password for new role:
+Enter it again:
+Shall the new role be a superuser? (y/n) n
+Shall the new role be allowed to create databases? (y/n) y
+Shall the new role be allowed to create more new roles? (y/n) n
+
+createdb --owner admin excsystem
+psql
+grant ALL ON database excsystem to admin;
+
+pip3 install -r requirements/production.txt
+```
+
+### Move env vars to .bashrc
+```
+export DJANGO_SECRET_KEY=
+export POSTGRES_USER=admin
+export POSTGRES_PASSWORD=
+```
+
+### Create folders for static files
+```
+sudo mkdir /var/www/static
+sudo mkdir /var/www/media
+sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
+python3 manage.py collectstatic
+```
+
+
+### Final setup
+```
+python3 manage.py migrate
+python3 PopluateDatabase.py
+
+nohup python3 manage.py runserver &
+(fg brings process to current shell)
+```
