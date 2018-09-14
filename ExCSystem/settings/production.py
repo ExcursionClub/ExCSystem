@@ -1,5 +1,7 @@
 from ExCSystem.settings.base import *
 
+MEDIA_ROOT = '/var/www/media/'
+STATIC_ROOT = '/var/www/static/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
@@ -8,10 +10,10 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'excsystem',
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': 5432
     }
 }

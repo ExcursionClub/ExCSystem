@@ -4,10 +4,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
 
@@ -87,10 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
 PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
 
 LANGUAGE_CODE = 'en-us'
@@ -104,10 +96,8 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
