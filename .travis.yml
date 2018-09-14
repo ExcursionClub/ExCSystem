@@ -3,8 +3,12 @@ sudo: false
 
 language: python
 python:
-  - "3.6"
+  - "3.7"
 install:
-  - "pip install -r requirements/development.txt"
+  - pip install -r requirements/production.txt
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database excsystem;' -U admin
 script:
-  - "python manage.py test"
+  - python manage.py test
