@@ -4,11 +4,11 @@ sudo: false
 language: python
 python:
   - "3.6"
-install:
-  - pip install -r requirements/production.txt
 services:
   - postgresql
+install:
+  - pip install -r requirements/production.txt
 before_script:
-  - psql -c 'create database excsystem;' -U admin
+  - psql -c 'CREATE DATABASE excsystem;' -U postgres
 script:
   - python manage.py test
