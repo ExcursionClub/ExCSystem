@@ -171,7 +171,7 @@ class CustomDataField(models.Model):
         else:
             return None
 
-    def get_field(self, init_data, current=None):
+    def get_field(self, data_type=None, current=None, **init_data):
         """Returns the appropriate FormField for the current data type"""
         # If a current field value is passed, set it as the initial value for the returned form field
         if current is not None:
@@ -200,6 +200,13 @@ class GearType(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_field_names(self):
+        """Return a list of the names of fields included in this gear type"""
+        field_names = []
+        for field in self.data_fields.all():
+            field_names.append(field.name)
+        return field_names
 
 
 class GearManager(models.Manager):
@@ -294,7 +301,17 @@ class Gear(models.Model):
             field = gear_type.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
-            raise AttributeError(f'No field {item} for {repr(self)}!')
+            raise AttributeError(f'No attribute {item} for {repr(self)}!')
+
+    def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
+        """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
+        fieldset = (
+            name, {
+                'classes': classes,
+                'fields': self.geartype.get_field_names()
+            }
+        )
+        return fieldset
 
     @property
     def name(self):

@@ -1,5 +1,10 @@
+import json
+
+from collections import OrderedDict
+
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
+from core.forms.GearForms import GearChangeForm
 
 
 class GearAdmin(ViewableModelAdmin):
@@ -12,7 +17,7 @@ class GearAdmin(ViewableModelAdmin):
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
 
-    fieldsets = (
+    fieldsets = [
         ('Gear Info', {
             'classes': ('wide',),
             'fields': ("rfid", "geartype"),
@@ -21,14 +26,39 @@ class GearAdmin(ViewableModelAdmin):
             'classes': ('wide',),
             'fields': ("status", "checked_out_to", "due_date")
         }),
-        ('Additional Info', {
-            'classes': ('wide', ),
-            'fields': ('gear_data',)
-        })
-    )
+    ]
+
+    form = GearChangeForm
 
     list_view = GearViewList
     detail_view_class = GearDetailView
+
+    def get_fieldsets(self, request, obj=None):
+        """Add in the dynamic fields defined by geartype into the fieldsets (so django knows how to display them)"""
+        fieldsets = super(GearAdmin, self).get_fieldsets(request, obj=obj)
+        fieldsets += [obj.get_extra_fieldset()]  # Using append results in multiple copies of the extra fields
+        return tuple(fieldsets)
+    
+    def get_form(self, request, obj=None, **kwargs):
+        """Manually insert the form fields for our dynamic fields into the admin form so the data can be edited"""
+        # Load the basic form, including an empty (required) attributes
+        new_attrs = OrderedDict()
+        extended_form = type(self.form.__name__, (self.form,), new_attrs)
+
+        # Load all the fields that need to be added dynamically from the geartype
+        gear_data = json.loads(obj.gear_data)
+        extra_fields = obj.geartype.data_fields.all()
+
+        # For each dynamic field, add it to declared fields and the fields list (returned here)
+        for field in extra_fields:
+            field_data = gear_data[field.name]
+            form_field = field.get_field(field_data)
+            extended_form.declared_fields.update({field.name: form_field})
+        return super(GearAdmin, self).get_form(request, obj=obj, form=extended_form, **kwargs)
+
+    # Add the extra fields specified by the gear type to fieldsets
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        return super(GearAdmin, self).change_view(request, object_id, form_url=form_url)
 
 
 class GearTypeAdmin(ViewableModelAdmin):
