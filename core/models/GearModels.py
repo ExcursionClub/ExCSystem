@@ -84,6 +84,8 @@ class CustomDataField(models.Model):
     def serialize_boolean(self, boolean, **kwargs):
         return {
             "initial": boolean,
+            "blank": True,
+            "null": True
         }
 
     def serialize_int(self, value, min_value=-100, max_value=100, **kwargs):
@@ -171,12 +173,18 @@ class CustomDataField(models.Model):
         else:
             return None
 
-    def get_field(self, data_type=None, current=None, **init_data):
+    def get_field(self, current=None, **init_data):
         """Returns the appropriate FormField for the current data type"""
+
         # If a current field value is passed, set it as the initial value for the returned form field
         if current is not None:
             init_data['initial'] = current
 
+        # Remove data that is used for reference in JSON format, but would interfere with form field instantiation
+        init_data.pop('name')
+        init_data.pop('data_type')
+
+        # Make sure that the default widget for this data type is used
         init_data['widget'] = self.widgets[self.data_type]
 
         # Only reference fields need special attention

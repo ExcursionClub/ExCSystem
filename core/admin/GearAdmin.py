@@ -52,7 +52,7 @@ class GearAdmin(ViewableModelAdmin):
         # For each dynamic field, add it to declared fields and the fields list (returned here)
         for field in extra_fields:
             field_data = gear_data[field.name]
-            form_field = field.get_field(field_data)
+            form_field = field.get_field(**field_data)
             extended_form.declared_fields.update({field.name: form_field})
         return super(GearAdmin, self).get_form(request, obj=obj, form=extended_form, **kwargs)
 
