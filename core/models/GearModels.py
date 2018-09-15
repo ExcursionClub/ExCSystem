@@ -273,10 +273,10 @@ class Gear(models.Model):
     min_required_certs = models.ManyToManyField(Certification, verbose_name="Minimal Certifications Required for Rental")
 
     #: Who currently has this piece of gear. If null, then the gear is not checked out
-    checked_out_to = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+    checked_out_to = models.ForeignKey(Member, blank=True, null=True, on_delete=models.SET_NULL)
 
     #: The date at which this gear is due to be returned, null if not checked out
-    due_date = models.DateField(null=True, default=None)
+    due_date = models.DateField(blank=True, null=True, default=None)
 
     geartype = models.ForeignKey(GearType, on_delete=models.CASCADE)
 
