@@ -36,7 +36,7 @@ class GearAdmin(ViewableModelAdmin):
     def get_fieldsets(self, request, obj=None):
         """Add in the dynamic fields defined by geartype into the fieldsets (so django knows how to display them)"""
         fieldsets = super(GearAdmin, self).get_fieldsets(request, obj=obj)
-        fieldsets += [obj.get_extra_fieldset()]  # Using append results in multiple copies of the extra fields
+        fieldsets = fieldsets + [obj.get_extra_fieldset()]  # Using append gives multiple copies of the extra fields
         return tuple(fieldsets)
     
     def get_form(self, request, obj=None, **kwargs):
@@ -55,10 +55,6 @@ class GearAdmin(ViewableModelAdmin):
             form_field = field.get_field(field_data)
             extended_form.declared_fields.update({field.name: form_field})
         return super(GearAdmin, self).get_form(request, obj=obj, form=extended_form, **kwargs)
-
-    # Add the extra fields specified by the gear type to fieldsets
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        return super(GearAdmin, self).change_view(request, object_id, form_url=form_url)
 
 
 class GearTypeAdmin(ViewableModelAdmin):
