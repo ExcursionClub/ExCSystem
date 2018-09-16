@@ -16,3 +16,5 @@ MEDIA_URL = '/media/'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1024
 
+# Base address of where the page is available
+WEB_BASE = "http://127.0.0.1:8000"

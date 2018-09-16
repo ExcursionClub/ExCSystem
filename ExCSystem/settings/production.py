@@ -21,3 +21,6 @@ DATABASES = {
 # Email host settings
 EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
 EMAIL_PORT = 587
+
+# Base address of where the page is available
+WEB_BASE = "http://34.243.50.198"

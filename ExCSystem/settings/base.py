@@ -101,6 +101,3 @@ MEDIA_URL = '/media/'
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-
-# Base address of where the page is available
-WEB_BASE = "http://127.0.0.1:8000"
