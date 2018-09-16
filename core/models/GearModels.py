@@ -129,9 +129,14 @@ class CustomDataField(models.Model):
     
     def get_reference_field(self, pk=None, app_label=None, model_name=None, selectable_objects=None, **init_data):
         object_type = apps.get_model(app_label, model_name)
-        init_data["initial"] = object_type.objects.get(pk=pk)
+        if pk:
+            init_data["initial"] = object_type.objects.get(pk=pk)
         if selectable_objects:
-            selectable_objects = serializers.deserialize('json', selectable_objects)
+            selectable_objects = json.loads(selectable_objects)
+            object_ids = []
+            for obj in selectable_objects:
+                object_ids.append(obj["pk"])
+            selectable_objects = object_type.objects.filter(pk__in=object_ids)
         return ModelChoiceField(selectable_objects, **init_data)
 
     def serialize(self, required=False, label="", initial=None, help_text="", **kwargs):
