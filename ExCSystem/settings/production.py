@@ -17,3 +17,7 @@ DATABASES = {
         'PORT': 5432
     }
 }
+
+# Email host settings
+EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'
+EMAIL_PORT = 587
