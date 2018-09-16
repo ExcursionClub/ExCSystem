@@ -267,7 +267,7 @@ field_data = {
     },
     "a_rfid": {
         "data_type": "rfid",
-        "initial": None,
+        "initial": "",
         "label": "a rfid to something",
         "name": "a_rfid",
         "required": True,
