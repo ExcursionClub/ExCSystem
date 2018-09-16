@@ -7,7 +7,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from ExCSystem.settings.base import WEB_BASE
+from ExCSystem.settings import WEB_BASE
 from core.models import Member, Staffer
 from core.models.QuizModels import Question, Answer
 from core.convinience import get_all_rfids
