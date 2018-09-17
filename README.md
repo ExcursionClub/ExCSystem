@@ -1,9 +1,7 @@
 # ExCSystem [![Build Status](https://travis-ci.org/ExcursionClub/ExCSystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/ExCSystem)
-
 Bottom up re-design of the Excursion system
 
 ## Getting Started
-
 This project requires python3.6, virtualenv. There are two ways to setup the project:
 
 ### The Hard Way
@@ -42,7 +40,6 @@ $ yapf -i <file>
 ```
 
 ### Unit Tests
-
 TravisCI will run tests on all PRs.
 
 To run tests locally:
@@ -61,7 +58,6 @@ $ python3 functional_tests.py
 ```
 
 ## Applying Changes to the Models</b>
-
 Most changes to the code will be incorporated into the website
 immediately. The exception to this rule are any changes to the models
 that affect how data is stored in the database. To incorporate these,
@@ -77,7 +73,6 @@ If an error pops up, and there is not important information in the
 database, you can reset the database (see below).
 
 ## Resetting the Database
-
 If you at any point make a significant change to how data is stored in
 the database, chances are that you will run into migration conflicts
 when running the `makemigrations` and `migrate` commands. In the early
@@ -104,6 +99,16 @@ should ever be pushed to the git repo. The migrations directory on the
 Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH into the instance
 
 ### Upgrade packages and install dependencies
+Linux
+```
+sudo yum -y update
+
+Install packages
+sudo yum -y install gcc git python3 nginx python3-pip libpq-dev python3-devel postgresql postgresql-contrib postgresql-devel
+sudo amazon-linux-extras install nginx1.12
+```
+
+Ubuntu
 ```
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -115,13 +120,10 @@ sudo ln -s /usr/bin/python3.7 /usr/bin/python3
 ```
 
 ### Nginx config
+Remove the server block in nginx.conf`
 
-Edit the ngingx config file so it looks like this:
-
-
+Create a conf file in /etc/nginx/conf.d
 ```
-# sudo vim /etc/nginx/sites-available/excsystem.conf
-
 server {
 
   listen 80;
@@ -150,7 +152,13 @@ server {
 }
 ```
 
+Linux
+```
+sudo service nginx start
+sudo nginx -s reload
+```
 
+Ubuntu
 ```
 sudo ln -s /etc/nginx/sites-available/excsystem.conf /etc/nginx/sites-enabled/excsystem.conf
 sudo rm sites-enabled/default
@@ -159,14 +167,18 @@ sudo service nginx reload
 ```
 
 ### Update AWS security groups to enable HTTP traffic
-
+Add HTTP and HTTPS rule
 
 ### Postgres
+Use RDS to create a free-tier Postgres instance. This will also create a default database.
 
-Get newest server code:
-`git clone https://github.com/ExcursionClub/ExCSystem.git
-`
+Since the database is on a different server than the app, it needs a more describing name. Something like this:
+The hostname `excursion.xho0gsojfppx.us-east-1.rds.amazonaws.com`
 
+Connect to the database with psql from the EC2 instance. This way you don't have to open the network to the outside world.
+`psql --host=mypostgresql.c6c2mwvddgv0.us-west-2.rds.amazonaws.com --port=5432 --username=awsuser --password --dbname=mypgdb`
+
+Local
 ```
 sudo -su postgres
 createuser --interactive -P
@@ -191,18 +203,41 @@ Shall the new role be allowed to create more new roles? (y/n) n
 createdb --owner admin excsystem
 psql
 grant ALL ON database excsystem to admin;
-
-pip3 install -r requirements/production.txt
 ```
 
 ### Move env vars to .bashrc
+This is a a way to get secrets into the code and not tracking them in version git.
+
+Generate keys:
+`python manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'`
+
 ```
 export DJANGO_SECRET_KEY=
-export POSTGRES_USER=admin
+export POSTGRES_USER=
 export POSTGRES_PASSWORD=
+export POSTGRES_HOST=
+```
+
+### App setup
+```
+git clone https://github.com/ExcursionClub/ExCSystem.git
+cd ExCSystem
+sudo pip3 install -r requirements/production.txt
+python3 manage.py migrate
+
+### Test data
+python3 PopluateDatabase.py
 ```
 
 ### Create folders for static files
+Linux
+```
+# Location?
+sudo chown ec2-user:ec2-user /var/www/static/ /var/www/media/
+python3 manage.py collectstatic
+```
+
+# Ubuntu
 ```
 sudo mkdir /var/www/static
 sudo mkdir /var/www/media
@@ -210,12 +245,9 @@ sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
 python3 manage.py collectstatic
 ```
 
-
-### Final setup
+### Run
 ```
-python3 manage.py migrate
-python3 PopluateDatabase.py
-
 nohup python3 manage.py runserver &
-(fg brings process to current shell)
+This will run Django in the background, even after you exit your SSH session.
+('fg' brings process to current shell)
 ```
