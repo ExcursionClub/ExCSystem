@@ -116,7 +116,7 @@ class TransactionManager(models.Manager):
         gear.due_date = return_date
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def add_gear(self, authorizer_rfid, gear_rfid, gear_type, *required_certs, is_new=True, **init_data):
         """
@@ -183,7 +183,7 @@ class TransactionManager(models.Manager):
         gear.due_date = None
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def retag_gear(self, authorizer_rfid, old_rfid, new_rfid):
         """
@@ -208,7 +208,7 @@ class TransactionManager(models.Manager):
         gear.rfid = new_rfid
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def fix_gear(self, authorizer_rfid, gear_rfid, repairs_description, person_repairing):
         """
@@ -232,7 +232,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 0
         gear.save()
-        return transaction
+        return transaction, gear
 
     def break_gear(self, authorizer_rfid, gear_rfid, damage_description):
         """
@@ -255,7 +255,7 @@ class TransactionManager(models.Manager):
         gear.set_status = 2
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def missing_gear(self, authorizer_rfid, gear_rfid):
         """
@@ -277,7 +277,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 3
         gear.save()
-        return transaction
+        return transaction, gear
 
     def expire_gear(self, authorizer_rfid, gear_rfid):
         """
@@ -300,7 +300,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 4
         gear.save()
-        return transaction
+        return transaction, gear
 
     def delete_gear(self, authorizer_rfid, gear_rfid, reason):
         """
@@ -324,7 +324,7 @@ class TransactionManager(models.Manager):
         gear.checked_out_to = None
         gear.department.notify_gear_removed()
 
-        return transaction
+        return transaction, gear
 
     def override(self, authorizer_rfid, gear_rfid, **kwargs):
         """
@@ -359,7 +359,7 @@ class TransactionManager(models.Manager):
 
         # Save the changes made in a transaction
         transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=action)
-        return transaction
+        return transaction, gear
 
 
 class Transaction(models.Model):
