@@ -288,7 +288,10 @@ custom_fields = []
 for field_name in field_data.keys():
     field = CustomDataField(
         name=field_name,
-        data_type=field_data[field_name]['data_type']
+        data_type=field_data[field_name]['data_type'],
+        label=field_data[field_name]['label'],
+        required=field_data[field_name]['required'],
+        help_text=field_data[field_name]['help_text']
     )
     if 'suffix' in field_data[field_name].keys():
         field.suffix = field_data[field_name]['suffix']
