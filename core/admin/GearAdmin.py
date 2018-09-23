@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
-from core.forms.GearForms import GearChangeForm, GearAddFormStart
+from core.forms.GearForms import GearChangeForm, GearAddForm
 
 
 class GearAdmin(ViewableModelAdmin):
@@ -29,8 +29,7 @@ class GearAdmin(ViewableModelAdmin):
     ]
 
     form = GearChangeForm
-    initial_add_form = GearAddFormStart
-    finish_add_form = GearChangeForm  # Hijack gear change to finalize the addition process TODO: Might want dedicated
+    add_form = GearAddForm
 
     list_view = GearViewList
     detail_view_class = GearDetailView
@@ -72,7 +71,7 @@ class GearAdmin(ViewableModelAdmin):
         else:
             # Load the add form, including an empty (required) attributes
             new_attrs = OrderedDict()
-            add_form = type(self.initial_add_form.__name__, (self.initial_add_form,), new_attrs)
+            add_form = type(self.add_form.__name__, (self.add_form,), new_attrs)
             add_form.authorizer_rfid = request.user.rfid
             return super(GearAdmin, self).get_form(request, obj=None, form=add_form, **kwargs)
 

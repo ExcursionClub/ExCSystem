@@ -38,12 +38,12 @@ class GearChangeForm(ModelForm):
         transaction, gear = Transaction.objects.override(
             self.authorizer_rfid,
             gear_rfid,
-            self.cleaned_data
+            **change_data
         )
         return gear
 
 
-class GearAddFormStart(ModelForm):
+class GearAddForm(ModelForm):
     """The form used to set the initial data about a new piece of gear"""
 
     class Meta:
@@ -52,21 +52,25 @@ class GearAddFormStart(ModelForm):
     authorizer_rfid = None
 
     def __init__(self, *args, **kwargs):
-        super(GearAddFormStart, self).__init__(*args, **kwargs)
+        super(GearAddForm, self).__init__(*args, **kwargs)
         # Don't disable geartype, this is the only time it should be editable
         # Set the default status to be in stock
         self.fields["status"].initial = 0
 
-    def clean_gear_data(self):
+    def build_gear_data(self):
         """During the initial creation of the gear, the gear data JSON must be created."""
-        gear_data_dict = {}
-        return json.dumps(gear_data_dict)
+        gear_type = self.instance.geartype
+        return gear_type.build_empty_data()
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
-        Transaction.objects.add_gear(
+        # We will always commit the save, so make sure m2m fields are always saved
+        self.save_m2m = self._save_m2m
+
+        transaction, gear = Transaction.objects.add_gear(
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
-            **self.cleaned_data['gear_data']
+            **self.build_gear_data()
         )
+        return gear
