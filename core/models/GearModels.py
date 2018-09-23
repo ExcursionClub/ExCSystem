@@ -32,7 +32,7 @@ class CustomDataField(models.Model):
         ("reference", "Object name linked to the object")
     )
     widgets = {
-        "rfid": RFIDWidget,
+        "rfid": TextInput,
         "text": Textarea,
         "string": TextInput,
         "boolean": CheckboxInput,
