@@ -7,6 +7,8 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group,
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from ExCSystem import settings
+
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
 
@@ -186,7 +188,7 @@ class Member(AbstractBaseUser):
         template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
         template = template_file.read()
         body = template.format(finish_signup_url=finish_signup_url)
-        self.send_email(title, body, from_email='membership@excursionclubucsb.org')
+        self.send_email(title, body, from_email=settings.MEMBERSHIP_EMAIL_HOST_USER)
 
     def has_perm(self, perm, obj=None):
         if '.' in perm:
