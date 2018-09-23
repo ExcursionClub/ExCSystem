@@ -87,7 +87,6 @@ class CustomDataField(models.Model):
     def serialize_boolean(self, boolean, **kwargs):
         return {
             "initial": boolean,
-            "blank": True,
             "null": True
         }
 
