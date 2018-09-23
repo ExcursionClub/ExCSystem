@@ -55,6 +55,9 @@ class CustomDataField(models.Model):
     name = models.CharField(max_length=30, unique=True)
     data_type = models.CharField(max_length=20, choices=data_types)
     suffix = models.CharField(max_length=10)
+    required = models.BooleanField(default=False)
+    label = models.CharField(max_length=30, default="")
+    help_text = models.CharField(max_length=200, default="")
 
     def __str__(self):
         name = self.name
@@ -139,15 +142,15 @@ class CustomDataField(models.Model):
             selectable_objects = object_type.objects.filter(pk__in=object_ids)
         return ModelChoiceField(selectable_objects, **init_data)
 
-    def serialize(self, required=False, label="", initial=None, help_text="", **kwargs):
+    def serialize(self, required=None, label=None, initial=None, help_text=None, **kwargs):
         """Execute the serialize function appropriate for the current data type"""
         serialize_function = getattr(self, f"serialize_{self.data_type}")
         serialized = serialize_function(initial, **kwargs)
         serialized["data_type"] = self.data_type
         serialized["name"] = self.name
-        serialized["required"] = required
-        serialized["label"] = label
-        serialized["help_text"] = help_text
+        serialized["required"] = required if required else self.required
+        serialized["label"] = label if label else self.label
+        serialized["help_text"] = help_text if help_text else self.help_text
         return serialized
 
     def get_value(self, data_dict):
@@ -220,6 +223,14 @@ class GearType(models.Model):
         for field in self.data_fields.all():
             field_names.append(field.name)
         return field_names
+
+    def build_empty_data(self):
+        """Construct a empty gear data dict that contains no gear data"""
+        data_dict = {}
+        for field in self.data_fields.all():
+            data_dict[field.name] = field.serialize()
+        return data_dict
+
 
 
 class GearManager(models.Manager):
