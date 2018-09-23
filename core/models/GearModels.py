@@ -1,4 +1,3 @@
-import importlib
 import json
 
 from django.db import models
@@ -10,14 +9,7 @@ from django.forms.widgets import TextInput, Textarea, NumberInput, CheckboxInput
 from core.forms.widgets.RFIDWidget import RFIDWidget
 
 from django.forms.fields import CharField, ChoiceField, IntegerField, FloatField, BooleanField
-from django.forms.models import ModelChoiceField
 from core.forms.fields.RFIDField import RFIDField
-
-from django.core import serializers
-from django.apps import apps
-
-# TODO: subclass Gear for all the different types of gear
-# TODO: figure out how to "subclass" via the django admin, so a new type of gear could be added if necessary
 
 
 class CustomDataField(models.Model):
@@ -29,7 +21,6 @@ class CustomDataField(models.Model):
         ("int", "Integer value"),
         ("float", "Float value"),
         ("choice", "Short string selectable from a list"),
-        ("reference", "Object name linked to the object")
     )
     widgets = {
         "rfid": TextInput,
@@ -39,7 +30,6 @@ class CustomDataField(models.Model):
         "int": NumberInput,
         "float": NumberInput,
         "choice": Select,
-        "reference": Select
     }
     fields = {
         "rfid": RFIDField,
@@ -49,7 +39,6 @@ class CustomDataField(models.Model):
         "int": IntegerField,
         "float": FloatField,
         "choice": ChoiceField,
-        "reference": ModelChoiceField
     }
 
     name = models.CharField(max_length=30, unique=True)
@@ -84,10 +73,10 @@ class CustomDataField(models.Model):
             "strip": strip
         }
 
-    def serialize_boolean(self, boolean, **kwargs):
+    def serialize_boolean(self, boolean, required=False, **kwargs):
         return {
             "initial": boolean,
-            "null": True
+            "required": required
         }
 
     def serialize_int(self, value, min_value=-100, max_value=100, **kwargs):
@@ -110,37 +99,6 @@ class CustomDataField(models.Model):
             "choices": choices
         }
 
-    def serialize_reference(self, obj, object_type=None, selectable_objects=None, **kwargs):
-        if object_type:
-            kwargs['app_label'] = object_type._meta.app_label
-            kwargs['model_name'] = object_type.__name__
-        elif 'app_label' in kwargs.keys() and 'model_name' in kwargs.keys():
-            module = importlib.import_module(f"{kwargs['app_label']}.models")
-            object_type = getattr(module, kwargs['model_name'])
-
-        if not selectable_objects:
-            selectable_objects = object_type.objects.all()
-
-        return {
-            "initial": str(obj) if obj else None,
-            "pk": obj.pk if obj else None,
-            "app_label": kwargs['app_label'],
-            "model_name": kwargs['model_name'],
-            "selectable_objects": serializers.serialize("json", selectable_objects)
-        }
-    
-    def get_reference_field(self, pk=None, app_label=None, model_name=None, selectable_objects=None, **init_data):
-        object_type = apps.get_model(app_label, model_name)
-        if pk:
-            init_data["initial"] = object_type.objects.get(pk=pk)
-        if selectable_objects:
-            selectable_objects = json.loads(selectable_objects)
-            object_ids = []
-            for obj in selectable_objects:
-                object_ids.append(obj["pk"])
-            selectable_objects = object_type.objects.filter(pk__in=object_ids)
-        return ModelChoiceField(selectable_objects, **init_data)
-
     def serialize(self, required=None, label=None, initial=None, help_text=None, **kwargs):
         """Execute the serialize function appropriate for the current data type"""
         serialize_function = getattr(self, f"serialize_{self.data_type}")
@@ -156,10 +114,6 @@ class CustomDataField(models.Model):
         """Returns the object currently stored by this field"""
         if self.data_type == "choice":
             selected = data_dict["initial"]
-        elif self.data_type == "reference":
-            obj_type = data_dict["object_type"]
-            model = importlib.import_module(f"core.models.{obj_type}")
-            return model.objects.get(pk=data_dict["pk"])
         else:
             return data_dict["initial"]
 
@@ -194,11 +148,7 @@ class CustomDataField(models.Model):
         # Make sure that the default widget for this data type is used
         init_data['widget'] = self.widgets[self.data_type]
 
-        # Only reference fields need special attention
-        if self.data_type == 'reference':
-            field = self.get_reference_field(**init_data)
-        else:
-            field = self.fields[self.data_type](**init_data)
+        field = self.fields[self.data_type](**init_data)
 
         return field
 
@@ -343,8 +293,8 @@ class Gear(models.Model):
         Name will be in the form: <GearType> - <attr 1>, <attr 2>, etc...
         """
 
-        # Get all custom data fields for this data_type, except those that contain a reference
-        attr_fields = self.geartype.data_fields.exclude(data_type='reference')
+        # Get all custom data fields for this data_type, except those that contain a rfid
+        attr_fields = self.geartype.data_fields.exclude(data_type='rfid')
         attributes = []
         gear_data = json.loads(self.gear_data)
         for field in attr_fields:
