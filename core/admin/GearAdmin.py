@@ -1,6 +1,9 @@
 import json
 
 from collections import OrderedDict
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.contrib.admin.utils import quote
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
@@ -74,6 +77,14 @@ class GearAdmin(ViewableModelAdmin):
             add_form = type(self.add_form.__name__, (self.add_form,), new_attrs)
             add_form.authorizer_rfid = request.user.rfid
             return super(GearAdmin, self).get_form(request, obj=None, form=add_form, **kwargs)
+
+    def response_add(self, request, obj, post_url_continue=None):
+        """After adding a new piece of gear, always go to the 'change' page to finish filling out gear data"""
+        change_url = reverse(
+            f'admin:{obj._meta.app_label}_{obj._meta.model_name}_change',
+            args=(quote(obj.pk),),
+            current_app=self.admin_site.name,)
+        return HttpResponseRedirect(change_url)
 
 
 class GearTypeAdmin(ViewableModelAdmin):
