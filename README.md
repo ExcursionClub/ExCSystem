@@ -23,6 +23,22 @@ $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ docker-compose up -d
 ```
 
+### Emails
+Several parts of the project send out emails (i.e. when creating a new user). These processes will generally 
+crash if an email server is not set up. For setup of the production email server, see the deployment section below. 
+During development however, the easiest way is to use a local SMTP server to handle the emails. This can be done in the
+command line with:
+```bash
+python -m smtpd -n -c DebuggingServer localhost:1024
+```
+This command creates a tiny little local SMTP server on port 1024, that will print any emails
+received out to the command line. Just keep that window open and you're golden.
+
+If you'd like something a little more powerful, and with a GUI, then I recommend 
+http://nilhcem.com/FakeSMTP/.  Just make sure it is up and running on port 1024, and you'll receive any emails the 
+system sends.
+
+
 ## Development
 ### Linting
 Use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
@@ -84,7 +100,7 @@ when running the `makemigrations` and `migrate` commands. In the early
 stages, you can safely and easily reset the entire database from scratch
 using the ResetDatabase.py file.
 
-To restart he database:
+To restart the database:
 
 ```bash
 $ python3 RestartDatabase.py
@@ -195,12 +211,24 @@ grant ALL ON database excsystem to admin;
 pip3 install -r requirements/production.txt
 ```
 
-### Move env vars to .bashrc
+### Prepare Environment variables
+Django requires some sensitive information that should not be made available here on git. This information is stored in 
+environment variables on the server. To create these:
+
 ```
 export DJANGO_SECRET_KEY=
+```
+Login data to the database
+```
 export POSTGRES_USER=admin
 export POSTGRES_PASSWORD=
 ```
+login data to the email server(s)
+```
+export MEMBERSHIP_EMAIL_HOST_USER=
+export MEMBERSHIP_EMAIL_HOST_PASSWORD=
+```
+
 
 ### Create folders for static files
 ```
