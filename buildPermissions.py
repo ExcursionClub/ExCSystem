@@ -145,11 +145,6 @@ def build_board():
         content_type=gear_type
     )
     add_permission(
-        codename="change_geartype",
-        name="Can change gear types",
-        content_type=geartype_type
-    )
-    add_permission(
         codename="add_geartype",
         name="Can change gear types",
         content_type=geartype_type
