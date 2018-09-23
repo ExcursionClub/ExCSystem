@@ -273,16 +273,6 @@ field_data = {
         "required": True,
         "help_text": "Not sure for what, but if you need a rfid"
     },
-    "owner": {
-        "data_type": "reference",
-        "initial": None,
-        "label": "Object Owner",
-        "name": "owner",
-        "required": False,
-        "help_text": "The real owner of this item",
-        "pk": None,
-        "object_type": Staffer,
-    },
 }
 custom_fields = []
 for field_name in field_data.keys():
