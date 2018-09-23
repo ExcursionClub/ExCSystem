@@ -231,7 +231,6 @@ class GearType(models.Model):
         return data_dict
 
 
-
 class GearManager(models.Manager):
 
     def _create(self, rfid, gear_type, **gear_data):
