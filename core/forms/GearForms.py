@@ -32,6 +32,11 @@ class GearChangeForm(ModelForm):
         return json.dumps(gear_data_dict)
 
     def save(self, commit=True):
+        """Save using the Transactions instead of using the gear object directly"""
+
+        # Django really wants to call this function, even though it does nothing for gear
+        self.save_m2m = self._save_m2m
+
         self.cleaned_data['gear_data'] = self.clean_gear_data()
         gear_rfid = self.cleaned_data.pop('rfid')
         change_data = self.cleaned_data
@@ -64,7 +69,8 @@ class GearAddForm(ModelForm):
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
-        # We will always commit the save, so make sure m2m fields are always saved
+
+        # Django really wants to call this function, even though it does nothing for gear
         self.save_m2m = self._save_m2m
 
         transaction, gear = Transaction.objects.add_gear(
