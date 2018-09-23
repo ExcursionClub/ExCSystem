@@ -53,6 +53,7 @@ class GearAdmin(ViewableModelAdmin):
             # Load the basic form, including an empty (required) attributes
             new_attrs = OrderedDict()
             extended_form = type(self.form.__name__, (self.form,), new_attrs)
+            extended_form.authorizer_rfid = request.user.rfid
 
             # Load all the fields that need to be added dynamically from the geartype
             gear_data = json.loads(obj.gear_data)
@@ -72,6 +73,7 @@ class GearAdmin(ViewableModelAdmin):
             # Load the add form, including an empty (required) attributes
             new_attrs = OrderedDict()
             add_form = type(self.initial_add_form.__name__, (self.initial_add_form,), new_attrs)
+            add_form.authorizer_rfid = request.user.rfid
             return super(GearAdmin, self).get_form(request, obj=None, form=add_form, **kwargs)
 
 
