@@ -88,6 +88,17 @@ class GearAdmin(ViewableModelAdmin):
 
 
 class GearTypeAdmin(ViewableModelAdmin):
+    """
+    Admin class to make gear types viewable
+
+    Since gear types have on_delete set to CASCADE, if a gear type has been used on a piece of gear (and is therefore
+    referenced in transaction), no-one will be able to delete that gear type, since deleting Transactions is explicitly
+    forbidden for all users, including admin
+    """
     detail_view_class = GearTypeDetailView
+
+    def has_change_permission(self, request, obj=None):
+        """No one should have permissions to change gear types, it'll guaranteed destroy data"""
+        return False
 
 
