@@ -54,8 +54,8 @@ class GearAddFormStart(ModelForm):
     def __init__(self, *args, **kwargs):
         super(GearAddFormStart, self).__init__(*args, **kwargs)
         # Don't disable geartype, this is the only time it should be editable
-        # Disable status: when gear is created it should always be 'in stock'
-        self.fields["status"].disabled = True
+        # Set the default status to be in stock
+        self.fields["status"].initial = 0
 
     def clean_gear_data(self):
         """During the initial creation of the gear, the gear data JSON must be created."""
