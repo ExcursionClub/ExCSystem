@@ -54,7 +54,7 @@ class CustomDataField(models.Model):
 
     name = models.CharField(max_length=30, unique=True)
     data_type = models.CharField(max_length=20, choices=data_types)
-    suffix = models.CharField(max_length=10)
+    suffix = models.CharField(max_length=10, default="")
     required = models.BooleanField(default=False)
     label = models.CharField(max_length=30, default="")
     help_text = models.CharField(max_length=200, default="")
