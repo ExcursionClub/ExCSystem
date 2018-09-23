@@ -4,6 +4,7 @@ from collections import OrderedDict
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.admin.utils import quote
+from django.contrib.admin import ModelAdmin
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
@@ -101,4 +102,10 @@ class GearTypeAdmin(ViewableModelAdmin):
         """No one should have permissions to change gear types, it'll guaranteed destroy data"""
         return False
 
+
+class CustomDataFieldAdmin(ModelAdmin):
+    """Forbid anyone from changing CustomDataFields"""
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
