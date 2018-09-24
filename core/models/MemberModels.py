@@ -115,16 +115,17 @@ class Member(AbstractBaseUser):
     @property
     def is_staff(self):
         """
-        Property that is used by django to determine whether a user is allowed to log in to the admin
+        Property that is used by django to determine whether a user is allowed to log in to the admin: i.e. everyone
         """
-        return self.group.name == "Member" \
-            or self.group.name == "Staff" \
-            or self.group.name == "Board" \
-            or self.group.name == "Admin"
+        return True
 
     @property
     def is_staffer(self):
-        """Returns true if this member has staffer privileges"""
+        """
+        Returns true if this member has staffer privileges
+
+        NOTE: Avoid using this function, it's much better to explicitly check for permissions
+        """
         return self.group.name == "Staff" \
             or self.group.name == "Board" \
             or self.group.name == "Admin"
@@ -173,6 +174,11 @@ class Member(AbstractBaseUser):
     def expire(self):
         """Expires this member's membership"""
         self.group = Group.objects.get(name="Expired")
+
+    def promote_to_active(self):
+        """Move the member to the group of active members"""
+        self.group = Group.objects.get(name="Member")
+        return self
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""

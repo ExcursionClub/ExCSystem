@@ -26,6 +26,7 @@ group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
 
+
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
     build_just_joined()
@@ -66,6 +67,10 @@ def build_member():
         name="Allowed to rent gear",
         content_type=gear_type)
     add_permission(
+        codename="view_gear",
+        name="Has access to at least one item on the gear list",
+        content_type=gear_type)
+    add_permission(
         codename="view_department",
         name="Can see department information",
         content_type=department_type)
@@ -73,10 +78,6 @@ def build_member():
         codename="view_certification",
         name="Can see certification information",
         content_type=certification_type)
-    add_permission(
-        codename="view_gear",
-        name="Can see and search the gear list",
-        content_type=gear_type)
     add_permission(
         codename='view_transaction',
         name="Can view transactions",
@@ -96,6 +97,10 @@ def build_staffer():
     add_permission(
         codename="change_gear",
         name="Can change the info on gear",
+        content_type=gear_type)
+    add_permission(
+        codename="view_general_gear",
+        name="Can see and search the gear list",
         content_type=gear_type)
     add_permission(
         codename="authorize_transactions",
