@@ -169,7 +169,7 @@ class MemberFinishForm(forms.ModelForm):
         member.last_name = self.cleaned_data['last_name']
         member.phone_number = self.cleaned_data['phone_number']
         member.picture = self.cleaned_data['picture']
-        member.status = 2
+        member = member.promote_to_active()
 
         member.save()
         return member

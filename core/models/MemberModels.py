@@ -175,6 +175,11 @@ class Member(AbstractBaseUser):
         """Expires this member's membership"""
         self.group = Group.objects.get(name="Expired")
 
+    def promote_to_active(self):
+        """Move the member to the group of active members"""
+        self.group = Group.objects.get(name="Member")
+        return self
+
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""
         send_mail(title, body, from_email, [self.email], fail_silently=False)
