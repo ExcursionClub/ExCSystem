@@ -158,6 +158,10 @@ class Member(AbstractBaseUser):
         # The user is identified by their email address
         return self.first_name
 
+    def get_all_certifications(self):
+        all_certs = self.certifications.all()
+        return all_certs
+
     def __str__(self):
         """
         If we know the name of the user, then display their name, otherwise use their email
