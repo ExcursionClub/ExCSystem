@@ -344,8 +344,9 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        if authorizer_rfid != "0000000000":
-            raise ValidationError("You can't do admin overrides unless you know the admin code")
+        member = Member.objects.get(authorizer_rfid)
+        if not member.has_permission('change_gear'):
+            raise ValidationError("You don't have the permission to change gear!")
 
         # All the changes made will be described here
         action = f"Admin override on {gear} [{gear_rfid}]: \n"
