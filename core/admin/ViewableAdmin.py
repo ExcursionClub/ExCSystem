@@ -22,6 +22,8 @@ class ViewableModelAdmin(ModelAdmin):
     list_view = RestrictedViewList
     detail_view_class = ModelDetailView
 
+    show_full_result_count = False
+
     def get_detail_view(self):
         """Get the detail view as a view (function) wrapped to automatically check permissions"""
 
