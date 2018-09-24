@@ -50,6 +50,9 @@
                 {% for cert in object.get_all_certifications %}
                     <a href="{{cert.get_page_url}}"> {{ cert.title }} </a><br/>
                 {% endfor %}
+                {% if object.has_no_certifications %}
+                    Go on trips to earn certifications!<br/>
+                {% endif %}
                 <br/><br/>
                 <p>COMING SOON</p>
                 <a href="">Stuff Here</a><br/>

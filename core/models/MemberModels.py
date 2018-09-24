@@ -162,6 +162,9 @@ class Member(AbstractBaseUser):
         all_certs = self.certifications.all()
         return all_certs
 
+    def has_no_certifications(self):
+        return len(self.certifications.all()) == 0
+
     def __str__(self):
         """
         If we know the name of the user, then display their name, otherwise use their email
