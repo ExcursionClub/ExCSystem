@@ -129,10 +129,7 @@ class CustomDataField(models.Model):
 
     def get_value(self, data_dict):
         """Returns the object currently stored by this field"""
-        if self.data_type == "choice":
-            selected = data_dict["initial"]
-        else:
-            return data_dict["initial"]
+        return data_dict["initial"]
 
     def get_str(self, data_dict):
         """Get the string representation of the value of this field"""
