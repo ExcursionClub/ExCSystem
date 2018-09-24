@@ -48,6 +48,15 @@ class CustomDataField(models.Model):
     label = models.CharField(max_length=30, default="")
     help_text = models.CharField(max_length=200, default="")
 
+    choices = models.TextField(
+        max_length=1000,
+        default='None; No choices provided\nNope; Also not a choice',
+        help_text="Must use this format to define choices!\n"
+                  "Each choice must be on it's own line, and consist of a short name (used internally), and a "
+                  "description (seen by the user). Name description pairs must be separated by a semicolon, and no "
+                  "semicolons are allowed in either the name or the description"
+    )
+
     def __str__(self):
         name = self.name
         return name.replace('_', ' ').title()
@@ -93,10 +102,18 @@ class CustomDataField(models.Model):
             "max_value": max_value
         }
 
-    def serialize_choice(self, value, choices=(("None", "No choices provided"),), **kwargs):
+    def serialize_choice(self, value, choices=None, **kwargs):
+        # If a set of choices is not given, then try to parse out the choices from the choice field
+        if not choices:
+            choices = []
+            choice_list = self.choices.split("\n")
+            for choice_pair in choice_list:
+                choice = choice_pair.split(";")
+                choices.append((choice[0].strip(), choice[1].strip()))
+
         return {
             "initial": value,
-            "choices": choices
+            "choices": tuple(choices)
         }
 
     def serialize(self, required=None, label=None, initial=None, help_text=None, **kwargs):
