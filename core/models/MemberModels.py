@@ -99,7 +99,8 @@ class Member(AbstractBaseUser):
     picture = models.ImageField(
         verbose_name="Profile Picture",
         upload_to="ProfilePics/%Y/",
-        null=True
+        null=True,
+        default="Shaka.png"
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
