@@ -27,4 +27,4 @@ class GearViewList(RestrictedViewList):
         if self.request.user.is_staffer:
             self.restriction_filters["status__lte"] = 3
         else:
-            self.restriction_filters["status"] = 0
+            self.restriction_filters["checked_out_to_id__exact"] = self.request.user.id
