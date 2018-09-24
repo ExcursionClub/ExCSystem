@@ -7,6 +7,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group,
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
 
@@ -85,6 +86,8 @@ class StafferManager(models.Manager):
 class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
     objects = MemberManager()
+
+    primary_key = PrimaryKeyField()
 
     group = models.ForeignKey(to=Group, on_delete=models.PROTECT)
 

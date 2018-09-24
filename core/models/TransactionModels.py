@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
 
 from core.convinience import get_all_rfids
 
@@ -397,6 +398,8 @@ class Transaction(models.Model):
             )
          )
     ]
+
+    primary_key = PrimaryKeyField()
 
     #: The time at which this transaction was created - will be automatically set and cannot be changed
     timestamp = models.DateTimeField(auto_now_add=True)
