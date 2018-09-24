@@ -1,5 +1,6 @@
 from django.db import models
-
+from django.urls import reverse
+from ExCSystem.settings import WEB_BASE
 
 class Certification(models.Model):
     """
@@ -17,4 +18,8 @@ class Certification(models.Model):
 
     def __str__(self):
         return "{} Certification".format(self.title)
+
+    def get_page_url(self):
+        return WEB_BASE + reverse("admin:core_certification_detail", kwargs={'pk': self.pk})
+
 
