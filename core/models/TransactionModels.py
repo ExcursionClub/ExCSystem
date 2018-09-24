@@ -348,7 +348,7 @@ class TransactionManager(models.Manager):
             raise ValidationError("You can't do admin overrides unless you know the admin code")
 
         # All the changes made will be described here
-        action = "Admin override on {} [{}]: \n".format(gear, gear_rfid)
+        action = f"Admin override on {gear} [{gear_rfid}]: \n"
 
         # Remove the fields that were appended from the geartype, they will be saved in gear_data
         for field_name in gear.geartype.get_field_names():
@@ -357,13 +357,15 @@ class TransactionManager(models.Manager):
         # Set each of the available kwargs to their desired value if they are not none
         for kwarg in kwargs.keys():
 
-            value = kwargs[kwarg]
+            new_value = kwargs[kwarg]
             old_value = gear.__getattribute__(kwarg)
-            gear.__setattr__(kwarg, value)
-            action += "  Changed {} from {} to {}\n".format(kwarg, old_value, value)
+
+            if new_value != old_value:
+                gear.__setattr__(kwarg, new_value)
+                action += f"  Changed {kwarg} from {old_value} to {new_value};"
 
         # Save the changes made in a transaction
-        transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=action)
+        transaction = self.__make_transaction(authorizer_rfid, "Override", gear, comments=action)
         return transaction, gear
 
 
@@ -393,7 +395,7 @@ class Transaction(models.Model):
             ("ReTag",    "Change Tag"),
             ("Break",    "Set Broken"),
             ("Fix",      "Set Fixed"),
-            ("Override", "Admin Override")
+            ("Override", "Admin Change")
         )
          ),
         ("Auto Updates", (
