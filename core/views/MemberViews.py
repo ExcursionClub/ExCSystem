@@ -1,6 +1,7 @@
 from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.models import Group
 
 from ExCSystem.settings.base import WEB_BASE
 
@@ -61,6 +62,13 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context = get_default_context(self, context)
         return context
+
+    def form_valid(self, form):
+        """Called when the finish form is filled out correctly, so make the member active before continuing"""
+        member = self.get_object()
+        member.group = Group.objects.get(name="Member")
+        member.save()
+        return super(MemberFinishView, self).form_valid(form)
 
     def get_success_url(self):
         return WEB_BASE + reverse("admin:core_member_detail", kwargs={'pk': self.object.pk})
