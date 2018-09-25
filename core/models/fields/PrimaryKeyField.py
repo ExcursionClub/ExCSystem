@@ -1,6 +1,6 @@
 from time import time
 from django.db.models import BigIntegerField
-import random
+import secrets
 
 START_TIME = 1537758068554
 
@@ -13,7 +13,7 @@ def make_id():
     inspired by http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram
     """
     t = int(time()*1000) - START_TIME
-    u = random.SystemRandom().getrandbits(23)
+    u = secrets.SystemRandom().getrandbits(23)
     new_id = (t << 23) | u
     return new_id
 
