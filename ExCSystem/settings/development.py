@@ -11,6 +11,7 @@ DATABASES = {
 }
 
 MEDIA_URL = '/media/'
+STATIC_URL = '/static/'
 
 # Email host settings
 EMAIL_HOST = 'localhost'

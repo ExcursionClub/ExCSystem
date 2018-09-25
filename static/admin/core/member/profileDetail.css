@@ -1,5 +1,5 @@
 body{
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+    background: -webkit-linear-gradient(bottom, #eeeeee, #ffffff);
 }
 .emp-profile{
     padding: 3%;
@@ -45,16 +45,6 @@ body{
     font-weight: 600;
     color: #6c757d;
     cursor: pointer;
-}
-.proile-rating{
-    font-size: 12px;
-    color: #818182;
-    margin-top: 5%;
-}
-.proile-rating span{
-    color: #495057;
-    font-size: 15px;
-    font-weight: 600;
 }
 .profile-head .nav-tabs{
     margin-bottom:5%;

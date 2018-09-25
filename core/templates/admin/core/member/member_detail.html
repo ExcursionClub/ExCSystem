@@ -5,10 +5,7 @@
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-{% endblock %}
-
-{% block extrastyle %} {{ block.super }}
-<link rel="stylesheet" type="text/css" href="profileDetail.css" id="profile-css">
+<link rel="stylesheet" type="text/css" href="{% static 'styles/profileDetail.css' %}" id="profile-css">
 {% endblock %}
 
 {% block content %}
@@ -22,18 +19,14 @@
         </div>
         <div class="col-md-6">
             <div class="profile-head">
-                        <h5>
-                            {{ object.get_full_name }}
-                        </h5>
-                        <h6>
-                            {{ object.group.name }}
-                        </h6>
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <h5> {{ object.get_full_name }} </h5>
+                <h6> {{ object.group.name }} </h6>
+                <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Profile</a>
+                        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#home" role="tab">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="gear-tab" data-toggle="tab" href="#gear-status" role="tab" aria-controls="gear-status" aria-selected="false">Gear Status</a>
+                        <a class="nav-link" id="gear-tab" data-toggle="tab" href="#gear" role="tab">Gear Status</a>
                     </li>
                 </ul>
             </div>
@@ -61,8 +54,8 @@
             </div>
         </div>
         <div class="col-md-8">
-            <div class="tab-content profile-tab" id="customTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="tab-content profile-tab" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel">
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>First Name</label>
@@ -120,7 +113,7 @@
                                 </div>
                             </div>
                 </div>
-                <div class="tab-pane fade" id="gear-status" role="tabpanel" aria-labelledby="gear-status">
+                <div class="tab-pane fade" id="gear" role="tabpanel">
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Experience</label>
