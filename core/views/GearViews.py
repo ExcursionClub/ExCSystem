@@ -2,9 +2,13 @@ from django.views.generic.detail import DetailView
 
 from django.utils import timezone
 
-from core.models.GearModels import Gear
+from core.models.GearModels import Gear, GearType
 from core.views.ViewList import RestrictedViewList
 from core.views.common import ModelDetailView
+
+
+class GearTypeDetailView(ModelDetailView):
+    model = GearType
 
 
 class GearDetailView(ModelDetailView):
