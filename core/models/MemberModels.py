@@ -110,7 +110,7 @@ class Member(AbstractBaseUser):
     certifications = models.ManyToManyField(Certification)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['rfid', 'date_expires']
+    REQUIRED_FIELDS = ['date_expires']
 
     @property
     def is_staff(self):

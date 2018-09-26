@@ -35,7 +35,8 @@ class MemberCreationForm(forms.ModelForm):
     username = forms.EmailField(label='Email')
     rfid = RFIDField(
         label='RFID',
-        help_text='If you\'re renewing, this will replace your current rfid tag'
+        help_text='If you\'re renewing, this will replace your current rfid tag',
+        required=False
     )
     password1 = forms.CharField(
         label='Password',
@@ -79,7 +80,7 @@ class MemberCreationForm(forms.ModelForm):
             raise forms.ValidationError
 
         # If a member is not renewing, then rfid must be present
-        if len(rfid) != 10:
+        if not self.referenced_member and len(rfid) != 10:
             raise forms.ValidationError("This is not a valid 10 digit RFID!")
 
         return rfid
