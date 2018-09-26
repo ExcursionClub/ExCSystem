@@ -1,4 +1,6 @@
 from django.db import models
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
+
 from .MemberModels import Member
 from .DepartmentModels import Department
 from .CertificationModels import Certification
@@ -15,6 +17,7 @@ class Gear(models.Model):
     class Meta:
         verbose_name_plural = "Gear"
 
+    primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
     name = models.CharField(max_length=50)
     status_choices = [
