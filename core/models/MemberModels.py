@@ -180,14 +180,17 @@ class Member(AbstractBaseUser):
         self.group = Group.objects.get(name="Member")
         return self
 
-    def extend_membership(self, duration, rfid):
-        """Add the given amount of time to this member's membership, and optionally update their rfid"""
+    def extend_membership(self, duration, rfid='', password=''):
+        """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
 
         self.group = Group.objects.get(name="Just Joined")
         self.date_expires += duration
 
         if rfid:
             self.rfid = rfid
+
+        if password:
+            self.set_password(password)
 
         return self
 
