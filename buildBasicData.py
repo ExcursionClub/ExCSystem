@@ -114,20 +114,22 @@ def build_quiz_questions():
 def build_certifications():
     # Add certifications
     kayak_cert = Certification(
-        title='Kayaking', requirements='1) Be able to swim god dammit '
-        '2) Have received the safety rant, know about wind and current '
-        '3) Be able to take the kayak out safely '
-        '4) Be able to get off of, flip, and get into a kayak out in the water '
-        '5) Be able to bring the kayak back in to shore safely'
+        title='Kayaking',
+        requirements='1) Be able to swim, dammit\n'
+        '2) Have received the safety talk, know about wind and current dangers\n'
+        '3) Be able to take the kayak out into the surf safely\n'
+        '4) Be able to get off of, flip, and get back into a kayak out in deep water\n'
+        '5) Be able to bring the kayak back in to shore safely\n'
     )
     kayak_cert.save()
 
     sup_cert = Certification(
-        title='Stand Up Paddleboarding', requirements='1) Be able to swim god dammit '
-        '2) Have received the safety rant, know about wind and current '
-        '3) Be able to take the SUP out safely '
-        '4) Be able to get off of, flip, and get into a SUP out in the water '
-        '5) Be able to bring the SUP back in to shore safely'
+        title='Stand Up Paddleboarding',
+        requirements='1) Be able to swim, dammit\n'
+        '2) Have received the safety talk, know about wind and current dangers\n'
+        '3) Be able to take the SUP out into the surf safely\n'
+        '4) Be able to get off of, flip, and get back onto the SUP out in deep water\n'
+        '5) Be able to bring the SUP back in to shore safely\n'
     )
     sup_cert.save()
 
