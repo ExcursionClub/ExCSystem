@@ -26,10 +26,10 @@ class MemberCreationForm(forms.ModelForm):
 
     # TODO: Make these either editable in the admin or be sourced externally
     membership_choices = (
-        ("60", "$60 - Full Year New"),
-        ("40", "$40 - Full Year Returning"),
-        ("30", "$30 - One Quarter New"),
-        ("20", "$20 - One Quarter Returning")
+        ("year_new",        "$60 - Full Year New"),
+        ("year_return",     "$40 - Full Year Returning"),
+        ("quarter_new",     "$30 - One Quarter New"),
+        ("quarter_return",  "$20 - One Quarter Returning")
     )
 
     username = forms.EmailField(label='Email')
@@ -106,9 +106,9 @@ class MemberCreationForm(forms.ModelForm):
         selection = self.cleaned_data['membership']
 
         # Convert the membership selection into a timedelta
-        if selection == "60" or selection == "40":
+        if "year" in selection:
             self.membership_duration = timedelta(days=365)
-        elif selection == "30" or selection == "20":
+        elif "quarter" in selection:
             self.membership_duration = timedelta(days=90)
         else:
             raise forms.ValidationError("Invalid membership choice!")
@@ -124,7 +124,7 @@ class MemberCreationForm(forms.ModelForm):
     @staticmethod
     def is_new_membership(membership):
         """Returns true if the membership selection corresponds to a new member signing up"""
-        return membership == "30" or membership == "60"
+        return "new" in membership
 
     def save(self, commit=True):
         """
