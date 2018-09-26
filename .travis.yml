@@ -4,7 +4,13 @@ sudo: false
 language: python
 python:
   - "3.6"
+services:
+  - mysql
+env:
+  - DJANGO=2.1 DB=msql
 install:
   - "pip install -r requirements/development.txt"
+before_script:
+  - mysql -e 'create database test;' -u root
 script:
   - "python manage.py test"
