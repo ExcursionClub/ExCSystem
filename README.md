@@ -280,3 +280,4 @@ nohup python3 manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 ```
+Note: Crontab (automatic linux scheduling utility) is configured to run this command whenever the server is rebooted
