@@ -180,9 +180,15 @@ class Member(AbstractBaseUser):
         self.group = Group.objects.get(name="Member")
         return self
 
-    def extend_membership(self, duration):
+    def extend_membership(self, duration, rfid):
+        """Add the given amount of time to this member's membership, and optionally update their rfid"""
+
         self.group = Group.objects.get(name="Just Joined")
         self.date_expires += duration
+
+        if rfid:
+            self.rfid = rfid
+
         return self
 
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):

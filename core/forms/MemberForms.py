@@ -143,7 +143,7 @@ class MemberCreationForm(forms.ModelForm):
         # Depending on if this member exists or not, either create a new member, or just extend the membership
         if self.referenced_member:
             member = self.referenced_member
-            member.extend_membership(duration, )
+            member.extend_membership(duration, rfid)
         else:
             member = Member.objects.create_member(email, rfid, duration, password)
 
