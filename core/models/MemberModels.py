@@ -180,6 +180,11 @@ class Member(AbstractBaseUser):
         self.group = Group.objects.get(name="Member")
         return self
 
+    def extend_membership(self, duration):
+        self.group = Group.objects.get(name="Just Joined")
+        self.date_expires += duration
+        return self
+
     def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
         """Sends an email to the member"""
         send_mail(title, body, from_email, [self.email], fail_silently=False)
