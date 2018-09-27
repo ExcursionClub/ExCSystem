@@ -10,7 +10,7 @@ $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
-$ python manage.py runserver
+$ ENV_CONFIG="development"; python3 manage.py runserver
 ```
 
 ### The Easy Way
@@ -274,9 +274,9 @@ sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
 python3 manage.py collectstatic
 ```
 
-### Run
+### Run in production
 ```
-nohup python3 manage.py runserver &
+nohup ENV_CONFIG="production"; python3 manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 ```
