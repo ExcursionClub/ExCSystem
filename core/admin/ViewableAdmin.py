@@ -36,7 +36,7 @@ class ViewableModelAdmin(ModelAdmin):
         detail_view = detail.as_view()
         return wrap(detail_view)
 
-    def has_view_permission(self, request):
+    def has_view_permission(self, request, obj=None):
         opts = self.opts
         codename = get_permission_codename('view', opts)
         return request.user.has_perm(f'{opts.app_label}.{codename}')

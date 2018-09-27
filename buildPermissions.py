@@ -26,6 +26,7 @@ group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
 
+
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
     build_just_joined()
