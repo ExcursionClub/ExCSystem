@@ -24,31 +24,72 @@ class MemberCreationForm(forms.ModelForm):
     and templates may not be present.
     """
 
+    # TODO: Make these either editable in the admin or be sourced externally
+    membership_choices = (
+        ("year_new",        "$60 - Full Year New"),
+        ("year_return",     "$40 - Full Year Returning"),
+        ("quarter_new",     "$30 - One Quarter New"),
+        ("quarter_return",  "$20 - One Quarter Returning")
+    )
+
     username = forms.EmailField(label='Email')
-    rfid = RFIDField(label='RFID')
-    # membership_rfid = forms.CharField(label="Membership RFID", max_length=10, widget=forms.TextInput)
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    rfid = RFIDField(
+        label='RFID',
+        help_text='If you\'re renewing, this will replace your current rfid tag',
+        required=False
+    )
+    password1 = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput,
+        help_text="You can skip this if you're renewing",
+        required=False
+    )
+    password2 = forms.CharField(
+        label='Confirm Password',
+        widget=forms.PasswordInput,
+        help_text="You can skip this if you're renewing",
+        required=False
+    )
+    membership = forms.ChoiceField(label="Membership Payment", choices=membership_choices)
+
+    membership_duration = 0
+    referenced_member = None
 
     class Meta:
         model = Member
-        fields = ('username', 'rfid', 'password1', 'password2',)
+        fields = ('username', 'password1', 'password2', 'membership', 'rfid')
 
     def clean_username(self):
         email = self.cleaned_data['username']
-        # If a member exists with this email, raise a validation error
+
+        # If a member exists with this email, we will be extendign their membership, so save them for future reference
         current = Member.objects.filter(email=email)
         if current:
-            raise forms.ValidationError("The email '{email}' is already in use!".format(email=email))
+            self.referenced_member = current[0]
+
         return email
 
     def clean_rfid(self):
         rfid = self.cleaned_data['rfid']
-        if len(rfid) != 10:
-            raise forms.ValidationError("This is not a valid 10 digit RFID!")
+
         if rfid in get_all_rfids():
             raise forms.ValidationError("This RFID is already in use!")
+
+        # If a member is renewing, the RFID can either be a new rfid, or empty
+        if self.referenced_member and not (len(rfid) == 0 or len(rfid) == 10):
+            raise forms.ValidationError
+
+        # If a member is not renewing, then rfid must be present
+        if not self.referenced_member and len(rfid) != 10:
+            raise forms.ValidationError("This is not a valid 10 digit RFID!")
+
         return rfid
+
+    def clean_password1(self):
+        """Passwords are required if the member is new"""
+        password = self.cleaned_data['password1']
+        if not self.referenced_member and not password:
+            raise forms.ValidationError("Password is required when you're signing up")
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -57,6 +98,33 @@ class MemberCreationForm(forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return password2
+
+    def clean_membership(self):
+        """
+        Convert the membership selection into a timedelta, and verify it is valid for the members current status
+        """
+        selection = self.cleaned_data['membership']
+
+        # Convert the membership selection into a timedelta
+        if "year" in selection:
+            self.membership_duration = timedelta(days=365)
+        elif "quarter" in selection:
+            self.membership_duration = timedelta(days=90)
+        else:
+            raise forms.ValidationError("Invalid membership choice!")
+
+        if self.is_new_membership(selection) and self.referenced_member:
+            raise forms.ValidationError(
+                "A member with this email already exists! Make sure you selected the right membership!")
+        elif not self.is_new_membership(selection) and not self.referenced_member:
+            raise forms.ValidationError(
+                "Could not find the member! Please make sure you typed the email correctly!"
+            )
+
+    @staticmethod
+    def is_new_membership(membership):
+        """Returns true if the membership selection corresponds to a new member signing up"""
+        return "new" in membership
 
     def save(self, commit=True):
         """
@@ -70,8 +138,15 @@ class MemberCreationForm(forms.ModelForm):
         email = self.cleaned_data['username']
         rfid = self.cleaned_data['rfid']
         password = self.cleaned_data['password1']
-        duration = timedelta(days=90)
-        member = Member.objects.create_member(email, rfid, duration, password)
+        duration = self.membership_duration
+
+        # Depending on if this member exists or not, either create a new member, or just extend the membership
+        if self.referenced_member:
+            member = self.referenced_member
+            member.extend_membership(duration, rfid=rfid, password=password)
+        else:
+            member = Member.objects.create_member(email, rfid, duration, password)
+
         finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
         member.send_intro_email(finish_url)
         return member
