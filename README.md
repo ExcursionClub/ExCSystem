@@ -7,7 +7,7 @@ This project requires python3.6, virtualenv. There are two ways to setup the pro
 ### The Hard Way
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
-$ python3 -m venv venv
+$ python3.7 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
 $ python manage.py runserver
@@ -61,7 +61,7 @@ TravisCI will run tests on all PRs.
 To run tests locally:
 
 ```bash
-$ python3 manage.py test
+$ python3.7 manage.py test
 ```
 
 ### Functional Tests
@@ -70,7 +70,7 @@ Install geckodriver and Firefox
 Django has to be running to test with selenium. Run these two commands in different windows:
 ```bash
 $ python manage.py runserver
-$ python3 functional_tests.py
+$ python3.7 functional_tests.py
 ```
 
 ## Applying Changes to the Models</b>
@@ -80,8 +80,8 @@ that affect how data is stored in the database. To incorporate these,
 stop the server, and run:
 
 ```bash
-$ python3 manage.py makemigrations core
-$ python3 manage.py migrate
+$ python3.7 manage.py makemigrations core
+$ python3.7 manage.py migrate
 ```
 
 This should be sufficient for small changes that do not cause conflicts.
@@ -98,8 +98,8 @@ using the ResetDatabase.py file.
 To restart the database:
 
 ```bash
-$ python3 RestartDatabase.py
-$ python3 PopulateDatabase.py
+$ python3.7 RestartDatabase.py
+$ python3.7 PopulateDatabase.py
 ```
 
 This will wipe everything that exists in the database, and generate random data for the new database.
@@ -250,10 +250,10 @@ export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 git clone https://github.com/ExcursionClub/ExCSystem.git
 cd ExCSystem
 sudo pip3 install -r requirements/production.txt
-python3 manage.py migrate
+python3.7 manage.py migrate
 
 ### Test data
-python3 PopluateDatabase.py
+python3.7 PopluateDatabase.py
 ```
 
 
@@ -263,7 +263,7 @@ Linux
 ```
 # Location?
 sudo chown ec2-user:ec2-user /var/www/static/ /var/www/media/
-python3 manage.py collectstatic
+python3.7 manage.py collectstatic
 ```
 
 # Ubuntu
@@ -271,12 +271,12 @@ python3 manage.py collectstatic
 sudo mkdir /var/www/static
 sudo mkdir /var/www/media
 sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
-python3 manage.py collectstatic
+python3.7 manage.py collectstatic
 ```
 
 ### Run
 ```
-nohup python3 manage.py runserver &
+nohup python3.7 manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 ```
