@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
-from core.models.GearModels import Gear
+from core.models.GearModels import Gear, GearType, CustomDataField
 from core.models.TransactionModels import Transaction
 from core.models.QuizModels import Question, Answer
 
@@ -22,9 +22,12 @@ member_type = ContentType.objects.get_for_model(Member)
 staffer_type = ContentType.objects.get_for_model(Staffer)
 transaction_type = ContentType.objects.get_for_model(Transaction)
 gear_type = ContentType.objects.get_for_model(Gear)
+geartype_type = ContentType.objects.get_for_model(GearType)
+custom_field_type = ContentType.objects.get_for_model(CustomDataField)
 group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
+
 
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
@@ -66,6 +69,10 @@ def build_member():
         name="Allowed to rent gear",
         content_type=gear_type)
     add_permission(
+        codename="view_gear",
+        name="Has access to at least one item on the gear list",
+        content_type=gear_type)
+    add_permission(
         codename="view_department",
         name="Can see department information",
         content_type=department_type)
@@ -73,10 +80,6 @@ def build_member():
         codename="view_certification",
         name="Can see certification information",
         content_type=certification_type)
-    add_permission(
-        codename="view_gear",
-        name="Can see and search the gear list",
-        content_type=gear_type)
     add_permission(
         codename='view_transaction',
         name="Can view transactions",
@@ -96,6 +99,10 @@ def build_staffer():
     add_permission(
         codename="change_gear",
         name="Can change the info on gear",
+        content_type=gear_type)
+    add_permission(
+        codename="view_general_gear",
+        name="Can see and search the gear list",
         content_type=gear_type)
     add_permission(
         codename="authorize_transactions",
@@ -121,6 +128,11 @@ def build_staffer():
         codename="change_member",
         name="Can do arbitrary changes to members",
         content_type=member_type)
+    add_permission(
+        codename="view_gear_type",
+        name="Can view gear types",
+        content_type=geartype_type
+    )
     staffer.permissions.set(all_permissions)
     staffer.save()
 
@@ -136,6 +148,31 @@ def build_board():
         codename="remove_gear",
         name="Can set gear to removed status",
         content_type=gear_type
+    )
+    add_permission(
+        codename="add_geartype",
+        name="Can change gear types",
+        content_type=geartype_type
+    )
+    add_permission(
+        codename="delete_geartype",
+        name="Can delete gear types",
+        content_type=geartype_type
+    )
+    add_permission(
+        codename="add_customdatafield",
+        name="Can add custom data fields",
+        content_type=custom_field_type
+    )
+    add_permission(
+        codename="change_customdatafield",
+        name="Can change custom data fields",
+        content_type=custom_field_type
+    )
+    add_permission(
+        codename="delete_customdatafield",
+        name="Can delete custom data fields",
+        content_type=custom_field_type
     )
     add_permission(
         codename="add_staffer",

@@ -1,11 +1,9 @@
-import os
 from random import choice, randint
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 
 import django
 # Will raise an exception if not run here
 # django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.production')
 django.setup()
 
 import kiosk.CheckoutLogic as logic
@@ -16,6 +14,7 @@ from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.QuizModels import Question, Answer
 from core.models.TransactionModels import Transaction
+from core.models.GearModels import GearType, CustomDataField
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -210,10 +209,84 @@ for dept in departments:
 print('')
 print('Made departments')
 
-# Add gear
-print('Making Gear...')
-number_gear = 120
-gear_names = [
+# Add custom fields and gear_types
+field_data = {
+    "length": {
+        "data_type": "float",
+        "suffix": "cm",
+        "initial": 12.5,
+        "label": "length",
+        "name": "length",
+        "required": True,
+        "help_text": "The length of the item"
+    },
+    "capacity": {
+        "data_type": "int",
+        "initial": 3,
+        "suffix": "person",
+        "label": "Number of people",
+        "name": "capacity",
+        "required": True,
+        "help_text": "The number of people that can fit inside",
+        "min_value": 0,
+        "max_value": 10
+    },
+    "size": {
+        "data_type": "choice",
+        "initial": "S",
+        "label": "Size",
+        "name": "size",
+        "required": True,
+        "help_text": "The size of the item",
+        "choices": (
+            ("--", "Please choose a size"),
+            ("S", "Small"),
+            ("M", "Medium"),
+            ("L", "Large")
+        )
+    },
+    "manufacturer": {
+        "data_type": "string",
+        "initial": "Patagonia",
+        "label": "Manufacturer",
+        "name": "manufacturer",
+        "required": True,
+        "help_text": "Manufacturer of the item",
+        "min_length": 2,
+        "max_length": 30
+    },
+    "is_special": {
+        "data_type": "boolean",
+        "initial": False,
+        "label": "Is special",
+        "name": "is_special",
+        "required": False,
+        "help_text": "Is this a 'special' item?"
+    },
+    "a_rfid": {
+        "data_type": "rfid",
+        "initial": "",
+        "label": "a rfid to something",
+        "name": "a_rfid",
+        "required": True,
+        "help_text": "Not sure for what, but if you need a rfid"
+    },
+}
+custom_fields = []
+for field_name in field_data.keys():
+    field = CustomDataField(
+        name=field_name,
+        data_type=field_data[field_name]['data_type'],
+        label=field_data[field_name]['label'],
+        required=field_data[field_name]['required'],
+        help_text=field_data[field_name]['help_text']
+    )
+    if 'suffix' in field_data[field_name].keys():
+        field.suffix = field_data[field_name]['suffix']
+    field.save()
+    custom_fields.append(field)
+
+gear_type_names = [
     'Sleeping Bag',
     'Sleeping Pad',
     'Tent',
@@ -236,17 +309,32 @@ gear_names = [
     'Wetsuit',
 ]
 departments = Department.objects.all()
+gear_types = []
+print("Making Gear Types")
+bar = progressbar.ProgressBar()
+for name in bar(gear_type_names):
+    gear_type = GearType(
+        name=name,
+        department=pick_random(departments),
+    )
+    gear_type.save()
+    # Add between 1 and 4 custom fields
+    for i in range(1, randint(2, 5)):
+        gear_type.data_fields.add(pick_random(custom_fields))
+    gear_type.save()
+    gear_types.append(gear_type)
+
+# Add gear
+print('Making Gear...')
+number_gear = 120
+
 gear_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
-    gear_name: str = pick_random(gear_names)
-    department = pick_random(
-        departments
-    )  # TODO: Make this not be randomly assigned cause ie skis are not wetsuits
-
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
+    gear_type = pick_random(gear_types)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
     gear_rfids.append(gear_rfid)
 
 print('')
@@ -272,9 +360,9 @@ print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_g
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
-    gear_name = pick_random(gear_names)
     department = pick_random(departments)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_name, department)
+    gear_type = pick_random(gear_types)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

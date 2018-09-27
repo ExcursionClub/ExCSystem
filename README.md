@@ -10,7 +10,7 @@ $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ python3.7 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements/development.txt
-$ python manage.py runserver
+$ ENV_CONFIG="development"; python3 manage.py runserver
 ```
 
 ### The Easy Way
@@ -115,16 +115,6 @@ should ever be pushed to the git repo. The migrations directory on the
 Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH into the instance
 
 ### Upgrade packages and install dependencies
-Linux
-```
-sudo yum -y update
-
-Install packages
-sudo yum -y install gcc git python3 nginx python3-pip libpq-dev python3-devel postgresql postgresql-contrib postgresql-devel
-sudo amazon-linux-extras install nginx1.12
-```
-
-Ubuntu
 ```
 sudo apt-get update
 sudo apt-get upgrade -y
@@ -139,8 +129,9 @@ Create a conf file in /etc/nginx/conf.d
 server {
 
   listen 80;
+  listen 443 ssl;
   # Type your domain name below
-  server_name _;
+  server_name excursionclub.info www.excursionclub.info;
 
 # Always serve index.html for any request
   location / {
@@ -164,18 +155,18 @@ server {
 }
 ```
 
-Linux
+Then run
 ```
-sudo service nginx start
-sudo nginx -s reload
-```
-
-Ubuntu
-```
-sudo ln -s /etc/nginx/sites-available/excsystem.conf /etc/nginx/sites-enabled/excsystem.conf
-sudo rm sites-enabled/default
 sudo nginx -t
 sudo service nginx reload
+```
+
+### Add SSL
+```
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:certbot/certbot
+sudo apt-get update
+sudo apt-get install python-certbot-nginx 
 ```
 
 ### Update AWS security groups to enable HTTP traffic
@@ -217,42 +208,30 @@ psql
 grant ALL ON database excsystem to admin;
 ```
 
-### Prepare Environment variables
-Django requires some sensitive information that should not be made available here on git. This information is stored in 
-environment variables on the server. To create these:
-
-Generate keys:
-```python
-manage.py shell -c 'from django.core.management import utils; print(utils.get_random_secret_key())'
-```
-Save keys you just created
-```bash
-export DJANGO_SECRET_KEY=
-```
-
-Login data to the database
-```
-export POSTGRES_USER=admin
-export POSTGRES_PASSWORD=
-```
-login data to the email server(s)
-```
-export MEMBERSHIP_EMAIL_HOST_USER=
-export MEMBERSHIP_EMAIL_HOST_PASSWORD=
-```
-
 ### App setup
 ```
+# Update symlink to point to Python3.7
+sudo rm /usr/bin/python3
+sudo ln -s /usr/bin/python3.7 /usr/bin/python3
+
 git clone https://github.com/ExcursionClub/ExCSystem.git
 cd ExCSystem
 sudo pip3 install -r requirements/production.txt
+
+# Generate keys:
+python3 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
+
+# Login data to the database
+export POSTGRES_USER=ex
+export POSTGRES_PASSWORD=
+export POSTGRES_HOST=
+
+# Login data to the email server(s)
+export MEMBERSHIP_EMAIL_HOST_USER=
+export MEMBERSHIP_EMAIL_HOST_PASSWORD=
+
 python3.7 manage.py migrate
-
-### Test data
-python3.7 PopluateDatabase.py
 ```
-
-
 
 ### Create folders for static files
 Linux
@@ -270,9 +249,9 @@ sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
 python3.7 manage.py collectstatic
 ```
 
-### Run
+### Run in production
 ```
-nohup python3.7 manage.py runserver &
+nohup ENV_CONFIG="production"; python3.7 manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 ```
