@@ -129,10 +129,6 @@ Ubuntu
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install python3.7 nginx python3-pip libpq-dev python3.7-dev postgresql postgresql-contrib  -y
-
-# Update symlink to point to Python3.7
-sudo rm /usr/bin/python3
-sudo ln -s /usr/bin/python3.7 /usr/bin/python3
 ```
 
 ### Nginx config
