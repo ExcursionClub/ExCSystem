@@ -179,7 +179,8 @@ Since the database is on a different server than the app, it needs a more descri
 The hostname `excursion.xho0gsojfppx.us-east-1.rds.amazonaws.com`
 
 Connect to the database with psql from the EC2 instance. This way you don't have to open the network to the outside world.
-`psql --host=mypostgresql.c6c2mwvddgv0.us-west-2.rds.amazonaws.com --port=5432 --username=awsuser --password --dbname=mypgdb`
+You can easily do this by executing the script: 
+`./openPostgresDB.sh`
 
 Local
 ```
@@ -225,6 +226,7 @@ python3 manage.py shell -c 'from django.core.management import utils; print(f"ex
 export POSTGRES_USER=ex
 export POSTGRES_PASSWORD=
 export POSTGRES_HOST=
+POSTGRES_DB_NAME=
 
 # Login data to the email server(s)
 export MEMBERSHIP_EMAIL_HOST_USER=
@@ -232,6 +234,7 @@ export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 
 python3.7 manage.py migrate
 ```
+To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 
 ### Create folders for static files
 Linux
