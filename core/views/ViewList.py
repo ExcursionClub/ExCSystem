@@ -55,6 +55,8 @@ class RestrictedViewList(UserPassesTestMixin, ViewList):
 
     def get_queryset(self, request):
 
+        # Reset restriction filters, since otherwise they'll be shared between view_lists
+        self.restriction_filters = {}
         queryset = super(RestrictedViewList, self).get_queryset(request)
 
         # If the user is not allowed to view all the items, additionally filter the gotten queryset before returning it

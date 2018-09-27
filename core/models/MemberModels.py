@@ -6,8 +6,7 @@ from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
 
 from phonenumber_field.modelfields import PhoneNumberField
-
-from ExCSystem import settings
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
@@ -87,6 +86,8 @@ class StafferManager(models.Manager):
 class Member(AbstractBaseUser):
     """This is the base model for all members (this includes staffers)"""
     objects = MemberManager()
+
+    primary_key = PrimaryKeyField()
 
     group = models.ForeignKey(to=Group, on_delete=models.PROTECT)
 

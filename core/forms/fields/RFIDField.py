@@ -15,6 +15,8 @@ class RFIDField(forms.CharField):
 
     def to_python(self, value):
         """Validate the RFID string is in fact a valid RFID"""
+        if value is None:
+            value = ""
 
         if value and not value.isdigit():
             raise ValidationError("RFIDs may only contain the digits 0-9")
