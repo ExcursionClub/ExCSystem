@@ -149,6 +149,7 @@ class MemberCreationForm(forms.ModelForm):
 
         finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
         member.send_intro_email(finish_url)
+        member.save()
         return member
 
 
