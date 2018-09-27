@@ -27,7 +27,7 @@ MEMBERSHIP_EMAIL_HOST_USER = os.environ.get('MEMBERSHIP_EMAIL_HOST_USER')
 MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get('MEMBERSHIP_EMAIL_HOST_PASSWORD')
 
 # Base address of where the page is available
-WEB_BASE = "http://34.243.50.198"
+WEB_BASE = "https://www.excursionclub.info"
 
 LOGGING = {
     'version': 1,
