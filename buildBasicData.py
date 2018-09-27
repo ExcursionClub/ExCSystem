@@ -148,3 +148,7 @@ def build_departments():
         department.save()
     print('')
     print('Made departments')
+
+
+if __name__ == "__main__":
+    build_all()
