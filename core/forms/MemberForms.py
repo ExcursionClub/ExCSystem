@@ -245,7 +245,7 @@ class MemberFinishForm(forms.ModelForm):
         """Ensures that the picture is of a sufficiently small size before it gets uploaded"""
         picture = self.cleaned_data['picture']
 
-        if len(picture.tobytes()) > self.max_picture_bytes:
+        if picture.size > self.max_picture_bytes:
             raise forms.ValidationError(f"Selected image is too large! Max {self.max_picture_MB}MB")
 
         return picture
