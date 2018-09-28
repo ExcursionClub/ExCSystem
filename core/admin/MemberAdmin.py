@@ -80,10 +80,10 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         """Determine which profile edit page should be seen by the current user"""
-        if self.request.user.has_permission("change_member"):
+        if request.user.has_permission("change_member"):
             return self.changeform_view(request, object_id, form_url, extra_context)
-        elif self.request.user.pk == object_id:
-            return self.wrap(MemberEditProfileView)
+        elif str(request.user.id) == object_id:
+            return self.wrap(MemberEditProfileView.as_view())
         else:
             raise PermissionDenied
 
