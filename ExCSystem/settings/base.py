@@ -16,6 +16,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'core',
+    'front_page',
     'kiosk',
     'django.contrib.admin',
     'django.contrib.auth',
