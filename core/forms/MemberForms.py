@@ -174,6 +174,10 @@ class MemberFinishForm(forms.ModelForm):
     # Instantiate the quiz fields
     questions = Question.objects.filter(usage="membership")
 
+    # Limit the size of the uploaded image, currently set to 20MB
+    max_picture_MB = 20
+    max_picture_bytes = max_picture_MB * 1048576
+
     def __init__(self, *args, **kwargs):
         super(MemberFinishForm, self).__init__(*args, **kwargs)
 
@@ -236,6 +240,15 @@ class MemberFinishForm(forms.ModelForm):
                 raise forms.ValidationError(question.error_message)
 
         return cleaner
+
+    def clean_picture(self):
+        """Ensures that the picture is of a sufficiently small size before it gets uploaded"""
+        picture = self.cleaned_data['picture']
+
+        if len(picture.tobytes()) > self.max_picture_bytes:
+            raise forms.ValidationError(f"Selected image is too large! Max {self.max_picture_MB}MB")
+
+        return picture
 
     def save(self, commit=True):
         # We will always commit the save, so make sure m2m fields are always saved
