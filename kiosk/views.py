@@ -27,18 +27,26 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         form = HomeForm()
         return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
+    @staticmethod
+    def post(request):
         form = HomeForm(request.POST)
         if form.is_valid():
             rfid = form.cleaned_data['rfid']
             staffer_rfid = request.user.rfid
-            gear = Gear.objects.filter(rfid=rfid)
-            member = Member.objects.filter(rfid=rfid)
 
-            if member and member.get():
+            try:
+                gear = Gear.objects.get(rfid=rfid)
+            except Gear.DoesNotExist:
+                gear = None
+
+            try:
+                member = Member.objects.get(rfid=rfid)
+            except Member.DoesNotExist:
+                member = None
+
+            if member:
                 return redirect('check_out', rfid)
             elif gear:
-                gear = gear.get()
                 if gear.is_rented_out():
                     do_checkin(staffer_rfid, rfid)
                     alert_message = gear.name + " was checked in successfully"
@@ -46,7 +54,6 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                 else:
                     alert_message = gear.name + " is already checked in"
                     messages.add_message(request, messages.INFO, alert_message)
-                    return redirect('home')
             else:
                 alert_message = "The RFID tag is not registered to a user or gear"
                 messages.add_message(request, messages.WARNING, alert_message)
@@ -69,15 +76,20 @@ class CheckOutView(View):
         args = {'form': form, 'name': name, 'checked_out_gear': checked_out_gear}
         return render(request, self.template_name, args)
 
-    def post(self, request, rfid):
+    @staticmethod
+    def post(request, rfid):
         form = HomeForm(request.POST)
         if form.is_valid():
             gear_rfid = form.cleaned_data['rfid']
             staffer_rfid = request.user.rfid
             member_rfid = rfid
-            gear = Gear.objects.filter(rfid=gear_rfid)
+
+            try:
+                gear = Gear.objects.get(rfid=gear_rfid)
+            except Gear.DoesNotExist:
+                gear = None
+
             if gear:
-                gear = gear.get()
                 if gear.is_available():
                     do_checkout(staffer_rfid, member_rfid, gear.rfid)
                     alert_message = gear.name + " was checked out successfully"
@@ -91,14 +103,19 @@ class CheckOutView(View):
 
             return redirect('check_out', member_rfid)
 
-    def get_name(self, member_rfid: str) -> str:
-        name = Member.objects.filter(rfid=member_rfid).get().get_full_name()
-        if name:
+    @staticmethod
+    def get_name(member_rfid: str) -> str:
+        try:
+            name = Member.objects.get(rfid=member_rfid).get_full_name()
             return name
-        else:
+        except Member.DoesNotExist:
             raise ValidationError('This is not associated with a member')
 
-    def get_checked_out_gear(self, member_rfid: str) -> List[object]:
-        current_member = Member.objects.filter(rfid=member_rfid).first()
-        checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
-        return checked_out_gear
+    @staticmethod
+    def get_checked_out_gear(member_rfid: str) -> List[object]:
+        try:
+            current_member = Member.objects.get(rfid=member_rfid)
+            checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
+            return checked_out_gear
+        except Member.DoesNotExist:
+            raise ValidationError(f'There is no member with {member_rfid}')
