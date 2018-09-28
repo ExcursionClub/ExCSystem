@@ -1,9 +1,11 @@
 from random import choice, randint
 from typing import Any, List, Optional
 
+import os
 import django
 # Will raise an exception if not run here
-# django.core.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+# django.acore.exceptions.AppRegistryNotReady: Apps aren't loaded yet.
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings')
 django.setup()
 
 import kiosk.CheckoutLogic as logic
