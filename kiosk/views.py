@@ -71,8 +71,8 @@ class CheckOutView(View):
 
     def get(self, request, rfid: str):
         form = HomeForm()
-        name = self.get_name(rfid)
-        checked_out_gear = self.get_checked_out_gear(rfid)
+        name = get_name(rfid)
+        checked_out_gear = get_checked_out_gear(rfid)
         args = {'form': form, 'name': name, 'checked_out_gear': checked_out_gear}
         return render(request, self.template_name, args)
 
@@ -103,19 +103,19 @@ class CheckOutView(View):
 
             return redirect('check_out', member_rfid)
 
-    @staticmethod
-    def get_name(member_rfid: str) -> str:
-        try:
-            name = Member.objects.get(rfid=member_rfid).get_full_name()
-            return name
-        except Member.DoesNotExist:
-            raise ValidationError('This is not associated with a member')
 
-    @staticmethod
-    def get_checked_out_gear(member_rfid: str) -> List[object]:
-        try:
-            current_member = Member.objects.get(rfid=member_rfid)
-            checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
-            return checked_out_gear
-        except Member.DoesNotExist:
-            raise ValidationError(f'There is no member with {member_rfid}')
+def get_name(member_rfid: str) -> str:
+    try:
+        name = Member.objects.get(rfid=member_rfid).get_full_name()
+        return name
+    except Member.DoesNotExist:
+        raise ValidationError('This is not associated with a member')
+
+
+def get_checked_out_gear(member_rfid: str) -> List[object]:
+    try:
+        current_member = Member.objects.get(rfid=member_rfid)
+        checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
+        return checked_out_gear
+    except Member.DoesNotExist:
+        raise ValidationError(f'There is no member with {member_rfid}')
