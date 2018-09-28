@@ -7,7 +7,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from ExCSystem.settings.base import WEB_BASE
+from ExCSystem.settings import WEB_BASE
 from core.models import Member, Staffer
 from core.models.QuizModels import Question, Answer
 from core.convinience import get_all_rfids
@@ -90,6 +90,7 @@ class MemberCreationForm(forms.ModelForm):
         password = self.cleaned_data['password1']
         if not self.referenced_member and not password:
             raise forms.ValidationError("Password is required when you're signing up")
+        return password
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -149,6 +150,7 @@ class MemberCreationForm(forms.ModelForm):
 
         finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
         member.send_intro_email(finish_url)
+        member.save()
         return member
 
 

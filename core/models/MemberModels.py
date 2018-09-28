@@ -6,8 +6,9 @@ from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
 
 from phonenumber_field.modelfields import PhoneNumberField
-
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from ExCSystem import settings
+
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
 
@@ -197,9 +198,11 @@ class Member(AbstractBaseUser):
 
         return self
 
-    def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
+    def send_email(self, title, body, from_email, email_host_password):
         """Sends an email to the member"""
-        send_mail(title, body, from_email, [self.email], fail_silently=False)
+        send_mail(title, body, from_email, [self.email],
+                  fail_silently=False,
+                  auth_user=from_email, auth_password=email_host_password)
 
     def send_intro_email(self, finish_signup_url):
         """Send the introduction email with the link to finish signing up to the member"""
@@ -209,7 +212,11 @@ class Member(AbstractBaseUser):
         template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
         template = template_file.read()
         body = template.format(finish_signup_url=finish_signup_url)
-        self.send_email(title, body, from_email='membership@excursionclubucsb.org')
+        self.send_email(
+            title, body,
+            settings.MEMBERSHIP_EMAIL_HOST_USER,
+            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD
+        )
 
     def has_perm(self, perm, obj=None):
         if '.' in perm:
