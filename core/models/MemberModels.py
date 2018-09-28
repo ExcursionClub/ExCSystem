@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.urls import path, reverse
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
@@ -129,6 +130,10 @@ class Member(AbstractBaseUser):
         return self.group.name == "Staff" \
             or self.group.name == "Board" \
             or self.group.name == "Admin"
+
+    @property
+    def edit_profile_url(self):
+        return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
 
     def has_name(self):
         """Check whether the name of this member has been set"""
