@@ -17,7 +17,7 @@ def get_profile_pic_upload_location(instance, filename):
     extension = filename.split(".")[-1]
 
     # Get the name with all special characters removed
-    name_str = ''.join(e for e in instance.get_full_Name if e.isalnum())
+    name_str = ''.join(e for e in instance.get_full_name if e.isalnum())
 
     # Assemble file location and insert date data
     location = f"ProfilePics/%Y/{name_str}_%m-%d.{extension}"
