@@ -23,6 +23,7 @@ from core.admin import admin_site
 # admin.site.index_template = path/to/the/template.html
 
 urlpatterns = [
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin_site.urls),
     path('kiosk/', include('kiosk.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
