@@ -13,6 +13,18 @@ from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
 
 
+def get_profile_pic_upload_location(instance, filename):
+    extension = filename.split(".")[-1]
+
+    # Get the name with all special characters removed
+    name_str = ''.join(e for e in instance.get_full_Name if e.isalnum())
+
+    # Assemble file location and insert date data
+    location = f"ProfilePics/%Y/{name_str}_%m-%d.{extension}"
+    location = datetime.strftime(datetime.now(), location)
+    return location
+
+
 class MemberManager(BaseUserManager):
     def create_member(self, email, rfid, membership_duration, password=None):
         """
@@ -102,7 +114,7 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/%Y/",
+        upload_to=get_profile_pic_upload_location,
         null=True
     )
     phone_number = PhoneNumberField(unique=False, null=True)
