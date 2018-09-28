@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
 
 from core.convinience import get_all_rfids
 
@@ -116,9 +117,9 @@ class TransactionManager(models.Manager):
         gear.due_date = return_date
         gear.save()
 
-        return transaction
+        return transaction, gear
 
-    def add_gear(self, authorizer_rfid, gear_rfid, gear_name, gear_department, *required_certs, is_new=True):
+    def add_gear(self, authorizer_rfid, gear_rfid, gear_type, *required_certs, is_new=True, **init_data):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -127,21 +128,21 @@ class TransactionManager(models.Manager):
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being added
-        :param gear_name: string, the name of the piece of gear to be checked out
-        :param gear_department: the department this gear belongs in
+        :param gear_type: the type of gear that this is
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :param is_new: bool, notes whether this piece of gear was just acquired by the club. If the piece of gear is not
             newly acquired by the club, then it might be a piece of gear that lost it's tag!
+        :param init_data: any additional data about the gear
+
         :return: Transaction (the transaction logging this gear addition), gear (the new piece of gear)
         """
         # First must make sure that the rfid is not in use by anything
         validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
-        gear = Gear(rfid=gear_rfid, name=gear_name, department=gear_department, status=0)
-        gear.save()
-        for cert in required_certs:
-            gear.min_required_certs.add(cert)
+        gear = Gear.objects._create(gear_rfid, gear_type, **init_data)
+        if required_certs:
+            gear.min_required_certs.add(required_certs)
         gear.save()
         if is_new:
             comment = "Newly Acquired"
@@ -183,7 +184,7 @@ class TransactionManager(models.Manager):
         gear.due_date = None
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def retag_gear(self, authorizer_rfid, old_rfid, new_rfid):
         """
@@ -208,7 +209,7 @@ class TransactionManager(models.Manager):
         gear.rfid = new_rfid
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def fix_gear(self, authorizer_rfid, gear_rfid, repairs_description, person_repairing):
         """
@@ -232,7 +233,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 0
         gear.save()
-        return transaction
+        return transaction, gear
 
     def break_gear(self, authorizer_rfid, gear_rfid, damage_description):
         """
@@ -255,7 +256,7 @@ class TransactionManager(models.Manager):
         gear.set_status = 2
         gear.save()
 
-        return transaction
+        return transaction, gear
 
     def missing_gear(self, authorizer_rfid, gear_rfid):
         """
@@ -277,7 +278,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 3
         gear.save()
-        return transaction
+        return transaction, gear
 
     def expire_gear(self, authorizer_rfid, gear_rfid):
         """
@@ -300,7 +301,7 @@ class TransactionManager(models.Manager):
 
         gear.set_status = 4
         gear.save()
-        return transaction
+        return transaction, gear
 
     def delete_gear(self, authorizer_rfid, gear_rfid, reason):
         """
@@ -324,7 +325,7 @@ class TransactionManager(models.Manager):
         gear.checked_out_to = None
         gear.department.notify_gear_removed()
 
-        return transaction
+        return transaction, gear
 
     def override(self, authorizer_rfid, gear_rfid, **kwargs):
         """
@@ -344,22 +345,30 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        if authorizer_rfid != "0000000000":
-            raise ValidationError("You can't do admin overrides unless you know the admin code")
+        member = Member.objects.get(authorizer_rfid)
+        if not member.has_permission('change_gear'):
+            raise ValidationError("You don't have the permission to change gear!")
 
         # All the changes made will be described here
-        action = "Admin override on {} [{}]: \n".format(gear, gear_rfid)
+        action = f"Admin override on {gear} [{gear_rfid}]: \n"
+
+        # Remove the fields that were appended from the geartype, they will be saved in gear_data
+        for field_name in gear.geartype.get_field_names():
+            kwargs.pop(field_name)
 
         # Set each of the available kwargs to their desired value if they are not none
         for kwarg in kwargs.keys():
-            value = kwargs[kwarg]
+
+            new_value = kwargs[kwarg]
             old_value = gear.__getattribute__(kwarg)
-            gear.__setattr__(kwarg, value)
-            action += "  Changed {} from {} to {}\n".format(kwarg, old_value, value)
+
+            if new_value != old_value:
+                gear.__setattr__(kwarg, new_value)
+                action += f"  Changed {kwarg} from {old_value} to {new_value};"
 
         # Save the changes made in a transaction
-        transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=action)
-        return transaction
+        transaction = self.__make_transaction(authorizer_rfid, "Override", gear, comments=action)
+        return transaction, gear
 
 
 class Transaction(models.Model):
@@ -388,7 +397,7 @@ class Transaction(models.Model):
             ("ReTag",    "Change Tag"),
             ("Break",    "Set Broken"),
             ("Fix",      "Set Fixed"),
-            ("Override", "Admin Override")
+            ("Override", "Admin Change")
         )
          ),
         ("Auto Updates", (
@@ -397,6 +406,8 @@ class Transaction(models.Model):
             )
          )
     ]
+
+    primary_key = PrimaryKeyField()
 
     #: The time at which this transaction was created - will be automatically set and cannot be changed
     timestamp = models.DateTimeField(auto_now_add=True)
