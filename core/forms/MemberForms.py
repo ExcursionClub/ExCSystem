@@ -90,6 +90,7 @@ class MemberCreationForm(forms.ModelForm):
         password = self.cleaned_data['password1']
         if not self.referenced_member and not password:
             raise forms.ValidationError("Password is required when you're signing up")
+        return password
 
     def clean_password2(self):
         # Check that the two password entries match
