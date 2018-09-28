@@ -1,8 +1,5 @@
-from django.shortcuts import HttpResponse
-from django.template import loader
+from django.shortcuts import render
 
 
 def index(request):
-    template = loader.get_template('front_page/index.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
+    return render(request, 'front_page/index.html')
