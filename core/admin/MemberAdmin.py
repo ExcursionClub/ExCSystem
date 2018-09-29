@@ -42,7 +42,12 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             'fields': ('rfid', 'group', 'certifications')
         })
     )
-
+    editable_profile_fieldsets = (
+        ('Profile Info', {
+            'classes': ('wide',),
+            'fields': ('email', 'phone_number', 'first_name', 'last_name', 'picture')
+        }),
+    )
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
     ordering = ('first_name',)
     filter_horizontal = ()
@@ -78,12 +83,46 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         else:
             return super(MemberAdmin, self).response_add(request, obj, post_url_continue)
 
+    @staticmethod
+    def can_edit_profile(request, member_id):
+        """Returns true if the current user is allowed to edit the member's profile data"""
+        current_user = request.user
+        is_self = current_user.primary_key == member_id
+        return is_self or current_user.has_permission("change_member")
+    
+    @staticmethod
+    def can_edit_all_data(request):
+        return request.user.has_permission("change_member")
+
+    def has_view_or_change_permission(self, request, obj=None):
+        return self.has_change_permission(request, obj=obj) or self.has_view_permission(request, obj=obj)
+
+    def has_change_permission(self, request, obj=None):
+        if obj and obj._meta.model_name == 'member':
+            return self.can_edit_profile(request, obj.primary_key)
+        else:
+            super(MemberAdmin, self).has_change_permission(request, obj=obj)
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
         """Determine which profile edit page should be seen by the current user"""
-        if request.user.has_permission("change_member"):
-            return self.changeform_view(request, object_id, form_url, extra_context)
-        elif str(request.user.primary_key) == object_id:
-            return self.wrap(MemberEditProfileView.as_view())
+        if request.method == 'POST' and not self.can_edit_all_data(request):
+            # TODO: make sure you can't pass any fields that you don't have permission to access
+            pass
+        
+        return super(MemberAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+    def get_fieldsets(self, request, obj=None):
+        """Modify the changeform if the current user should only be able to edit profile data"""
+
+        can_edit_all_data = self.can_edit_all_data(request)
+        can_edit_profile = self.can_edit_profile(request, obj.primary_key)
+
+        if can_edit_all_data:
+            # If the user is allowed to edit all the data, then the default changeform works just fine
+            return self.fieldsets
+        elif can_edit_profile:
+            # If the user can edit profile but not all data, then limit the displayed fields to profile data fields
+            return self.editable_profile_fieldsets
         else:
             raise PermissionDenied
 
