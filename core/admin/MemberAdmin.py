@@ -106,6 +106,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         """Determine which profile edit page should be seen by the current user"""
         if request.method == 'POST' and not self.can_edit_all_data(request):
             # TODO: make sure you can't pass any fields that you don't have permission to access
+            # I think this gets handled by the form itself: it will ignore any data it did not generate form fields for
             pass
         
         return super(MemberAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
