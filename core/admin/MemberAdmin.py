@@ -6,8 +6,7 @@ from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, MemberEditProfileView,
-                                    StafferDetailView, )
+from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, StafferDetailView, )
 
 
 # Replace the option to create users with the option to create members
@@ -45,7 +44,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     editable_profile_fieldsets = (
         ('Profile Info', {
             'classes': ('wide',),
-            'fields': ('email', 'phone_number', 'first_name', 'last_name', 'picture')
+            'fields': ('email', 'phone_number', 'first_name', 'last_name')
         }),
     )
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
