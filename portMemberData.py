@@ -1,16 +1,21 @@
 """Import member data from the old excursion database"""
 
 import setupDjango
+import progressbar
 
 from mysql.connector import connect
 from django.utils.timezone import datetime, timedelta
 from django.contrib.auth.models import Group
 from core.models.CertificationModels import Certification
 
-from core.models.MemberModels import Member
+from core.models.MemberModels import Member, Staffer
 
 skipped_members = []
 members_ported = 0
+
+all_staffers = []
+staffers_ported = 0
+skipped_staffers = []
 
 HOST = "localhost"
 USER = "tomek"
@@ -32,7 +37,8 @@ groups = {
 kayak_cert = Certification.objects.get(title='Kayaking')
 sup_cert = Certification.objects.get(title='Stand Up Paddleboarding')
 try:
-    for user in all_users:
+    bar = progressbar.ProgressBar(redirect_stdout=True)
+    for user in bar(all_users):
         old_id = user[0]
         email = user[1]
         phone = user[2]
@@ -107,7 +113,7 @@ try:
 
 
 finally:
-    print(f"Ported the data for {members_ported} members!")
+    print(f"Ported the data for {members_ported}/{len(all_users)} members!")
     print("Skipped the following members!")
     print(skipped_members)
 
