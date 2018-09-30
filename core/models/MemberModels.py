@@ -115,7 +115,7 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        default="Shaka.png"
+        default="Shaka.png",
         upload_to=get_profile_pic_upload_location,
         null=True
     )
