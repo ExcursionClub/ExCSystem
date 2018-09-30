@@ -1,14 +1,16 @@
 """Import member data from the old excursion database"""
 
+import os
 import setupDjango
 import progressbar
 
+from django.core.files.images import ImageFile
 from mysql.connector import connect
 from django.utils.timezone import datetime, timedelta
 from django.contrib.auth.models import Group
 from core.models.CertificationModels import Certification
 
-from core.models.MemberModels import Member, Staffer
+from core.models.MemberModels import Member, Staffer, get_profile_pic_upload_location
 
 skipped_members = []
 members_ported = 0
@@ -21,6 +23,8 @@ HOST = "localhost"
 USER = "tomek"
 PASSWORD = "password"
 DB_NAME = "old_excursion"
+
+OLD_PHOTO_DIR = "/home/tomek/Work/Excursion/DataTransfer/OldData/old_member_photos/"
 
 database = connect(host=HOST, user=USER, passwd=PASSWORD, db=DB_NAME)
 cursor = database.cursor()
@@ -110,6 +114,17 @@ try:
             print(f"Failed to create member! {ex}")
             skipped_members.append(email)
             continue
+
+        try:
+            # Get the member photo and  prepare it for moving to the server
+            old_photo_name = f"{old_id}.jpg"
+            old_photo_path = os.path.join(OLD_PHOTO_DIR, old_photo_name)
+            if os.path.exists(old_photo_path):
+                new_name = get_profile_pic_upload_location(member, old_photo_name)
+                photo = ImageFile(open(old_photo_path, 'rb'))
+                member.picture.save(new_name, photo)
+        except Exception as ex:
+            print(f"Failed to port photo for {email}! {ex}")
 
         # If this user is a staffer, make the realted staffer model
         try:
