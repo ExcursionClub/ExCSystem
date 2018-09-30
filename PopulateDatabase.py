@@ -2,7 +2,7 @@
 
 import os
 from random import choice, randint
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 
 import setupDjango
 
@@ -45,7 +45,7 @@ def gen_rfid() -> str:
 
 def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
-    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 9999999))
+    phone = '+{}{}'.format(randint(1, 45), randint(1000000000, 9999999999))
     if phone in used_phones:
         phone = gen_phone_num()
     else:
@@ -223,8 +223,6 @@ for field_name in field_data.keys():
     )
     if 'suffix' in field_data[field_name].keys():
         field.suffix = field_data[field_name]['suffix']
-    if 'choices' in field_data[field_name].keys():
-        field.choices = field_data[field_name]['choices']
     field.save()
     custom_fields.append(field)
 

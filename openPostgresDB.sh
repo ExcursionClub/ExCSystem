@@ -1,0 +1,2 @@
+#!/bin/bash
+PGPASSWORD=$POSTGRES_PASSWORD psql --host=$POSTGRES_HOST --username=$POSTGRES_USER --dbname=$POSTGRES_DB_NAME

@@ -7,18 +7,28 @@ from django.urls.exceptions import NoReverseMatch
 from ExCSystem.settings import WEB_BASE
 
 
-def get_default_context(obj, context):
+def get_default_context(view, context):
     """Convenience function for getting the default context data of a member"""
+
+    is_add = True if view.object else False
+
+    user = view.request.user
+    obj_name = view.model._meta.model_name
+
     context['now'] = timezone.now()
-    context['opts'] = obj.model._meta
-    context['app_label'] = obj.model._meta.app_label
-    context['change'] = False
+    context['opts'] = view.model._meta
+    context['app_label'] = view.model._meta.app_label
     context['is_popup'] = False
-    context['add'] = False
+    context['add'] = is_add
+    context['has_delete_permission'] = user.has_permission(f"delete_{obj_name}")
+    context['has_change_permission'] = user.has_permission(f"change_{obj_name}")
+    context['has_add_permission'] = user.has_permission(f"add_{obj_name}")
+    context['has_view_permission'] = user.has_permission(f"view_{obj_name}")
+
+    # Not entirely sure the full meaning of these, but editProfile or detail fail to load if they are not set, Sorry
     context['save_as'] = False
-    context['has_delete_permission'] = False
-    context['has_change_permission'] = False
-    context['has_add_permission'] = False
+    context['change'] = False
+
     return context
 
 
@@ -113,7 +123,7 @@ class ModelDetailView(DetailView):
              }),
         )
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         context = get_default_context(self, context)
         context['html_representation'] = self.get_html_repr(kwargs['object'])

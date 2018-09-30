@@ -38,4 +38,4 @@ class GearViewList(RestrictedViewList):
         if self.request.user.has_permission('view_general_gear'):
             self.restriction_filters["status__lte"] = 3
         else:
-            self.restriction_filters["checked_out_to_id__exact"] = self.request.user.id
+            self.restriction_filters["checked_out_to_id__exact"] = self.request.user.primary_key

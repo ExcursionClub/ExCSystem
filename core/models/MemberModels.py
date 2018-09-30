@@ -1,15 +1,29 @@
 import os
 
 from django.db import models
+from django.urls import path, reverse
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
 
 from phonenumber_field.modelfields import PhoneNumberField
-
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from ExCSystem import settings
+
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
+
+
+def get_profile_pic_upload_location(instance, filename):
+    extension = filename.split(".")[-1]
+
+    # Get the name with all special characters removed
+    name_str = ''.join(e for e in instance.get_full_name() if e.isalnum())
+
+    # Assemble file location and insert date data
+    location = f"ProfilePics/%Y/{name_str}_%m-%d.{extension}"
+    location = datetime.strftime(datetime.now(), location)
+    return location
 
 
 class MemberManager(BaseUserManager):
@@ -101,7 +115,8 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        upload_to="ProfilePics/%Y/",
+        default="Shaka.png",
+        upload_to=get_profile_pic_upload_location,
         null=True
     )
     phone_number = PhoneNumberField(unique=False, null=True)
@@ -113,7 +128,7 @@ class Member(AbstractBaseUser):
     certifications = models.ManyToManyField(Certification)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['rfid', 'date_expires']
+    REQUIRED_FIELDS = ['date_expires']
 
     @property
     def is_staff(self):
@@ -132,6 +147,10 @@ class Member(AbstractBaseUser):
         return self.group.name == "Staff" \
             or self.group.name == "Board" \
             or self.group.name == "Admin"
+
+    @property
+    def edit_profile_url(self):
+        return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
 
     def has_name(self):
         """Check whether the name of this member has been set"""
@@ -161,6 +180,13 @@ class Member(AbstractBaseUser):
         # The user is identified by their email address
         return self.first_name
 
+    def get_all_certifications(self):
+        all_certs = self.certifications.all()
+        return all_certs
+
+    def has_no_certifications(self):
+        return len(self.certifications.all()) == 0
+
     def __str__(self):
         """
         If we know the name of the user, then display their name, otherwise use their email
@@ -183,9 +209,25 @@ class Member(AbstractBaseUser):
         self.group = Group.objects.get(name="Member")
         return self
 
-    def send_email(self, title, body, from_email='system@excursionclubucsb.org'):
+    def extend_membership(self, duration, rfid='', password=''):
+        """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
+
+        self.group = Group.objects.get(name="Just Joined")
+        self.date_expires += duration
+
+        if rfid:
+            self.rfid = rfid
+
+        if password:
+            self.set_password(password)
+
+        return self
+
+    def send_email(self, title, body, from_email, email_host_password):
         """Sends an email to the member"""
-        send_mail(title, body, from_email, [self.email], fail_silently=False)
+        send_mail(title, body, from_email, [self.email],
+                  fail_silently=False,
+                  auth_user=from_email, auth_password=email_host_password)
 
     def send_intro_email(self, finish_signup_url):
         """Send the introduction email with the link to finish signing up to the member"""
@@ -195,7 +237,11 @@ class Member(AbstractBaseUser):
         template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
         template = template_file.read()
         body = template.format(finish_signup_url=finish_signup_url)
-        self.send_email(title, body, from_email='membership@excursionclubucsb.org')
+        self.send_email(
+            title, body,
+            settings.MEMBERSHIP_EMAIL_HOST_USER,
+            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD
+        )
 
     def has_perm(self, perm, obj=None):
         if '.' in perm:
