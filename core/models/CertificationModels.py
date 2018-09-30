@@ -11,7 +11,7 @@ class Certification(models.Model):
     """
 
     #: The name of this certification
-    title = models.CharField(max_length=20)
+    title = models.CharField(max_length=140)
 
     #: Description of the minimum requirements needed to have this certification
     requirements = models.TextField(verbose_name="Minimum Certification Requirements")

@@ -24,7 +24,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2', 'rfid'),
+            'fields': ('username', 'password1', 'password2'),
+        }),
+        ('Staff Use Only', {
+            'classes': ('wide',),
+            'fields': ('membership', 'rfid'),
         }),
     )
     fieldsets = (

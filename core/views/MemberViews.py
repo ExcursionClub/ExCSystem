@@ -2,7 +2,7 @@ from django.views.generic.edit import UpdateView
 from django.urls import reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 
-from ExCSystem.settings.base import WEB_BASE
+from ExCSystem.settings import WEB_BASE
 
 from core.views.ViewList import RestrictedViewList
 from core.views.common import get_default_context, ModelDetailView

@@ -8,9 +8,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
 
@@ -23,6 +20,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'core',
+    'front_page',
     'kiosk',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -90,10 +88,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
-
 PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
 PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
 PHONENUMBER_DEFAULT_REGION = 'US'
@@ -108,10 +102,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-
-# Base address of where the page is available
-WEB_BASE = "http://127.0.0.1:8000"

@@ -18,7 +18,7 @@ class RFIDField(forms.CharField):
         if value is None:
             value = ""
 
-        if not value.isdigit():
+        if value and not value.isdigit():
             raise ValidationError("RFIDs may only contain the digits 0-9")
 
         # If no errors were raised, just let the to_python method of CharField do the actual work.
