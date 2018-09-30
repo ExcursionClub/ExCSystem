@@ -25,7 +25,7 @@ DB_NAME = "old_excursion"
 database = connect(host=HOST, user=USER, passwd=PASSWORD, db=DB_NAME)
 cursor = database.cursor()
 
-cursor.execute("SELECT * FROM user WHERE date_expires > 1420760194;")
+cursor.execute("SELECT * FROM user WHERE date_joined > 1524182881;")
 all_users = cursor.fetchall()
 
 groups = {
@@ -41,7 +41,7 @@ try:
     for user in bar(all_users):
         old_id = user[0]
         email = user[1]
-        phone = user[2]
+        phone = '+1' + user[2]  # Current phone numbers are not international, so assume they're US numbers
 
         cursor.execute(f"SELECT rfid FROM rfid WHERE `table`='user' AND t_id={old_id};")
         try:
@@ -111,13 +111,21 @@ try:
             skipped_members.append(email)
             continue
 
+        # If this user is a staffer, make the realted staffer model
+        try:
+            staff_name = user[10]
+            if staff_name:
+                all_staffers.append(Staffer.objects.upgrade_to_staffer(member, staff_name))
+                staffers_ported += 1
+        except Exception as ex:
+            print(f"Failed to make {email} into a staffer! {ex}")
+            skipped_staffers.append(email)
 
 finally:
     print(f"Ported the data for {members_ported}/{len(all_users)} members!")
     print("Skipped the following members!")
     print(skipped_members)
-
-
-
-    
+    print(f"Ported data for {staffers_ported} out of {len(all_staffers)} detected staffers!")
+    print("Skipped the following staffers")
+    print(skipped_staffers)
 
