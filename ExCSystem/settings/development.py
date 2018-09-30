@@ -10,8 +10,6 @@ DATABASES = {
     }
 }
 
-MEDIA_URL = '/media/'
-
 # Email host settings
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1024

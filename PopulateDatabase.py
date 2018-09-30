@@ -48,7 +48,7 @@ def gen_rfid() -> str:
 
 def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
-    phone = '+{}{}'.format(randint(1, 45), randint(1000000, 9999999))
+    phone = '+{}{}'.format(randint(1, 45), randint(1000000000, 9999999999))
     if phone in used_phones:
         phone = gen_phone_num()
     else:
