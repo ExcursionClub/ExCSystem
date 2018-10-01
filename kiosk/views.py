@@ -55,8 +55,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                     alert_message = gear.name + " is already checked in"
                     messages.add_message(request, messages.INFO, alert_message)
             else:
-                alert_message = "The RFID tag is not registered to a user or gear"
-                messages.add_message(request, messages.WARNING, alert_message)
+                return redirect('kiosk:tag_gear', rfid)
 
             return redirect('kiosk:home')
 
@@ -102,6 +101,14 @@ class CheckOutView(View):
                 messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('kiosk:check_out', member_rfid)
+
+
+class TagGearView(View):
+    template_name = 'kiosk/tag_gear.html'
+
+    def get(self, request, rfid: str):
+        args = {'rfid': rfid}
+        return render(request, self.template_name, args)
 
 
 def get_name(member_rfid: str) -> str:
