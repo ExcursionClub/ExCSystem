@@ -3,6 +3,10 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
@@ -16,6 +20,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'core',
+    'front_page',
     'kiosk',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -84,6 +89,8 @@ AUTH_PASSWORD_VALIDATORS = [
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 PHONENUMBER_DB_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_FORMAT = 'INTERNATIONAL'
+PHONENUMBER_DEFAULT_REGION = 'US'
 
 LANGUAGE_CODE = 'en-us'
 
@@ -95,11 +102,8 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 EMAIL_BACKEND = 'core.Email.ExcursionEmailBackend'
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'

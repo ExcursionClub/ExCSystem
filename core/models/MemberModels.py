@@ -1,6 +1,7 @@
 import os
 
 from django.db import models
+from django.urls import path, reverse
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
@@ -114,6 +115,7 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
+        default="Shaka.png",
         upload_to=get_profile_pic_upload_location,
         null=True
     )
@@ -151,6 +153,10 @@ class Member(AbstractBaseUser):
             or self.group.name == "Board" \
             or self.group.name == "Admin"
 
+    @property
+    def edit_profile_url(self):
+        return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
+
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
@@ -178,6 +184,13 @@ class Member(AbstractBaseUser):
     def get_short_name(self):
         # The user is identified by their email address
         return self.first_name
+
+    def get_all_certifications(self):
+        all_certs = self.certifications.all()
+        return all_certs
+
+    def has_no_certifications(self):
+        return len(self.certifications.all()) == 0
 
     def __str__(self):
         """
