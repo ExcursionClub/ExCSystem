@@ -96,6 +96,8 @@ USE_L10N = True
 USE_TZ = True
 
 
+EMAIL_BACKEND = 'core.Email.ExcursionEmailBackend'
+
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 LOGIN_URL = '/admin/login/'
