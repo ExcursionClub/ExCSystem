@@ -45,7 +45,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                 member = None
 
             if member:
-                return redirect('check_out', rfid)
+                return redirect('kiosk:check_out', rfid)
             elif gear:
                 if gear.is_rented_out():
                     do_checkin(staffer_rfid, rfid)
@@ -58,7 +58,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                 alert_message = "The RFID tag is not registered to a user or gear"
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('home')
+            return redirect('kiosk:home')
 
 
 class CheckOutView(View):
@@ -101,7 +101,7 @@ class CheckOutView(View):
                 alert_message = "The RFID tag is not registered to a piece of gear"
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('check_out', member_rfid)
+            return redirect('kiosk:check_out', member_rfid)
 
 
 def get_name(member_rfid: str) -> str:
