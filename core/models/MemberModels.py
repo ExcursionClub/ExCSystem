@@ -129,6 +129,11 @@ class Member(AbstractBaseUser):
     REQUIRED_FIELDS = ['date_expires']
 
     @property
+    def is_active(self):
+        """Any user who is not expired is active"""
+        return self.group.name != "Expired"
+
+    @property
     def is_staff(self):
         """
         Property that is used by django to determine whether a user is allowed to log in to the admin: i.e. everyone
