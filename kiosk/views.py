@@ -55,7 +55,11 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                     alert_message = gear.name + " is already checked in"
                     messages.add_message(request, messages.INFO, alert_message)
             else:
-                return redirect('kiosk:tag_gear', rfid)
+                if rfid.isdigit():
+                    return redirect('kiosk:tag_gear', int(rfid))
+                else:
+                    alert_message = rfid + " is not a valid RFID"
+                    messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('kiosk:home')
 
