@@ -29,7 +29,7 @@ OLD_PHOTO_DIR = "/home/tomek/Work/Excursion/DataTransfer/OldData/old_member_phot
 database = connect(host=HOST, user=USER, passwd=PASSWORD, db=DB_NAME)
 cursor = database.cursor()
 
-cursor.execute("SELECT * FROM user WHERE date_joined > 1524182881;")
+cursor.execute("SELECT * FROM user;")
 all_users = cursor.fetchall()
 
 groups = {
