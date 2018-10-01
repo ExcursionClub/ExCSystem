@@ -1,10 +1,6 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
 
-import os
-import django
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
-django.setup()
+import setupDjango
 
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department

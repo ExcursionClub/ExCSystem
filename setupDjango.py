@@ -2,5 +2,5 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.production')
 django.setup()
