@@ -71,14 +71,15 @@ try:
         # Select which group the member should be placed in
         mem_type = user[4].lower()
         status = user[5].lower()
-        if mem_type == "member" and status == "new":
-            group = groups["just joined"]
-        elif mem_type == "member" and status == "expired":
-            group = groups["expired"]
-        elif mem_type == "member" and status == "active" and date_expires < datetime.now():
-            group = groups["expired"]
-        elif mem_type == "member" and status == "active" and date_expires > datetime.now():
-            group = groups["member"]
+        if mem_type == "member":
+            if status == "new":
+                group = groups["just joined"]
+            elif status == "expired":
+                group = groups["expired"]
+            elif status == "active" and date_expires < datetime.now():
+                group = groups["expired"]
+            elif status == "active" and date_expires > datetime.now():
+                group = groups["member"]
         elif (mem_type == "staff" or mem_type == "admin") and status == "active":
             group = groups["staff"]
         else:
