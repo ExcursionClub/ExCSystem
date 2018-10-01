@@ -2,5 +2,10 @@
 import os
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.production')
+print(f"Setting up django with {os.environ.get('ENV_CONFIG')} settings")
+if os.environ.get("ENV_CONFIG") == "development":
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.development')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ExCSystem.settings.production')
+
 django.setup()
