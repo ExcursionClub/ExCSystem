@@ -4,7 +4,7 @@ verify_ssl = true
 url = "https://pypi.org/simple"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 [packages]
 django-phonenumber-field = "==2.0.1"
