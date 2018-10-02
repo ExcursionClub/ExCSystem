@@ -28,7 +28,8 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name='password_reset_complete',
     ),
+    path('', include('front_page.urls', namespace='front-page')),
     path('admin/', admin_site.urls),
-    path('kiosk/', include('kiosk.urls')),
+    path('kiosk/', include('kiosk.urls', namespace='kiosk'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

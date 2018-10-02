@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
-from kiosk.forms import HomeForm
+from kiosk.forms import HomeForm, RetagGearForm
 
 
 class HomeView(LoginRequiredMixin, generic.TemplateView):
@@ -45,20 +45,23 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
                 member = None
 
             if member:
-                return redirect('check_out', rfid)
+                return redirect('kiosk:check_out', rfid)
             elif gear:
                 if gear.is_rented_out():
                     do_checkin(staffer_rfid, rfid)
-                    alert_message = gear.name + " was checked in successfully"
+                    alert_message = f'{gear.name} was checked in successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = gear.name + " is already checked in"
+                    alert_message = f'{gear.name} is already checked in'
                     messages.add_message(request, messages.INFO, alert_message)
             else:
-                alert_message = "The RFID tag is not registered to a user or gear"
-                messages.add_message(request, messages.WARNING, alert_message)
+                if rfid.isdigit():
+                    return redirect('kiosk:retag_gear', int(rfid))
+                else:
+                    alert_message = f'{rfid} is not a valid RFID'
+                    messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('home')
+            return redirect('kiosk:home')
 
 
 class CheckOutView(View):
@@ -73,7 +76,11 @@ class CheckOutView(View):
         form = HomeForm()
         name = get_name(rfid)
         checked_out_gear = get_checked_out_gear(rfid)
-        args = {'form': form, 'name': name, 'checked_out_gear': checked_out_gear}
+        args = {
+            'form': form,
+            'name': name,
+            'checked_out_gear': checked_out_gear
+        }
         return render(request, self.template_name, args)
 
     @staticmethod
@@ -92,16 +99,28 @@ class CheckOutView(View):
             if gear:
                 if gear.is_available():
                     do_checkout(staffer_rfid, member_rfid, gear.rfid)
-                    alert_message = gear.name + " was checked out successfully"
+                    alert_message = f'{gear.name} was checked out successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = "Gear is already rented out"
+                    alert_message = 'Gear is already rented out'
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = "The RFID tag is not registered to a piece of gear"
+                alert_message = 'The RFID tag is not registered to a piece of gear'
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('check_out', member_rfid)
+            return redirect('kiosk:check_out', member_rfid)
+
+
+class RetagGearView(View):
+    template_name = 'kiosk/retag_gear.html'
+
+    def get(self, request, rfid: str):
+        form = RetagGearForm(initial={'rfid': rfid})
+        args = {
+            'form': form,
+            'rfid': rfid
+        }
+        return render(request, self.template_name, args)
 
 
 def get_name(member_rfid: str) -> str:
