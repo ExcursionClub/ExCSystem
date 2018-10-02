@@ -104,10 +104,10 @@ try:
                 phone_number=phone,
                 first_name=first_name,
                 last_name=last_name,
-                date_joined=date_joined,
                 date_expires=date_expires,
             )
             member.save()
+            member.date_joined = date_joined
             member.certifications.set(certifications)
             member.save()
             members_ported += 1
