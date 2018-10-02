@@ -125,15 +125,11 @@ class Member(AbstractBaseUser):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     certifications = models.ManyToManyField(Certification)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['date_expires']
-
-    @property
-    def is_active(self):
-        """Any user who is not expired is active"""
-        return self.group.name != "Expired"
 
     @property
     def is_staff(self):
@@ -208,10 +204,12 @@ class Member(AbstractBaseUser):
     def expire(self):
         """Expires this member's membership"""
         self.group = Group.objects.get(name="Expired")
+        self.is_active = False
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
         self.group = Group.objects.get(name="Member")
+        self.is_active = True
         return self
 
     def extend_membership(self, duration, rfid='', password=''):
