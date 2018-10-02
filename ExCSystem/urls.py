@@ -6,7 +6,7 @@ from django.contrib.auth import views as auth_views
 from core.admin import admin_site
 
 urlpatterns = [
-    path('', include('front_page.urls')),
+    path('', include('front_page.urls', namespace='front-page')),
     path(
         'admin/password_reset/',
         auth_views.PasswordResetView.as_view(),
@@ -27,7 +27,6 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(),
         name='password_reset_complete',
     ),
-    path('', include('front_page.urls', namespace='front-page')),
     path('admin/', admin_site.urls),
     path('kiosk/', include('kiosk.urls', namespace='kiosk'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
