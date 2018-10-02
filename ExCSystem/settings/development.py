@@ -10,8 +10,6 @@ DATABASES = {
     }
 }
 
-MEDIA_URL = '/media/'
-
 # Email host settings
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1024
@@ -19,5 +17,5 @@ MEMBERSHIP_EMAIL_HOST_USER = 'membership@ExCDev.org'
 MEMBERSHIP_EMAIL_HOST_PASSWORD = ''
 
 # Base address of where the page is available
-WEB_BASE = "http://127.0.0.1:8000"
-SITE_DOMAIN = "127.0.0.1:8000"
+WEB_BASE = "http://localhost:8000"
+SITE_DOMAIN = "localhost:8000"

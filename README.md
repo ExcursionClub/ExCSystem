@@ -74,17 +74,20 @@ $ python3.7 functional_tests.py
 ```
 
 ## Applying Changes to the Models</b>
-Most changes to the code will be incorporated into the website
-immediately. The exception to this rule are any changes to the models
-that affect how data is stored in the database. To incorporate these,
-stop the server, and run:
+Most changes to the code will be incorporated into the website immediately.
+The exception to this rule are any changes to the models that affect how data is stored in the database.
+To incorporate these, stop the server, and run:
 
 ```bash
-$ python3.7 manage.py makemigrations core
+$ python3.7 manage.py makemigrations <app>
 $ python3.7 manage.py migrate
 ```
 
+It's important to run create small atomic migrations to make it easy to roll back if we mess up our database.
+So specify the app and don't run huge migrations.
 This should be sufficient for small changes that do not cause conflicts.
+However if it does it means that the data in the database can't satisfy the new constraints.
+E.g. create a migrations that sets a field to be not null and that field is null for a record in the database.
 If an error pops up, and there is not important information in the
 database, you can reset the database (see below).
 

@@ -42,6 +42,12 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         """Treat post requests as get requests"""
         return self.get(request, *args, **kwargs)
 
+    def get_context_data(self, **context):
+        context['main_admin_url'] = WEB_BASE + "/admin"
+        context['departments_url'] = WEB_BASE + "/admin/core/department"
+        context['staffers_url'] = WEB_BASE + "/admin/core/staffer"
+        return super(MemberDetailView, self).get_context_data(**context)
+
 
 class MemberFinishView(UserPassesTestMixin, UpdateView):
 

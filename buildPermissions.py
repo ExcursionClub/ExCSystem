@@ -287,3 +287,5 @@ def add_permission(codename=None, name=None, content_type=None):
     all_permissions.append(permission)
     return permission
 
+if __name__ == "__main__":
+    build_all()
