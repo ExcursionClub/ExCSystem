@@ -103,8 +103,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-EMAIL_BACKEND = 'core.Email.ExcursionEmailBackend'
-
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'

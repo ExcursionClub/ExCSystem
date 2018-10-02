@@ -19,6 +19,7 @@ DATABASES = {
 }
 
 # Email host settings
+EMAIL_BACKEND = 'core.Email.ExcursionEmailBackend'
 EMAIL_HOST = 'smtp.1and1.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587

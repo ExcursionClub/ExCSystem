@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm, RetagGearForm
@@ -20,7 +21,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
     gear can be checked out to that member.
     """
     template_name = 'kiosk/home.html'
-    login_url = '/kiosk/login/'
+    login_url = 'kiosk:login'
     redirect_field_name = ''
 
     def get(self, request):
