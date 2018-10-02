@@ -30,6 +30,7 @@ DEFAULT_EMAIL_PASSWORD = os.environ.get('DEFAULT_EMAIL_PASSWORD')
 
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
+SITE_DOMAIN = "www.excursionclub.info"
 
 LOGGING = {
     'version': 1,

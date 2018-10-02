@@ -8,6 +8,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
 
 SITE_ID = 1
+SITE_NAME = "Excursion System"
 
 ALLOWED_HOSTS = ['*']
 

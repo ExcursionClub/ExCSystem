@@ -20,3 +20,4 @@ MEMBERSHIP_EMAIL_HOST_PASSWORD = ''
 
 # Base address of where the page is available
 WEB_BASE = "http://127.0.0.1:8000"
+SITE_DOMAIN = "127.0.0.1:8000"
