@@ -7,9 +7,8 @@ This project requires python3.6, virtualenv. There are two ways to setup the pro
 ### The Hard Way
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
-$ python3.7 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements/development.txt
+$ pipenv install --dev
+$ pipenv shell
 $ ENV_CONFIG="development"; python3 manage.py runserver
 ```
 
@@ -121,7 +120,8 @@ Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH int
 ```
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install python3.7 nginx python3-pip libpq-dev python3.7-dev postgresql postgresql-contrib  -y
+sudo apt-get install python3.7 nginx libpq-dev python3.7-dev postgresql postgresql-contrib  -y
+curl https://raw.githubusercontent.com/kennethreitz/pipenv/master/get-pipenv.py | python
 ```
 
 ### Nginx config
@@ -220,7 +220,7 @@ sudo ln -s /usr/bin/python3.7 /usr/bin/python3
 
 git clone https://github.com/ExcursionClub/ExCSystem.git
 cd ExCSystem
-sudo pip3 install -r requirements/production.txt
+pipenv install --deploy --system
 
 # Generate keys:
 python3 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
