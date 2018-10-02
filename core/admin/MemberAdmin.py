@@ -87,11 +87,14 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             return super(MemberAdmin, self).response_add(request, obj, post_url_continue)
 
     @staticmethod
-    def can_edit_profile(request, member_id):
+    def can_edit_profile(request, member=None):
         """Returns true if the current user is allowed to edit the member's profile data"""
-        current_user = request.user
-        is_self = current_user.primary_key == member_id
-        return is_self or current_user.has_permission("change_member")
+        if not member:
+            return False  # You can't edit profile data on a member who doesn't exist
+        else:
+            current_user = request.user
+            is_self = current_user.primary_key == member.primary_key
+            return is_self or current_user.has_permission("change_member")
     
     @staticmethod
     def can_edit_all_data(request):
@@ -104,7 +107,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         if obj and obj._meta.model_name == 'member':
             return self.can_edit_profile(request, obj.primary_key)
         else:
-            super(MemberAdmin, self).has_change_permission(request, obj=obj)
+            return super(MemberAdmin, self).has_change_permission(request, obj=obj)
 
     def change_view(self, request, object_id, form_url='', extra_context=None):
         """Determine which profile edit page should be seen by the current user"""
@@ -119,16 +122,21 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         """Modify the changeform if the current user should only be able to edit profile data"""
 
         can_edit_all_data = self.can_edit_all_data(request)
-        can_edit_profile = self.can_edit_profile(request, obj.primary_key)
+        can_edit_profile = self.can_edit_profile(request, obj)
 
-        if can_edit_all_data:
+        if not obj:
+            # If an object is not passed, then assume we are adding an object (this is standard django-wide assumption)
+            fieldsets = self.add_fieldsets
+        elif can_edit_all_data:
             # If the user is allowed to edit all the data, then the default changeform works just fine
-            return self.fieldsets
+            fieldsets = self.fieldsets
         elif can_edit_profile:
             # If the user can edit profile but not all data, then limit the displayed fields to profile data fields
-            return self.editable_profile_fieldsets
+            fieldsets = self.editable_profile_fieldsets
         else:
             raise PermissionDenied
+
+        return fieldsets
 
 
 class StafferAdmin(ViewableModelAdmin):
