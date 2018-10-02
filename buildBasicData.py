@@ -2,6 +2,9 @@
 
 import setupDjango
 
+from django.contrib.sites.models import Site
+
+from ExCSystem import settings
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Staffer
@@ -9,11 +12,19 @@ from core.models.QuizModels import Question, Answer
 
 
 def build_all():
+    build_site()
     build_permissions()
     build_quiz_questions()
     build_certifications()
     build_departments()
 
+
+def build_site():
+    """Remane the Site in the sites framework to match actual data"""
+    site = Site.objects.all()[0]
+    site.domain = settings.SITE_DOMAIN
+    site.name = settings.SITE_NAME
+    site.save()
 
 def build_permissions():
     """Run the script to build the group and permission structure"""

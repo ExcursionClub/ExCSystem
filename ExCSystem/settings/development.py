@@ -18,3 +18,4 @@ MEMBERSHIP_EMAIL_HOST_PASSWORD = ''
 
 # Base address of where the page is available
 WEB_BASE = "http://localhost:8000"
+SITE_DOMAIN = "localhost:8000"
