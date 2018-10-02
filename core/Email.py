@@ -18,28 +18,6 @@ class ExcursionEmailBackend(EmailBackend):
         self.password = settings.DEFAULT_EMAIL_PASSWORD
 
 
-class ExcPasswordResetForm(PasswordResetForm):
-
-    def get_users(self, email):
-        """
-        Get all the users with this email (should always be one or None)
-        """
-        active_users = Member.objects.filter(email__iexact=email)
-        return (u for u in active_users if u.has_usable_password())
-
-    def send_mail(self, subject_template_name, email_template_name,
-                  context, from_email, to_email, html_email_template_name=None):
-        # The domain is everything that comes after the '//' in the web base
-        context['domain'] = settings.WEB_BASE.split('//')[1]
-        context['site_name'] = 'Excursion Admin'
-        super(ExcPasswordResetForm, self).send_mail(
-            subject_template_name, email_template_name, context, from_email,
-            to_email, html_email_template_name=html_email_template_name
-        )
-
-
 class ExcPasswordResetView(PasswordResetView):
-
-    form_class = ExcPasswordResetForm
     from_email = settings.MEMBERSHIP_EMAIL_HOST_USER
 

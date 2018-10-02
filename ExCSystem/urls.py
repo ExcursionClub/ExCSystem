@@ -4,12 +4,13 @@ from django.conf import settings
 from django.contrib.auth import views as auth_views
 
 from core.admin import admin_site
+from core.Email import ExcPasswordResetView
 
 urlpatterns = [
     path('', include('front_page.urls', namespace='front-page')),
     path(
         'admin/password_reset/',
-        auth_views.PasswordResetView.as_view(),
+        ExcPasswordResetView.as_view(),
         name='admin_password_reset',
     ),
     path(
