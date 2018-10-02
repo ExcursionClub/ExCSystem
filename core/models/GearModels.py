@@ -48,7 +48,7 @@ class CustomDataField(models.Model):
     suffix = models.CharField(max_length=10, default="", blank=True)
     required = models.BooleanField(default=False)
     label = models.CharField(max_length=30, default="")
-    help_text = models.CharField(max_length=200, default="")
+    help_text = models.CharField(max_length=200, default="", blank=True)
 
     choices = models.TextField(
         max_length=1000,
@@ -56,7 +56,8 @@ class CustomDataField(models.Model):
         help_text="Must use this format to define choices!\n"
                   "Each choice must be on it's own line, and consist of a short name (used internally), and a "
                   "description (seen by the user). Name description pairs must be separated by a semicolon, and no "
-                  "semicolons are allowed in either the name or the description"
+                  "semicolons are allowed in either the name or the description",
+        blank=True
     )
 
     def __str__(self):

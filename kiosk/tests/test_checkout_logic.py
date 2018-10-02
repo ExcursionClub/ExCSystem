@@ -5,7 +5,7 @@ from django.contrib.auth.models import Group
 
 from core.models.MemberModels import Member
 from core.models.DepartmentModels import Department
-from core.models.GearModels import Gear
+from core.models.GearModels import Gear, GearType
 from core.models.TransactionModels import Transaction
 from kiosk.CheckoutLogic import do_checkout, do_checkin
 
@@ -56,11 +56,18 @@ class CheckoutLogicTest(TestCase):
 
         department = Department.objects.create(name='Camping', description='oops')
 
+        gear_type = GearType(
+            name='Crash Pad',
+            department=department
+        )
+        gear_type.save()
+
         _, gear = Transaction.objects.add_gear(
             authorizer_rfid=ADMIN_RFID,
             gear_rfid=GEAR_RFID,
-            gear_name='testbag', 
-            gear_department=department
+            gear_name='test bag',
+            gear_department=department,
+            gear_type=gear_type
         )
 
     def test_checkout_gear(self):
