@@ -255,4 +255,8 @@ This will run Django in the background, even after you exit your SSH session.
 ```
 Note: Crontab (automatic linux scheduling utility) is configured to run this command whenever the server is rebooted
 
+This project also includes several tasks that run periodically and are managed by celery. To enable celery:
+```bash
+celery -A ExCSystem beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
 
