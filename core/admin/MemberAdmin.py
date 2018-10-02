@@ -102,7 +102,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
     def has_change_permission(self, request, obj=None):
         if obj and obj._meta.model_name == 'member':
-            return self.can_edit_profile(request, obj.primary_key)
+            return self.can_edit_profile(request, obj)
         else:
             super(MemberAdmin, self).has_change_permission(request, obj=obj)
 
