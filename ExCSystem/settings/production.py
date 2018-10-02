@@ -19,15 +19,19 @@ DATABASES = {
 }
 
 # Email host settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'core.Email.ExcursionEmailBackend'
 EMAIL_HOST = 'smtp.1and1.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 MEMBERSHIP_EMAIL_HOST_USER = os.environ.get('MEMBERSHIP_EMAIL_HOST_USER')
 MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get('MEMBERSHIP_EMAIL_HOST_PASSWORD')
+DEFAULT_EMAIL = MEMBERSHIP_EMAIL_HOST_USER
+DEFAULT_EMAIL_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
+
 
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
+SITE_DOMAIN = "www.excursionclub.info"
 
 LOGGING = {
     'version': 1,
