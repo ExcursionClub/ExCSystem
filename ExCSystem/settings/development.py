@@ -18,3 +18,10 @@ MEMBERSHIP_EMAIL_HOST_PASSWORD = ''
 
 # Base address of where the page is available
 WEB_BASE = "http://localhost:8000"
+
+BROKER_USER = 'user'
+BROKER_PASSWORD = 'devpassword'
+BROKER_HOST = 'localhost'
+BROKER_PORT = '5672'
+BROKER_VIRTUAL_HOST = 'vhost'
+BROKER_URL = f'amqp://{BROKER_USER}:{BROKER_PASSWORD}@{BROKER_HOST}:5672/myvhost'
