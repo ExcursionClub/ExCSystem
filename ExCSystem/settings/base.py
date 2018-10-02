@@ -104,5 +104,5 @@ USE_L10N = True
 USE_TZ = True
 
 LOGIN_URL = '/admin/login/'
-LOGIN_REDIRECT_URL = 'kiosk:home'
-LOGOUT_REDIRECT_URL = 'kiosk:home'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
