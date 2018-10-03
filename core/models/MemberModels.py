@@ -125,7 +125,7 @@ class Member(AbstractBaseUser):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = 'email'
