@@ -39,7 +39,7 @@ def update_active_group_based():
         member.save()
 
     print(f"Activated {members_activated}, deactivated {members_deactivated}")
-    print(f"New total active members: f{total_active}")
+    print(f"New total active members: {total_active}")
 
 
 if __name__ == "__main__":
