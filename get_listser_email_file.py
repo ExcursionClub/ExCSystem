@@ -36,6 +36,7 @@ def update_active_group_based():
             else:
                 members_deactivated += 1
 
+        member.is_active = is_active
         member.save()
 
     print(f"Activated {members_activated}, deactivated {members_deactivated}")
