@@ -31,7 +31,7 @@ def update_active_group_based():
             total_active +=1
 
         if was_active != is_active:
-            if member.is_active:
+            if is_active:
                 members_activated += 1
             else:
                 members_deactivated += 1
