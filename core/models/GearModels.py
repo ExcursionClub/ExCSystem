@@ -177,6 +177,14 @@ class GearType(models.Model):
     #: The department to which this type of gear belongs (roughly corresponds to STL positions)
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
 
+    #: All the certifications that a member must posses to be allowed to check out this gear
+    min_required_certs = models.ManyToManyField(
+        Certification,
+        verbose_name="Minimal Certifications Required for Rental",
+        blank=True,
+        default=None,
+    )
+
     #:
     data_fields = models.ManyToManyField(CustomDataField)
 
@@ -258,9 +266,6 @@ class Gear(models.Model):
     ]
     #: The status determines what transactions the gear can participate in and where it is visible
     status = models.IntegerField(choices=status_choices)
-
-    #: All the certifications that a member must posses to be allowed to check out this gear
-    min_required_certs = models.ManyToManyField(Certification, verbose_name="Minimal Certifications Required for Rental")
 
     #: Who currently has this piece of gear. If null, then the gear is not checked out
     checked_out_to = models.ForeignKey(Member, blank=True, null=True, on_delete=models.SET_NULL)
