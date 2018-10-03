@@ -2,7 +2,7 @@
 Bottom up re-design of the Excursion system
 
 ## Getting Started
-This project requires python3.6, virtualenv. There are two ways to setup the project:
+This project requires python3.7, virtualenv. There are two ways to setup the project:
 
 ### The Hard Way
 ```bash
@@ -24,17 +24,7 @@ $ docker-compose up -d
 ### Emails
 Several parts of the project send out emails (i.e. when creating a new user). These processes will generally 
 crash if an email server is not set up. For setup of the production email server, see the deployment section below. 
-During development however, the easiest way is to use a local SMTP server to handle the emails. This can be done in the
-command line with:
-```bash
-python -m smtpd -n -c DebuggingServer localhost:1024
-```
-This command creates a tiny little local SMTP server on port 1024, that will print any emails
-received out to the command line. Just keep that window open and you're golden.
-
-If you'd like something a little more powerful, and with a GUI, then I recommend 
-http://nilhcem.com/FakeSMTP/.  Just make sure it is up and running on port 1024, and you'll receive any emails the 
-system sends.
+During development however, we currently use the console email backend to print the emails to the console.
 
 
 ## Development
@@ -118,7 +108,7 @@ should ever be pushed to the git repo. The migrations directory on the
 Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH into the instance
 
 ### Upgrade packages and install dependencies
-```
+```bash
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install python3.7 nginx python3-pip libpq-dev python3.7-dev postgresql postgresql-contrib  -y
@@ -159,13 +149,13 @@ server {
 ```
 
 Then run
-```
+```bash
 sudo nginx -t
 sudo service nginx reload
 ```
 
 ### Add SSL
-```
+```bash
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
@@ -186,7 +176,7 @@ You can easily do this by executing the script:
 `./openPostgresDB.sh`
 
 Local
-```
+```bash
 sudo -su postgres
 createuser --interactive -P
 
@@ -213,7 +203,7 @@ grant ALL ON database excsystem to admin;
 ```
 
 ### App setup
-```
+```bash
 # Update symlink to point to Python3.7
 sudo rm /usr/bin/python3
 sudo ln -s /usr/bin/python3.7 /usr/bin/python3
@@ -223,32 +213,42 @@ cd ExCSystem
 sudo pip3 install -r requirements/production.txt
 
 # Generate keys:
-python3 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
+python3.7 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
 
 # Login data to the database
 export POSTGRES_USER=ex
 export POSTGRES_PASSWORD=
 export POSTGRES_HOST=
-POSTGRES_DB_NAME=
+export POSTGRES_DB_NAME=
 
 # Login data to the email server(s)
 export MEMBERSHIP_EMAIL_HOST_USER=
 export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 
+# Tell the server whether to run in 'production' or 'development'
+export ENV_CONFIG=production
+
+python3.7 manage.py makemigrations
 python3.7 manage.py migrate
 ```
 To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 
+To populate the database with start data (groups, permissions, quiz questions etc) you can run:
+```bash
+python3.7 buildBasicData.py
+```
+
 ### Create folders for static files
 Linux
-```
+```bash
 # Location?
 sudo chown ec2-user:ec2-user /var/www/static/ /var/www/media/
 python3.7 manage.py collectstatic
 ```
 
 # Ubuntu
-```
+This only needs to be done once per instance
+```bash
 sudo mkdir /var/www/static
 sudo mkdir /var/www/media
 sudo chown ubuntu:ubuntu /var/www/static/ /var/www/media/
@@ -256,9 +256,11 @@ python3.7 manage.py collectstatic
 ```
 
 ### Run in production
-```
+```bash
 nohup ENV_CONFIG="production"; python3.7 manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 ```
 Note: Crontab (automatic linux scheduling utility) is configured to run this command whenever the server is rebooted
+
+
