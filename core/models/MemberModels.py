@@ -272,5 +272,9 @@ class Staffer(models.Model):
         max_length=255,
         unique=True,
     )
+    title = models.CharField(verbose_name="Position Title",
+                             default="Excursion Staff!", 
+                             max_length=30)
     autobiography = models.TextField(verbose_name="Self Description of the staffer",
                                      default="I am too lazy and lame to upload a bio!")
+
