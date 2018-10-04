@@ -259,7 +259,7 @@ class Member(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         """This is required by django, determine whether the user is allowed to view the app"""
-        return Truet
+        return True
 
 
 class Staffer(models.Model):
