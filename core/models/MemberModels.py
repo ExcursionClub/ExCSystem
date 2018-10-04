@@ -216,7 +216,11 @@ class Member(AbstractBaseUser):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
 
         self.group = Group.objects.get(name="Just Joined")
-        self.date_expires += duration
+
+        if self.group.name == "Expired":
+            self.date_expires = now() + duration
+        else:
+            self.date_expires += duration
 
         if rfid:
             self.rfid = rfid
