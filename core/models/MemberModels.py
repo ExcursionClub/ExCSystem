@@ -217,7 +217,7 @@ class Member(AbstractBaseUser):
 
         self.group = Group.objects.get(name="Just Joined")
 
-        if self.group.name < datetime.date(now()):
+        if self.date_expires < datetime.date(now()):
             self.date_expires = now() + duration
         else:
             self.date_expires += duration
