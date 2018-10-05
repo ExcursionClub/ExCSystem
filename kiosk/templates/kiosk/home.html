@@ -4,8 +4,12 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <p>To check in gear scan the gear RFID tag</p>
-        <p>To check out gear scan the member RFID tag</p>
+        <p>Scan a member or gear RFID tag to:</p>
+        <ul>
+            <li>Check in gear</li>
+            <li>Check out gear</li>
+            <li>Tag or retag gear</li>
+        </ul>
         <p>Or type in the RFID number</p>
         <form method="post">
             {% csrf_token %}

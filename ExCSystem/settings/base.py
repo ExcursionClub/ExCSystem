@@ -12,6 +12,7 @@ MEDIA_URL = '/media/'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '=ypf2)!((#kx_+$l6ahx-j=_tf-sl=%vaw-u@fjl25x%)=mrj*')
 
 SITE_ID = 1
+SITE_NAME = "Excursion System"
 
 ALLOWED_HOSTS = ['*']
 
@@ -72,15 +73,15 @@ AUTH_USER_MODEL = 'core.Member'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    # },
-    # {
-    #     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    # },
+    {
+         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
     # {
     #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     # },
