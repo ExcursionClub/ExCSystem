@@ -214,12 +214,10 @@ class Member(AbstractBaseUser):
     def expire(self):
         """Expires this member's membership"""
         self.group = Group.objects.get(name="Expired")
-        self.is_active = False
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
         self.group = Group.objects.get(name="Member")
-        self.is_active = True
         return self
 
     def extend_membership(self, duration, rfid='', password=''):
