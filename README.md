@@ -2,22 +2,14 @@
 Bottom up re-design of the Excursion system
 
 ## Getting Started
-This project requires python3.6, virtualenv. There are two ways to setup the project:
+This project requires python3.7 and Pipenv.
 
-### The Hard Way
+### Install
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ pipenv install --dev
 $ pipenv shell
 $ ENV_CONFIG="development"; python3 manage.py runserver
-```
-
-### The Easy Way
-This requires Docker and docker-compose. Make sure the daemon is running before running:
-
-```bash
-$ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
-$ docker-compose up -d
 ```
 
 ### Emails
