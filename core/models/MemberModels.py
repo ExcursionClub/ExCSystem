@@ -125,11 +125,21 @@ class Member(AbstractBaseUser):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+
+    #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
+    is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
+
     certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['date_expires']
+
+    @property
+    def is_active_member(self):
+        """Return true if the member has a valid membership"""
+        is_expired = self.group.name == "Expired"
+        is_new = self.group.name == "Just Joined"
+        return not is_expired and not is_new
 
     @property
     def is_staff(self):
