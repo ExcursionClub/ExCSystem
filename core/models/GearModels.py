@@ -8,7 +8,6 @@ from .DepartmentModels import Department
 from .CertificationModels import Certification
 
 from django.forms.widgets import TextInput, Textarea, NumberInput, CheckboxInput, Select
-from core.forms.widgets.RFIDWidget import RFIDWidget
 
 from django.forms.fields import CharField, ChoiceField, IntegerField, FloatField, BooleanField
 from core.forms.fields.RFIDField import RFIDField

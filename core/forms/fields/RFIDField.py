@@ -1,8 +1,6 @@
 from django import forms
 from django.forms import ValidationError
 
-from core.forms.widgets.RFIDWidget import RFIDWidget
-
 
 class RFIDField(forms.CharField):
     """
