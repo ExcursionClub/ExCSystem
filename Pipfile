@@ -1,0 +1,22 @@
+[[source]]
+name = "pypi"
+verify_ssl = true
+url = "https://pypi.org/simple"
+
+[requires]
+python_version = "3.7"
+
+[packages]
+django-phonenumber-field = "==2.0.1"
+names = "==0.3.0"
+progressbar2 = "==3.38.0"
+Django = "==2.1.2"
+Pillow = "==5.2.0"
+psycopg2 = "==2.7.5"
+
+[dev-packages]
+flake8 = "==3.5.0"
+isort = "==4.3.4"
+mypy = "==0.630"
+selenium = "==3.14.0"
+yapf = "==0.24.0"
