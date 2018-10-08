@@ -1,0 +1,26 @@
+from django.db import models
+
+
+class AlreadyUploadedImage(models.Model):
+
+    image = models.ImageField()
+    upload_date = models.DateTimeField(auto_now_add=True)
+
+    type = models.CharField(
+        max_length=10,
+        choices=(
+            ("gear", "Gear Image"),
+            ("other", "Other Image")
+        )
+    )
+
+    @property
+    def name(self):
+        return self.image.name
+
+    @property
+    def url(self):
+        return self.image.url
+
+
+
