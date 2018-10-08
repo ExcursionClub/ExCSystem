@@ -220,6 +220,10 @@ export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 # Tell the server whether to run in 'production' or 'development'
 export ENV_CONFIG=production
 
+# Tell celery how to  connect to Amazon SQS
+export AWS_ACCESS_KEY_ID= 
+export AWS_SECRET_ACCESS_KEY=
+
 python3.7 manage.py makemigrations
 python3.7 manage.py migrate
 ```
