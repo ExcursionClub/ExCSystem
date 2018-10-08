@@ -128,7 +128,6 @@ class Member(AbstractBaseUser):
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
     is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
-
     certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = 'email'
