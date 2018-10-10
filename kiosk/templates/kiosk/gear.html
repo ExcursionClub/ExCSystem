@@ -1,7 +1,10 @@
 {% extends "kiosk/../base.html" %}
 
+{% block title %}Kiosk | {{ gear.name }}{% endblock %}
+
 {% block content %}
     <img src="{{ gear.image }}">
     <h1>{{ gear.name }}</h1>
-    <p>is rented out?</p>
+    <p>Gear status: {{ gear.get_status }}</p>
+
 {% endblock %}
