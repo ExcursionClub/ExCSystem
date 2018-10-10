@@ -91,7 +91,7 @@ admin = Member.objects.create_superuser(
     "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
 )
 system = Member.objects.create_member(
-    "system@excursionclubucsb.org", SYSTEM_RFID, membership_duration=timedelta.max,
+    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max,
     password=PASSWORD
 )
 Staffer.objects.upgrade_to_staffer(
