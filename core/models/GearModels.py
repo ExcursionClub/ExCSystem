@@ -8,7 +8,6 @@ from .DepartmentModels import Department
 from .CertificationModels import Certification
 
 from django.forms.widgets import TextInput, Textarea, NumberInput, CheckboxInput, Select
-from core.forms.widgets.RFIDWidget import RFIDWidget
 
 from django.forms.fields import CharField, ChoiceField, IntegerField, FloatField, BooleanField
 from core.forms.fields.RFIDField import RFIDField
@@ -219,11 +218,11 @@ class GearManager(models.Manager):
         gear = Gear(
             rfid=rfid,
             status=0,
-            geartype=gear_type
+            gear_type=gear_type
         )
 
         # Filter out any passed data that is not referenced by the gear type
-        extra_fields = CustomDataField.objects.filter(geartype=gear_type)
+        extra_fields = CustomDataField.objects.filter(gear_type=gear_type)
         data_dict = {}
         for field in extra_fields:
             data_dict[field.name] = field.serialize(**gear_data[field.name])
@@ -273,7 +272,7 @@ class Gear(models.Model):
     #: The date at which this gear is due to be returned, null if not checked out
     due_date = models.DateField(blank=True, null=True, default=None)
 
-    geartype = models.ForeignKey(GearType, on_delete=models.CASCADE)
+    gear_type = models.ForeignKey(GearType, on_delete=models.CASCADE)
 
     gear_data = models.CharField(max_length=2000)
 
@@ -292,7 +291,7 @@ class Gear(models.Model):
         if item is None:
             return self
         elif item in gear_data.keys():
-            gear_type = self.__getattribute__('geartype')
+            gear_type = self.__getattribute__('gear_type')
             field = gear_type.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
@@ -303,7 +302,7 @@ class Gear(models.Model):
         fieldset = (
             name, {
                 'classes': classes,
-                'fields': self.geartype.get_field_names()
+                'fields': self.gear_type.get_field_names()
             }
         )
         return fieldset
@@ -317,7 +316,7 @@ class Gear(models.Model):
         """
 
         # Get all custom data fields for this data_type, except those that contain a rfid
-        attr_fields = self.geartype.data_fields.exclude(data_type='rfid')
+        attr_fields = self.gear_type.data_fields.exclude(data_type='rfid')
         attributes = []
         gear_data = json.loads(self.gear_data)
         for field in attr_fields:
@@ -327,14 +326,14 @@ class Gear(models.Model):
 
         if attributes:
             attr_string = ", ".join(attributes)
-            name = f'{self.geartype.name} - {attr_string}'
+            name = f'{self.gear_type.name} - {attr_string}'
         else:
-            name = self.geartype.name
+            name = self.gear_type.name
 
         return name
 
     def get_department(self):
-        return self.geartype.department
+        return self.gear_type.department
     get_department.short_description = "Department"
 
     def get_status(self):
@@ -366,5 +365,3 @@ class Gear(models.Model):
             return True
         else:
             return False
-
-
