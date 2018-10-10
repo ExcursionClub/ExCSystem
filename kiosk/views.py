@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm, RetagGearForm

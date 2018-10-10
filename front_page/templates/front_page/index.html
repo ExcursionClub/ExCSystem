@@ -1,10 +1,17 @@
 {% extends "kiosk/../base.html" %}
 
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'front_page/style.css' %}">
+
 {% block title %}The Excursion Club UCSB{% endblock %}
 
 {% block content %}
-    <main class="container">
+    <div class="main">
         <h1>The Excursion Club UCSB</h1>
+        <div>
+            <iframe width="980" height="551" src="https://www.youtube.com/embed/n6187fG49r4" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
         <p>We do it outdoors</p>
-    </main>
+    </div>
 {% endblock %}
