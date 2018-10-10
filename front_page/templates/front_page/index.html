@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'front_page/style.css' %}">
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -20,11 +21,15 @@
 <body>
 <main class="container">
     {% block content %}
-        <img src="{% static "front_page/shaka.webp" %}" width="120px" alt="shaka">
-        <h1>The Excursion Club UCSB</h1>
-        <a href="{% url 'admin:index' %}"><button>Admin</button></a>
-        <a href="{% url 'kiosk:home' %}"><button>Kiosk</button></a>
-        <a href="https://www.excursionclubucsb.org/"><button>Information</button></a>
+        <div class="logo">
+            <img src="{% static "front_page/shaka.webp" %}" width="120px" alt="shaka">
+            <h1>The Excursion Club UCSB</h1>
+        </div>
+        <div class="main">
+            <a href="{% url 'admin:index' %}"><button>Admin</button></a>
+            <a href="{% url 'kiosk:home' %}"><button>Kiosk</button></a>
+            <a href="https://www.excursionclubucsb.org/"><button>Information</button></a>
+        </div>
     {% endblock %}
 </main>
 </body>
