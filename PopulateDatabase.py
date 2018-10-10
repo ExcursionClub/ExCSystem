@@ -263,6 +263,7 @@ for name in bar(gear_type_names):
         gear_type.data_fields.add(pick_random(custom_fields))
     gear_type.save()
     gear_types.append(gear_type)
+    print(gear_type)
 
 # Add gear
 print('Making Gear...')
@@ -274,7 +275,13 @@ for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
     gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+
+    transaction, gear = Transaction.objects.add_gear(
+        authorizer_rfid=authorizer,
+        gear_rfid=gear_rfid,
+        gear_type=gear_type,
+        **field_data
+    )
     gear_rfids.append(gear_rfid)
 
 print('')
@@ -282,10 +289,10 @@ print('Made gear')
 
 # Check out gear to random members
 print('Checking out random gear...')
-n_gear_to_checkout = int(number_gear / 2)
-n_failed_checkouts = 0
+gear_to_checkout = int(number_gear / 2)
+failed_checkouts = 0
 bar = progressbar.ProgressBar()
-for i in bar(range(n_gear_to_checkout)):
+for i in bar(range(gear_to_checkout)):
     gear_rfid = pick_random(gear_rfids)
     member_rfid: str = pick_random(member_rfids)
     authorizer: str = pick_random(staffer_rfids)
@@ -293,9 +300,9 @@ for i in bar(range(n_gear_to_checkout)):
     try:
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
-        n_failed_checkouts += 1
+        failed_checkouts += 1
 print('')
-print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_gear_to_checkout))
+print(f'{failed_checkouts} out of {gear_to_checkout} checkouts failed to complete')
 
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
@@ -314,7 +321,6 @@ for i in range(5):
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
         pass
-
 
 
 print('Finished')

@@ -298,7 +298,7 @@ class Gear(models.Model):
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
 
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
-        """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
+        """Get a fieldset that contains data on how to represent the extra data fields contained in gear_type"""
         fieldset = (
             name, {
                 'classes': classes,

@@ -353,8 +353,8 @@ class TransactionManager(models.Manager):
         # All the changes made will be described here
         action = f"Admin override on {gear} [{gear_rfid}]: \n"
 
-        # Remove the fields that were appended from the geartype, they will be saved in gear_data
-        for field_name in gear.geartype.get_field_names():
+        # Remove the fields that were appended from the gear_type, they will be saved in gear_data
+        for field_name in gear.gear_type.get_field_names():
             kwargs.pop(field_name)
 
         # Set each of the available kwargs to their desired value if they are not none
