@@ -5,6 +5,7 @@ from core.models.MemberModels import Member
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View, generic
@@ -122,6 +123,19 @@ class RetagGearView(View):
             'rfid': rfid
         }
         return render(request, self.template_name, args)
+
+
+class GearView(View):
+    template_name = 'kiosk/gear.html'
+
+    def get(self, request, rfid: str):
+        try:
+            gear = Gear.objects.get(rfid=rfid)
+        except Gear.DoesNotExist:
+            raise Http404()
+
+        return render(request, self.template_name, {'gear': gear})
+
 
 
 def get_name(member_rfid: str) -> str:
