@@ -33,34 +33,25 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         form = HomeForm(request.POST)
         if form.is_valid():
             rfid = form.cleaned_data['rfid']
-            staffer_rfid = request.user.rfid
 
             try:
-                gear = Gear.objects.get(rfid=rfid)
+                Gear.objects.get(rfid=rfid)
+                return redirect('kiosk:gear', int(rfid))
             except Gear.DoesNotExist:
-                gear = None
+                pass
 
             try:
-                member = Member.objects.get(rfid=rfid)
-            except Member.DoesNotExist:
-                member = None
-
-            if member:
+                Member.objects.get(rfid=rfid)
                 return redirect('kiosk:check_out', rfid)
-            elif gear:
-                if gear.is_rented_out():
-                    do_checkin(staffer_rfid, rfid)
-                    alert_message = f'{gear.name} was checked in successfully'
-                    messages.add_message(request, messages.INFO, alert_message)
-                else:
-                    alert_message = f'{gear.name} is already checked in'
-                    messages.add_message(request, messages.INFO, alert_message)
+            except Member.DoesNotExist:
+                pass
+
+            if rfid.isdigit() and len(rfid) == 10:
+                alert_message = f'The RFID {rfid} is not registered'
+                messages.add_message(request, messages.WARNING, alert_message)
             else:
-                if rfid.isdigit():
-                    return redirect('kiosk:retag_gear', int(rfid))
-                else:
-                    alert_message = f'{rfid} is not a valid RFID'
-                    messages.add_message(request, messages.WARNING, alert_message)
+                alert_message = f'{rfid} is not a valid RFID'
+                messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('kiosk:home')
 
