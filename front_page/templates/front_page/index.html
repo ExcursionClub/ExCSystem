@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -18,6 +20,7 @@
 <body>
 <main class="container">
     {% block content %}
+        <img src="{% static "front_page/shaka.webp" %}" width="120px" alt="shaka">
         <h1>The Excursion Club UCSB</h1>
         <a href="{% url 'admin:index' %}"><button>Admin</button></a>
         <a href="{% url 'kiosk:home' %}"><button>Kiosk</button></a>
