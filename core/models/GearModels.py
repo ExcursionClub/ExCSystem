@@ -257,7 +257,7 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
-    picture = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE)
+    picture = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE, default="shaka.png")
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
@@ -278,8 +278,6 @@ class Gear(models.Model):
     geartype = models.ForeignKey(GearType, on_delete=models.CASCADE)
 
     gear_data = models.CharField(max_length=2000)
-
-    # TODO: Add image of gear
 
     def __str__(self):
         return self.name
