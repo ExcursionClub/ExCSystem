@@ -1,4 +1,5 @@
 from django.forms import widgets
+from core.models.FileModels import AlreadyUploadedImage
 
 
 class RFIDWidget(widgets.TextInput):
@@ -24,3 +25,19 @@ class RFIDWidget(widgets.TextInput):
 
         context['widget'] = widget
         return context
+
+
+class ExistingImageWidget(widgets.ChoiceWidget):
+
+    # template_name = "widgets/ExistingImageSelect.html"
+
+    def __init__(self, image_type, attrs=None):
+        super(ExistingImageWidget, self).__init__(attrs=attrs)
+        self.attrs["image_type"] = image_type
+
+
+class GearImageWidget(ExistingImageWidget):
+
+    def __init__(self, attrs=None):
+        super(GearImageWidget, self).__init__("gear", attrs=attrs)
+
