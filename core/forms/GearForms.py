@@ -1,7 +1,9 @@
 import json
 
-from django.forms import ModelForm
+from django.forms import ModelForm, ModelChoiceField
 
+from core.forms.widgets import GearImageWidget
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
 
@@ -56,6 +58,9 @@ class GearAddForm(ModelForm):
         fields = '__all__'
     authorizer_rfid = None
 
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
+
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)
         # Don't disable geartype, this is the only time it should be editable
@@ -77,6 +82,7 @@ class GearAddForm(ModelForm):
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
+            self.cleaned_data['picture']
             **self.build_gear_data()
         )
         return gear

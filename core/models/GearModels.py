@@ -209,7 +209,7 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    def _create(self, rfid, gear_type, **gear_data):
+    def _create(self, rfid, gear_type, gear_image, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the gear_type
 
@@ -220,7 +220,8 @@ class GearManager(models.Manager):
         gear = Gear(
             rfid=rfid,
             status=0,
-            geartype=gear_type
+            geartype=gear_type,
+            picture=gear_image
         )
 
         # Filter out any passed data that is not referenced by the gear type
