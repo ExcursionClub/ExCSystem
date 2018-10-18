@@ -1,7 +1,8 @@
 from django.urls import path
 
-from core.views.GearViews import GearDetailView
+
+from core.views.selectViews import GearImageSelect
 
 urlpatterns = [
-    path('gear/<int:pk>/detail/', GearDetailView.as_view(), name='core_gear_detail'),
+    path('AlreadyUploadedImage/select/', GearImageSelect.as_view(), name="gearImageSelect")
 ]

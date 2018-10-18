@@ -29,6 +29,7 @@ urlpatterns = [
         name='password_reset_complete',
     ),
     path('admin/', admin_site.urls),
-    path('kiosk/', include('kiosk.urls', namespace='kiosk'))
+    path('kiosk/', include('kiosk.urls', namespace='kiosk')),
+    path('core/', include('core.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

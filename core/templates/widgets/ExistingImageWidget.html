@@ -1,0 +1,14 @@
+<script type="text/javascript" src="/media/js/admin/RelatedObjectLookups.js"></script>
+<script>
+  $( function() {
+    $( "#dialog" ).dialog();
+  } );
+</script>
+
+
+<a href="{% url 'gearImageSelect' %}"
+    class="add-another"
+    id="add_id_{{ field }}"
+    onclick="return showAddAnotherPopup(this);">
+        <img src="/media/img/admin/icon_addlink.gif" width="0" height="0"/>
+</a>
