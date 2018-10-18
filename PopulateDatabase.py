@@ -13,6 +13,7 @@ from core.models.DepartmentModels import Department
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
 from core.models.GearModels import GearType, CustomDataField
+from core.models.FileModels import AlreadyUploadedImage
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
@@ -269,12 +270,14 @@ print('Making Gear...')
 number_gear = 120
 
 gear_rfids = []
+all_images = list(AlreadyUploadedImage.objects.all())
+gear_image = pick_random(all_images)
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
     gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, gear_image, **field_data)
     gear_rfids.append(gear_rfid)
 
 print('')
@@ -302,7 +305,7 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
     gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, gear_image, **field_data)
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

@@ -5,6 +5,7 @@ import setupDjango
 from django.contrib.sites.models import Site
 
 from ExCSystem import settings
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Staffer
@@ -17,6 +18,15 @@ def build_all():
     build_quiz_questions()
     build_certifications()
     build_departments()
+    build_images()
+
+
+def build_images():
+    img = AlreadyUploadedImage.objects.create(
+        image_type="gear",
+        image="shaka.png"
+    )
+    img.save()
 
 
 def build_site():
@@ -25,6 +35,7 @@ def build_site():
     site.domain = settings.SITE_DOMAIN
     site.name = settings.SITE_NAME
     site.save()
+
 
 def build_permissions():
     """Run the script to build the group and permission structure"""
