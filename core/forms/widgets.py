@@ -29,7 +29,7 @@ class RFIDWidget(widgets.TextInput):
 
 class ExistingImageWidget(widgets.ChoiceWidget):
 
-    # template_name = "widgets/ExistingImageSelect.html"
+    template_name = "widgets/ExistingImageWidget.html"
 
     def __init__(self, image_type, attrs=None):
         super(ExistingImageWidget, self).__init__(attrs=attrs)
