@@ -6,6 +6,7 @@ from ..models.TransactionModels import Transaction
 from ..models.CertificationModels import Certification
 from ..models.DepartmentModels import Department
 from ..models.QuizModels import Question, Answer
+from ..models.FileModels import AlreadyUploadedImage
 
 from .MemberAdmin import MemberAdmin, StafferAdmin
 from .GearAdmin import GearAdmin, GearTypeAdmin, CustomDataFieldAdmin
@@ -28,6 +29,7 @@ admin_site.register(Staffer, StafferAdmin)
 admin_site.register(Question)
 admin_site.register(Answer)
 admin_site.register(Group)
+admin_site.register(AlreadyUploadedImage)
 
 # Now register the new MemberAdmin...
 admin_site.register(Member, MemberAdmin)
