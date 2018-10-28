@@ -125,10 +125,20 @@ class Member(AbstractBaseUser):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
-    certifications = models.ManyToManyField(Certification)
+
+    #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
+    is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
+    certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['date_expires']
+
+    @property
+    def is_active_member(self):
+        """Return true if the member has a valid membership"""
+        is_expired = self.group.name == "Expired"
+        is_new = self.group.name == "Just Joined"
+        return not is_expired and not is_new
 
     @property
     def is_staff(self):
@@ -213,7 +223,11 @@ class Member(AbstractBaseUser):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
 
         self.group = Group.objects.get(name="Just Joined")
-        self.date_expires += duration
+
+        if self.date_expires < datetime.date(now()):
+            self.date_expires = now() + duration
+        else:
+            self.date_expires += duration
 
         if rfid:
             self.rfid = rfid
@@ -269,5 +283,9 @@ class Staffer(models.Model):
         max_length=255,
         unique=True,
     )
+    title = models.CharField(verbose_name="Position Title",
+                             default="Excursion Staff!", 
+                             max_length=30)
     autobiography = models.TextField(verbose_name="Self Description of the staffer",
                                      default="I am too lazy and lame to upload a bio!")
+

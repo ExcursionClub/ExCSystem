@@ -7,6 +7,8 @@ local_settings.py
 db.sqlite3
 postgres-data/
 media
+static/*
+!static/.gitkeep
 
 ### macOS ###
 *.DS_Store

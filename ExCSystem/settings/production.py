@@ -19,15 +19,21 @@ DATABASES = {
 }
 
 # Email host settings
+MEMBERSHIP_EMAIL_HOST_USER = os.environ.get('MEMBERSHIP_EMAIL_HOST_USER')
+MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get('MEMBERSHIP_EMAIL_HOST_PASSWORD')
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.1and1.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-MEMBERSHIP_EMAIL_HOST_USER = os.environ.get('MEMBERSHIP_EMAIL_HOST_USER')
-MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get('MEMBERSHIP_EMAIL_HOST_PASSWORD')
+# These two are used by the backend as the defaults
+EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
+
 
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
+SITE_DOMAIN = "www.excursionclub.info"
 
 LOGGING = {
     'version': 1,
