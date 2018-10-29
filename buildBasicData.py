@@ -1,5 +1,6 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
 
+import os
 import setupDjango
 
 from django.contrib.sites.models import Site
@@ -22,12 +23,24 @@ def build_all():
 
 
 def build_images():
+    print("Uploading gear images...")
+
+    # Build the default common shaka image
     img = AlreadyUploadedImage.objects.create(
         image_type="gear",
         image="shaka.png"
     )
     img.save()
 
+    # Upload all the images in the GearPics folder
+    images_path = "GearPics"
+    for pic_file in os.listdir(os.path.join("media", images_path)):
+        pic_path = os.path.join(images_path, pic_file)
+        img = AlreadyUploadedImage.objects.create(
+            image_type="gear",
+            image=pic_path
+        )
+        img.save()
 
 def build_site():
     """Remane the Site in the sites framework to match actual data"""
