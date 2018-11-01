@@ -49,7 +49,7 @@ LOGGING = {
     'formatters': {
         'django.server': {
             '()': 'django.utils.log.ServerFormatter',
-            'format': '[%(server_time)s] %(message)s',
+            'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s',
         }
     },
     'handlers': {
