@@ -9,6 +9,7 @@ postgres-data/
 media
 static/*
 !static/.gitkeep
+!static/global
 
 ### macOS ###
 *.DS_Store
