@@ -53,6 +53,18 @@ LOGGING = {
         }
     },
     'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+            'formatter': 'django.server',
+        },
+        'request_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/requests.log',
+            'formatter': 'django.server',
+        },
         'console': {
             'level': 'INFO',
             'filters': ['require_debug_true'],
@@ -75,9 +87,19 @@ LOGGING = {
         }
     },
     'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'django': {
             'handlers': ['console', 'console_debug_false'],  # , 'mail_admins'],
             'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
         'django.server': {
             'handlers': ['django.server'],
