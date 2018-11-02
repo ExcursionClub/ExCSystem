@@ -8,8 +8,8 @@ db.sqlite3
 postgres-data/
 media
 static/*
-!static/.gitkeep
-!static/global
+!static/img
+!static/css
 
 ### macOS ###
 *.DS_Store
