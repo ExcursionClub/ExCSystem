@@ -93,6 +93,9 @@ class TransactionManager(models.Manager):
             comments=comments
         )
         transaction.save(using=self._db)
+
+        logger.info(f'{gear.name} was {type} by {member} authorized by {authorizer} {comments}')
+
         return transaction
 
     def make_checkout(self, authorizer_rfid, gear_rfid, member_rfid, return_date):
@@ -163,10 +166,13 @@ class TransactionManager(models.Manager):
         # Make the transaction. This will also run all the necessary validations
         try:
             transaction = self.__make_transaction(authorizer_rfid, "Create", gear, comments=comment)
+            logger.info('Gear was created')
         # If any validation failed, we need to undo the gear creation before aborting
         except ValidationError:
             gear.delete()
-            print("This was not a valid gear creation. No gear was created")
+            msg = 'This was not a valid gear creation. No gear was created'
+            logger.info(msg)
+            print(msg)
             raise
 
         # If everything went smoothly to this point, we can return the transaction logging the addition and the gear
