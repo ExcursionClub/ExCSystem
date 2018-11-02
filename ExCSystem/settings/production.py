@@ -33,7 +33,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
 
-
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
 SITE_DOMAIN = "www.excursionclub.info"
@@ -83,11 +82,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
     },
     'loggers': {
         '': {
@@ -96,7 +90,7 @@ LOGGING = {
             'propagate': True,
         },
         'django': {
-            'handlers': ['console', 'console_debug_false'],  # , 'mail_admins'],
+            'handlers': ['console', 'console_debug_false'],
             'level': 'INFO',
         },
         'django.request': {
