@@ -52,13 +52,4 @@ class GearImageWidget(ExistingImageWidget):
     def __init__(self, attrs=None):
         super(GearImageWidget, self).__init__("gear", attrs=attrs)
 
-    def get_context(self, name, value, attrs):
-        context = super(GearImageWidget, self).get_context(name, value, attrs)
-
-        select_base = reverse('gearImageSelect')
-        selection_url = f"{select_base}?_to_field=primary_key&_popup=1"
-        context['selection_url'] = selection_url
-
-        return context
-
 
