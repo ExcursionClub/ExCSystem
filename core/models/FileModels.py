@@ -3,6 +3,7 @@ from django.db import models
 
 class AlreadyUploadedImage(models.Model):
 
+    name = models.CharField(max_length=50, unique=True)
     image = models.ImageField()
     upload_date = models.DateTimeField(auto_now_add=True)
 
@@ -14,10 +15,6 @@ class AlreadyUploadedImage(models.Model):
         )
     )
     sub_type = models.CharField(max_length=20, default="Unknown")
-
-    @property
-    def name(self):
-        return self.image.name
 
     @property
     def url(self):
