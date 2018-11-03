@@ -36,9 +36,11 @@ def build_images():
     images_path = "GearPics"
     for pic_file in os.listdir(os.path.join("media", images_path)):
         pic_path = os.path.join(images_path, pic_file)
+        pic_name = pic_file.split(".")[0]
         img = AlreadyUploadedImage.objects.create(
             image_type="gear",
-            image=pic_path
+            image=pic_path,
+            name=pic_name
         )
         img.save()
 
