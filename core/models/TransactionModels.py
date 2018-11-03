@@ -28,7 +28,7 @@ def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
     required_perm = 'rent_gear'
     if not member.has_permission(required_perm):
-        msg = f'{member.get_full_name()} is not allowed to check out gear, because they do not have the {required_perm} permission')
+        msg = f'{member.get_full_name()} is not allowed to check out gear, because they do not have the {required_perm} permission'
         logger.info(msg)
         raise ValidationError(msg)
 
