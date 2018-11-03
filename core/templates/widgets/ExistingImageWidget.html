@@ -1,14 +1,40 @@
-<script type="text/javascript" src="/media/js/admin/RelatedObjectLookups.js"></script>
-<script>
-  $( function() {
-    $( "#dialog" ).dialog();
-  } );
-</script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<style>
+    /* Hide radio buttons */
+    [type=radio] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* IMAGE STYLES */
+    [type=radio] + img {
+      cursor: pointer;
+    }
+
+    /* CHECKED STYLES */
+    [type=radio]:checked + img {
+      outline: 4px solid #ff8c93;
+    }
+</style>
 
 
-<a href="{% url 'gearImageSelect' %}"
-    class="add-another"
-    id="add_id_{{ field }}"
-    onclick="return showAddAnotherPopup(this);">
-        <img src="/media/img/admin/icon_addlink.gif" width="0" height="0"/>
-</a>
+<div class="row1" style="overflow-y: scroll; height: 350px; width: 80%">
+    <div class="col-10 btn-group btn-group-toggle" data-toggle="buttons" align="center">
+        {% for gearImage in image_options %}
+            <label>
+                <input type="radio" name="options" id="option{{ gearImage.pk }}" autocomplete="off">
+                <img src="{{ gearImage.image.url }}" alt="" height="100px" align="center" class="-avatar js-avatar-me">
+            </label>
+        {% endfor %}
+    </div>
+</div>
+<div align="right">
+    <a class="related-widget-wrapper-link add-related" id="add_id_{{ name }}"
+    href="{{ add_image_url }}?{{ url_params }}"
+    title="Add another Image">
+    <img src="admin/img/icon-addlink.svg" alt="Add Another">
+    </a>
+</div>
+
