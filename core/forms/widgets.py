@@ -43,6 +43,7 @@ class ExistingImageWidget(widgets.ChoiceWidget):
     def get_context(self, name, value, attrs):
         context = super(ExistingImageWidget, self).get_context(name, value, attrs)
         context["image_options"] = self.get_available_images()
+        context["add_image_url"] = reverse("admin:core_alreadyuploadedimage_add")
         return context
 
 
