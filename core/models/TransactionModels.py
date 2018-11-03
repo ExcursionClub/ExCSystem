@@ -362,7 +362,7 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        member = Member.objects.get(authorizer_rfid)
+        member = Member.objects.get(rfid=authorizer_rfid)
         if not member.has_permission('change_gear'):
             raise ValidationError("You don't have the permission to change gear!")
 
