@@ -13,6 +13,7 @@ class AlreadyUploadedImage(models.Model):
             ("other", "Other Image")
         )
     )
+    sub_type = models.CharField(max_length=20, default="Unknown")
 
     @property
     def name(self):
