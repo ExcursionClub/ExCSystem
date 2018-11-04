@@ -120,7 +120,7 @@ class TransactionManager(models.Manager):
 
         return transaction, gear
 
-    def add_gear(self, authorizer_rfid, gear_rfid, geartype, *required_certs, is_new=True, **init_data):
+    def add_gear(self, authorizer_rfid, gear_rfid, geartype, gear_image, *required_certs, is_new=True, **init_data):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -141,7 +141,7 @@ class TransactionManager(models.Manager):
         validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
-        gear = Gear.objects._create(gear_rfid, geartype, **init_data)
+        gear = Gear.objects._create(gear_rfid, geartype, gear_image, **init_data)
         if required_certs:
             gear.min_required_certs.add(required_certs)
         gear.save()

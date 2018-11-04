@@ -3,7 +3,7 @@
 {% block title %}Kiosk | {{ gear.name }}{% endblock %}
 
 {% block content %}
-    <img src="{{ gear.image }}">
+    <img src="https://exc-static.s3.amazonaws.com/media/{{ gear.image }}" alt="gear image" width="200px">
     <h1>{{ gear.name }}</h1>
     <p>Gear status: {{ gear.get_status }}</p>
 

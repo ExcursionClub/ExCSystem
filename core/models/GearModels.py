@@ -1,6 +1,8 @@
 import json
 
 from django.db import models
+
+from core.models.DocumentModel import Document
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
 
 from .MemberModels import Member
@@ -207,7 +209,7 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    def _create(self, rfid, geartype, **gear_data):
+    def _create(self, rfid, geartype, image, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the geartype
 
@@ -218,7 +220,8 @@ class GearManager(models.Manager):
         gear = Gear(
             rfid=rfid,
             status=0,
-            geartype=geartype
+            geartype=geartype,
+            image=image,
         )
 
         # Filter out any passed data that is not referenced by the gear type
@@ -255,6 +258,7 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
+    image = models.FileField(null=True, blank=True)
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again

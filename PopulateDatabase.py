@@ -10,6 +10,7 @@ import kiosk.CheckoutLogic as logic
 import names
 import progressbar
 from core.models.DepartmentModels import Department
+from core.models.DocumentModel import Document
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
 from core.models.GearModels import GearType, CustomDataField
@@ -280,6 +281,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
+        gear_image=None,
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -309,7 +311,8 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
     geartype = pick_random(geartypes)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, geartype, **field_data)
+    gear_image = None
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, geartype, gear_image, **field_data)
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

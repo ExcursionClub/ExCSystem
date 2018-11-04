@@ -2,6 +2,7 @@ import json
 
 from django.forms import ModelForm
 
+from core.models.DocumentModel import Document
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
 
@@ -54,7 +55,9 @@ class GearAddForm(ModelForm):
     class Meta:
         model = Gear
         fields = '__all__'
+
     authorizer_rfid = None
+    image = Document
 
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)
@@ -77,6 +80,7 @@ class GearAddForm(ModelForm):
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
-            **self.build_gear_data()
+            self.cleaned_data['image'],
+            **self.build_gear_data(),
         )
         return gear
