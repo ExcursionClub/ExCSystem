@@ -1,5 +1,8 @@
 from ExCSystem.settings.base import *
 
+import sentry_sdk
+sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
+
 MEDIA_ROOT = '/var/www/media/'
 STATIC_ROOT = '/var/www/static/'
 
@@ -30,7 +33,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
 
-
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
 SITE_DOMAIN = "www.excursionclub.info"
@@ -49,10 +51,22 @@ LOGGING = {
     'formatters': {
         'django.server': {
             '()': 'django.utils.log.ServerFormatter',
-            'format': '[%(server_time)s] %(message)s',
+            'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s',
         }
     },
     'handlers': {
+        'default': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+            'formatter': 'django.server',
+        },
+        'request_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/requests.log',
+            'formatter': 'django.server',
+        },
         'console': {
             'level': 'INFO',
             'filters': ['require_debug_true'],
@@ -68,16 +82,21 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'django.server',
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
     },
     'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'django': {
-            'handlers': ['console', 'console_debug_false'],  # , 'mail_admins'],
+            'handlers': ['console', 'console_debug_false'],
             'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
         'django.server': {
             'handlers': ['django.server'],

@@ -7,6 +7,10 @@ from core.models.fields.PrimaryKeyField import PrimaryKeyField
 
 from core.convinience import get_all_rfids
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def validate_auth(authorizer):
     """Make sure that the person who authorized the transaction is in fact authorized to do so."""
@@ -15,28 +19,34 @@ def validate_auth(authorizer):
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
     required_perm = 'authorize_transactions'
     if not authorizer.has_permission(required_perm):
-        raise ValidationError("{} is not allowed to authorize a transaction".format(authorizer.get_short_name))
+        msg = f'{authorizer.get_short_name} is not allowed to authorize a transaction'
+        logger.info(msg)
+        raise ValidationError(msg)
 
 
 def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
     required_perm = 'rent_gear'
     if not member.has_permission(required_perm):
-        raise ValidationError("{} is not allowed to check out gear, because they do not have the {} permission".format(
-            member.get_full_name(), required_perm))
+        msg = f'{member.get_full_name()} is not allowed to check out gear, because they do not have the {required_perm} permission'
+        logger.info(msg)
+        raise ValidationError(msg)
 
 
 def validate_available(gear):
     """Ensure that the piece of gear is in fact available for checkout (is in stock)."""
     if not gear.is_available():
-        raise ValidationError("The {} with [{}] is not available for checkout because it is {}".format(
-            gear.name, gear.rfid, gear.status))
+        msg = f'The {gear.name} with [{gear.rfid}] is not available for checkout because it is {gear.status}'
+        logger.info(msg)
+        raise ValidationError(msg)
 
 
 def validate_rfid(rfid):
     """Ensure that the given rfid is unique across all tables containing rfids."""
     if rfid in get_all_rfids():
-        raise ValidationError("This rfid is already in use!")
+        msg = 'This rfid is already in use!'
+        logger.info(msg)
+        raise ValidationError(msg)
 
 
 def validate_required_certs(member, gear):
@@ -47,9 +57,9 @@ def validate_required_certs(member, gear):
             missing_certs.append(cert_required)
     if missing_certs:
         cert_names = [cert.title for cert in missing_certs]
-        raise ValidationError(
-            f"{member.get_full_name()} is missing the following certifications: {cert_names}"
-        )
+        msg = f'{member.get_full_name()} is missin the following certifications: {cert_names}'
+        logger.info(msg)
+        raise ValidationError(msg)
 
 
 class TransactionManager(models.Manager):
@@ -83,6 +93,9 @@ class TransactionManager(models.Manager):
             comments=comments
         )
         transaction.save(using=self._db)
+
+        logger.info(f'{gear.name} was {type} by {member} authorized by {authorizer} {comments}')
+
         return transaction
 
     def make_checkout(self, authorizer_rfid, gear_rfid, member_rfid, return_date):
@@ -153,10 +166,13 @@ class TransactionManager(models.Manager):
         # Make the transaction. This will also run all the necessary validations
         try:
             transaction = self.__make_transaction(authorizer_rfid, "Create", gear, comments=comment)
+            logger.info('Gear was created')
         # If any validation failed, we need to undo the gear creation before aborting
         except ValidationError:
             gear.delete()
-            print("This was not a valid gear creation. No gear was created")
+            msg = 'This was not a valid gear creation. No gear was created'
+            logger.info(msg)
+            print(msg)
             raise
 
         # If everything went smoothly to this point, we can return the transaction logging the addition and the gear
@@ -346,7 +362,7 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        member = Member.objects.get(authorizer_rfid)
+        member = Member.objects.get(rfid=authorizer_rfid)
         if not member.has_permission('change_gear'):
             raise ValidationError("You don't have the permission to change gear!")
 
