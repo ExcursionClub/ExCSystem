@@ -1,7 +1,7 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="/static/image-picker.css">
+<link rel="stylesheet" type="text/css" href="/static/image-picker/image-picker.css">
 <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
-<script type="text/javascript" src="/static/image-picker.js"></script>
+<script type="text/javascript" src="/static/image-picker/image-picker.js"></script>
 <script type="text/javascript">
     window.onload = document.getElementsByClassName("image-picker").imagepicker();
 </script>
@@ -17,17 +17,16 @@
             {% endfor %}
         </select>
     </div>
+    <div align="right">
+        <a class="related-widget-wrapper-link add-related"
+           id="add_id_picture"
+           href="/admin/core/alreadyuploadedimage/add/?_to_field=id&amp;_popup=1"
+           title="Add another certification">
+                <img src="/static/admin/img/icon-addlink.svg" alt="Add">
+        </a>
+
+    </div>
 </div>
 
 <!-- Initialize the image picker javascript -->
-
-<div align="right">
-    <a class="related-widget-wrapper-link add-related"
-       id="add_id_picture"
-       href="/admin/core/alreadyuploadedimage/add/?_to_field=id&amp;_popup=1"
-       title="Add another certification">
-            <img src="/static/admin/img/icon-addlink.svg" alt="Add">
-    </a>
-
-</div>
 
