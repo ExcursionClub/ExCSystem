@@ -149,7 +149,7 @@ staffer.save()
 print('')
 print('Made staffers')
 
-# Add custom fields and gear_types
+# Add custom fields and geartypes
 field_data = {
     "length": {
         "data_type": "float",
@@ -226,7 +226,7 @@ for field_name in field_data.keys():
     field.save()
     custom_fields.append(field)
 
-gear_type_names = [
+geartype_names = [
     'Sleeping Bag',
     'Sleeping Pad',
     'Tent',
@@ -249,21 +249,21 @@ gear_type_names = [
     'Wetsuit',
 ]
 departments = Department.objects.all()
-gear_types = []
+geartypes = []
 print("Making Gear Types")
 bar = progressbar.ProgressBar()
-for name in bar(gear_type_names):
-    gear_type = GearType(
+for name in bar(geartype_names):
+    geartype = GearType(
         name=name,
         department=pick_random(departments),
     )
-    gear_type.save()
+    geartype.save()
     # Add between 1 and 4 custom fields
     for i in range(1, randint(2, 5)):
-        gear_type.data_fields.add(pick_random(custom_fields))
-    gear_type.save()
-    gear_types.append(gear_type)
-    print(gear_type)
+        geartype.data_fields.add(pick_random(custom_fields))
+    geartype.save()
+    geartypes.append(geartype)
+    print(geartype)
 
 # Add gear
 print('Making Gear...')
@@ -274,12 +274,12 @@ bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
-    gear_type = pick_random(gear_types)
+    geartype = pick_random(geartypes)
 
     transaction, gear = Transaction.objects.add_gear(
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
-        gear_type=gear_type,
+        geartype=geartype,
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -308,8 +308,8 @@ print(f'{failed_checkouts} out of {gear_to_checkout} checkouts failed to complet
 for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
-    gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+    geartype = pick_random(geartypes)
+    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, geartype, **field_data)
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

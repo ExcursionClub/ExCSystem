@@ -42,7 +42,7 @@ def validate_rfid(rfid):
 def validate_required_certs(member, gear):
     """Validate that the member has all the certifications required to check out this piece of gear."""
     missing_certs = []
-    for cert_required in gear.gear_type.min_required_certs.all():
+    for cert_required in gear.geartype.min_required_certs.all():
         if cert_required not in member.certifications.all():
             missing_certs.append(cert_required)
     if missing_certs:
@@ -120,7 +120,7 @@ class TransactionManager(models.Manager):
 
         return transaction, gear
 
-    def add_gear(self, authorizer_rfid, gear_rfid, gear_type, *required_certs, is_new=True, **init_data):
+    def add_gear(self, authorizer_rfid, gear_rfid, geartype, *required_certs, is_new=True, **init_data):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -129,7 +129,7 @@ class TransactionManager(models.Manager):
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being added
-        :param gear_type: the type of gear that this is
+        :param geartype: the type of gear that this is
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :param is_new: bool, notes whether this piece of gear was just acquired by the club. If the piece of gear is not
             newly acquired by the club, then it might be a piece of gear that lost it's tag!
@@ -141,7 +141,7 @@ class TransactionManager(models.Manager):
         validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
-        gear = Gear.objects._create(gear_rfid, gear_type, **init_data)
+        gear = Gear.objects._create(gear_rfid, geartype, **init_data)
         if required_certs:
             gear.min_required_certs.add(required_certs)
         gear.save()
@@ -353,8 +353,8 @@ class TransactionManager(models.Manager):
         # All the changes made will be described here
         action = f"Admin override on {gear} [{gear_rfid}]: \n"
 
-        # Remove the fields that were appended from the gear_type, they will be saved in gear_data
-        for field_name in gear.gear_type.get_field_names():
+        # Remove the fields that were appended from the geartype, they will be saved in gear_data
+        for field_name in gear.geartype.get_field_names():
             kwargs.pop(field_name)
 
         # Set each of the available kwargs to their desired value if they are not none

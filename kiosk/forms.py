@@ -10,4 +10,4 @@ class HomeForm(forms.Form):
 class RetagGearForm(forms.ModelForm):
     class Meta:
         model = Gear
-        fields = ['gear_type', 'rfid']
+        fields = ['geartype', 'rfid']

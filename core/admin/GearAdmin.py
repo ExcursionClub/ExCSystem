@@ -16,7 +16,7 @@ class GearAdmin(ViewableModelAdmin):
     list_display = ("name", "status", "get_department", "checked_out_to", "due_date")
 
     # Choose which fields appear on the side as filters
-    list_filter = ('status', "gear_type__department", "gear_type")
+    list_filter = ('status', "geartype__department", "geartype")
 
     # Choose which fields can be searched for
     search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
@@ -24,7 +24,7 @@ class GearAdmin(ViewableModelAdmin):
     fieldsets = [
         ('Gear Info', {
             'classes': ('wide',),
-            'fields': ("rfid", "gear_type"),
+            'fields': ("rfid", "geartype"),
         }),
         ('Checkout Info', {
             'classes': ('wide',),
@@ -39,7 +39,7 @@ class GearAdmin(ViewableModelAdmin):
     detail_view_class = GearDetailView
 
     def get_fieldsets(self, request, obj=None):
-        """Add in the dynamic fields defined by gear_type into the fieldsets (so django knows how to display them)"""
+        """Add in the dynamic fields defined by geartype into the fieldsets (so django knows how to display them)"""
         fieldsets = super(GearAdmin, self).get_fieldsets(request, obj=obj)
 
         # Only get the extra fieldsets if we already have an object created
@@ -58,9 +58,9 @@ class GearAdmin(ViewableModelAdmin):
             extended_form = type(self.form.__name__, (self.form,), new_attrs)
             extended_form.authorizer_rfid = request.user.rfid
 
-            # Load all the fields that need to be added dynamically from the gear_type
+            # Load all the fields that need to be added dynamically from the geartype
             gear_data = json.loads(obj.gear_data)
-            extra_fields = obj.gear_type.data_fields.all()
+            extra_fields = obj.geartype.data_fields.all()
 
             # For each dynamic field, add it to declared fields and the fields list (returned here)
             for field in extra_fields:

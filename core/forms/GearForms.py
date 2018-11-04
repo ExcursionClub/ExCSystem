@@ -17,7 +17,7 @@ class GearChangeForm(ModelForm):
         super(GearChangeForm, self).__init__(*args, **kwargs)
 
         # Make gear type non-editable. Necessary to avoid data corruption
-        self.fields["gear_type"].disabled = True
+        self.fields["geartype"].disabled = True
 
     def clean_gear_data(self):
         """Compile the data from all the custom fields to be saved into gear_data"""
@@ -58,14 +58,14 @@ class GearAddForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)
-        # Don't disable gear_type, this is the only time it should be editable
+        # Don't disable geartype, this is the only time it should be editable
         # Set the default status to be in stock
         self.fields["status"].initial = 0
 
     def build_gear_data(self):
         """During the initial creation of the gear, the gear data JSON must be created."""
-        gear_type = self.instance.gear_type
-        return gear_type.build_empty_data()
+        geartype = self.instance.geartype
+        return geartype.build_empty_data()
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
@@ -76,7 +76,7 @@ class GearAddForm(ModelForm):
         transaction, gear = Transaction.objects.add_gear(
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
-            self.cleaned_data['gear_type'],
+            self.cleaned_data['geartype'],
             **self.build_gear_data()
         )
         return gear

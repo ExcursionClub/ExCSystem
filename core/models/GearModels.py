@@ -207,9 +207,9 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    def _create(self, rfid, gear_type, **gear_data):
+    def _create(self, rfid, geartype, **gear_data):
         """
-        Create a piece of gear that contains the basic data, and all additional data specified by the gear_type
+        Create a piece of gear that contains the basic data, and all additional data specified by the geartype
 
         NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
@@ -218,11 +218,11 @@ class GearManager(models.Manager):
         gear = Gear(
             rfid=rfid,
             status=0,
-            gear_type=gear_type
+            geartype=geartype
         )
 
         # Filter out any passed data that is not referenced by the gear type
-        extra_fields = CustomDataField.objects.filter(gear_type=gear_type)
+        extra_fields = CustomDataField.objects.filter(geartype=geartype)
         data_dict = {}
         for field in extra_fields:
             data_dict[field.name] = field.serialize(**gear_data[field.name])
@@ -233,14 +233,14 @@ class GearManager(models.Manager):
 
         return gear
 
-    def _add(self, rfid, name, gear_type, **gear_data):
+    def _add(self, rfid, name, geartype, **gear_data):
         """
         Alias for gear creation
 
 
         NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
-        return self.create(rfid, gear_type, name=name, **gear_data)
+        return self.create(rfid, geartype, name=name, **gear_data)
 
 
 class Gear(models.Model):
@@ -272,7 +272,7 @@ class Gear(models.Model):
     #: The date at which this gear is due to be returned, null if not checked out
     due_date = models.DateField(blank=True, null=True, default=None)
 
-    gear_type = models.ForeignKey(GearType, on_delete=models.CASCADE)
+    geartype = models.ForeignKey(GearType, on_delete=models.CASCADE)
 
     gear_data = models.CharField(max_length=2000)
 
@@ -291,18 +291,18 @@ class Gear(models.Model):
         if item is None:
             return self
         elif item in gear_data.keys():
-            gear_type = self.__getattribute__('gear_type')
-            field = gear_type.data_fields.get(name=item)
+            geartype = self.__getattribute__('geartype')
+            field = geartype.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
 
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
-        """Get a fieldset that contains data on how to represent the extra data fields contained in gear_type"""
+        """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (
             name, {
                 'classes': classes,
-                'fields': self.gear_type.get_field_names()
+                'fields': self.geartype.get_field_names()
             }
         )
         return fieldset
@@ -316,7 +316,7 @@ class Gear(models.Model):
         """
 
         # Get all custom data fields for this data_type, except those that contain a rfid
-        attr_fields = self.gear_type.data_fields.exclude(data_type='rfid')
+        attr_fields = self.geartype.data_fields.exclude(data_type='rfid')
         attributes = []
         gear_data = json.loads(self.gear_data)
         for field in attr_fields:
@@ -326,14 +326,14 @@ class Gear(models.Model):
 
         if attributes:
             attr_string = ", ".join(attributes)
-            name = f'{self.gear_type.name} - {attr_string}'
+            name = f'{self.geartype.name} - {attr_string}'
         else:
-            name = self.gear_type.name
+            name = self.geartype.name
 
         return name
 
     def get_department(self):
-        return self.gear_type.department
+        return self.geartype.department
     get_department.short_description = "Department"
 
     def get_status(self):
