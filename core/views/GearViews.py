@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
 
 from core.models.GearModels import Gear, GearType
+from core.models.TransactionModels import Transaction
 from core.views.ViewList import RestrictedViewList
 from core.views.common import ModelDetailView
 
@@ -46,6 +47,7 @@ class GearDetailView(UserPassesTestMixin, ModelDetailView):
             "admin:core_geartype_detail",
             kwargs={"pk": gear.geartype.pk}
         )
+        context['related_transactions'] = Transaction.objects.filter(gear=gear).order_by('timestamp')
         if gear.checked_out_to:
             context['checked_out_to_url'] = reverse(
                 "admin:core_member_detail",

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
@@ -434,3 +435,6 @@ class Transaction(models.Model):
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
 
+    @property
+    def detail_url(self):
+        return reverse("admin:core_transaction_detail", kwargs={"pk": self.pk})

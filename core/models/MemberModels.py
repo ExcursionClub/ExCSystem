@@ -162,6 +162,10 @@ class Member(AbstractBaseUser):
     def edit_profile_url(self):
         return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
 
+    @property
+    def view_profile_url(self):
+        return reverse("admin:core_member_detail", kwargs={"pk": self.pk})
+
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
