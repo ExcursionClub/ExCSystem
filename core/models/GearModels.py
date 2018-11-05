@@ -192,6 +192,9 @@ class GearType(models.Model):
     def __str__(self):
         return self.name
 
+    def requires_certs(self):
+        return True if self.min_required_certs else False
+
     def get_field_names(self):
         """Return a list of the names of fields included in this gear type"""
         field_names = []
@@ -299,6 +302,14 @@ class Gear(models.Model):
         else:
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
 
+    def get_simple_gear_data(self):
+        """Return the gear data as a simple dict of field_name, field_value"""
+        simple_data = {}
+        for field_name in self.geartype.get_field_names():
+            simple_data[field_name] = self.__getattr__(field_name)
+        return simple_data
+
+
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (
@@ -308,6 +319,9 @@ class Gear(models.Model):
             }
         )
         return fieldset
+
+    def get_status(self):
+        return self.status_choices[self.status][1]
 
     @property
     def name(self):

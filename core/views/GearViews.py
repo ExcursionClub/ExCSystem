@@ -1,19 +1,57 @@
-from django.views.generic.detail import DetailView
-
 from django.utils import timezone
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
 
 from core.models.GearModels import Gear, GearType
 from core.views.ViewList import RestrictedViewList
 from core.views.common import ModelDetailView
+
+from ExCSystem.settings import WEB_BASE
 
 
 class GearTypeDetailView(ModelDetailView):
     model = GearType
 
 
-class GearDetailView(ModelDetailView):
+class GearDetailView(UserPassesTestMixin, ModelDetailView):
 
     model = Gear
+    template_name = "admin/core/gear/gear_detail.html"
+
+    raise_exception = True
+    permission_denied_message = "You are not allowed to view this piece of gear!"
+
+    def test_func(self):
+        """Only show if user has this gear checked out or is allowed to view any gear"""
+        user = self.request.user
+        gear = self.get_object()
+        can_view_any = user.has_permission('view_general_gear')
+        checked_out_to_user = gear.checked_out_to is not None and user.rfid == gear.checked_out_to.rfid
+        return can_view_any or checked_out_to_user
+
+    def post(self, request, *args, **kwargs):
+        """Treat post requests as get requests"""
+        return self.get(request, *args, **kwargs)
+
+    def get_context_data(self, **context):
+        gear = self.get_object()
+
+        context['main_admin_url'] = WEB_BASE + "/admin"
+
+        context['department_url'] = reverse(
+            "admin:core_department_detail",
+            kwargs={"pk": gear.geartype.department.pk}
+        )
+        context['geartype_url'] = reverse(
+            "admin:core_geartype_detail",
+            kwargs={"pk": gear.geartype.pk}
+        )
+        if gear.checked_out_to:
+            context['checked_out_to_url'] = reverse(
+                "admin:core_member_detail",
+                kwargs={"pk": gear.checked_out_to.pk}
+            )
+        return super(GearDetailView, self).get_context_data(**context)
 
 
 class GearViewList(RestrictedViewList):
