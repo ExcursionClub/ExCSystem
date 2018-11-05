@@ -1,3 +1,4 @@
+from copy import deepcopy
 from django.forms import widgets
 from django.urls import reverse
 from core.models.FileModels import AlreadyUploadedImage
@@ -38,7 +39,34 @@ class ExistingImageWidget(widgets.ChoiceWidget):
         self.image_type = image_type
 
     def get_available_images(self):
-        return list(AlreadyUploadedImage.objects.filter(image_type=self.image_type))
+        """
+        Get a dictionary of all existing images keyed by sub_type
+
+        For every sub_type, the dictionary will contain a list of images of that type
+        """
+        # To simplify, get the images already sorted by type
+        images = list(AlreadyUploadedImage.objects.filter(image_type=self.image_type).order_by("sub_type"))
+
+        image_options = {}
+        current_type = ""
+        images_this_type = []
+
+        for img in images:
+            if img.sub_type == current_type:
+                images_this_type.append(img)
+            else:
+                # If we've reached a new image type, save the accumulated images to image_options and update the type
+                image_options[current_type] = deepcopy(images_this_type)
+                images_this_type = [img]
+                current_type = img.sub_type
+
+        # Also save the last set of images
+        image_options[current_type] = deepcopy(images_this_type)
+
+        # Remove the empty list that gets created with the initial "" gear type
+        del image_options[""]
+
+        return image_options
 
     def get_context(self, name, value, attrs):
         context = super(ExistingImageWidget, self).get_context(name, value, attrs)

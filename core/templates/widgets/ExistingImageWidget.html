@@ -2,14 +2,14 @@
 <style>
     .image-select-wrapper {
         overflow-y:scroll;
-        height: 350px;
+        height: 380px;
         width: 80%
     }
     .image-style {
         height: 100px
     }
     ul.thumbnails.image_picker_selector {
-        overflow: auto;
+        /* overflow: auto; */
         list-style-image: none;
         list-style-position: outside;
         list-style-type: none;
@@ -17,7 +17,7 @@
         margin: 0px;
     }
     ul.thumbnails.image_picker_selector ul {
-        overflow: auto;
+        /* overflow: auto; */
         list-style-image: none;
         list-style-position: outside;
         list-style-type: none;
@@ -375,23 +375,30 @@
     }).call(this);
 </script>
 
+<div class="image-select-wrapper">
+    <select class="image-picker" id="id_picture" name="picture">
+        {% for imageType, typeImages in image_options.items %}
 
-<select class="image-picker" id="id_picture" name="picture">
-    {% for gearImage in image_options %}
-        <option data-img-src="{{ gearImage.image.url }}"
-                data-img-class="image-style"
-                value="{{ gearImage.pk }}">
-            {{ gearImage.name }}
-        </option>
-    {% endfor %}
-</select>
+            <optgroup label="{{ imageType }}">
+            {% for gearImage in typeImages %}
+                <option data-img-src="{{ gearImage.image.url }}"
+                        data-img-class="image-style"
+                        value="{{ gearImage.pk }}">
+                    {{ gearImage.name }}
+                </option>
+            {% endfor %}
+            </optgroup>
+
+        {% endfor %}
+    </select>
+</div>
 <br/>
 <div class="col-1" align="right" style="vertical-align: middle">
-    Upload Another Image &nbsp;
     <a class="related-widget-wrapper-link add-related"
        id="add_id_picture"
        href="/admin/core/alreadyuploadedimage/add/?_to_field=id&amp;_popup=1"
        title="Add another certification">
+            Upload Another Image &nbsp;
             <img src="/static/admin/img/icon-addlink.svg" alt="Add" width="50px">
     </a>
 </div>
