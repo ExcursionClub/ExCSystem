@@ -1,5 +1,8 @@
+import json
+
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
@@ -366,7 +369,21 @@ class TransactionManager(models.Manager):
 
             if new_value != old_value:
                 gear.__setattr__(kwarg, new_value)
-                action += f"  Changed {kwarg} from {old_value} to {new_value};"
+
+                # Parse gear data action differently to not spew a bunch of unnecessary internal data
+                if kwarg == "gear_data":
+                    old_gear_data = json.loads(old_value)
+                    new_gear_data = json.loads(new_value)
+                    for field_name in new_gear_data.keys():
+                        # Save the action as a change for each data field individually
+                        old_field_value = old_gear_data[field_name]["initial"]
+                        new_field_value = new_gear_data[field_name]["initial"]
+                        if old_field_value != new_field_value:
+                            action += f"  Changed {field_name} from {old_field_value} to {new_field_value}"
+
+                else:
+                    action += f"  Changed {kwarg} from {old_value} to {new_value};"
+
 
         # Save the changes made in a transaction
         transaction = self.__make_transaction(authorizer_rfid, "Override", gear, comments=action)
@@ -434,3 +451,6 @@ class Transaction(models.Model):
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
 
+    @property
+    def detail_url(self):
+        return reverse("admin:core_transaction_detail", kwargs={"pk": self.pk})

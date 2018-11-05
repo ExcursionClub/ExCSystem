@@ -271,10 +271,10 @@ number_gear = 120
 
 gear_rfids = []
 all_images = list(AlreadyUploadedImage.objects.all())
-gear_image = pick_random(all_images)
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
+    gear_image = pick_random(all_images)
     authorizer: str = pick_random(staffer_rfids)
     gear_type = pick_random(gear_types)
     transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, gear_image, **field_data)

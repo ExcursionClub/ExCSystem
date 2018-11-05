@@ -1,4 +1,5 @@
 import json
+from django.urls import reverse
 
 from django.db import models
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
@@ -192,6 +193,9 @@ class GearType(models.Model):
     def __str__(self):
         return self.name
 
+    def requires_certs(self):
+        return True if self.min_required_certs else False
+
     def get_field_names(self):
         """Return a list of the names of fields included in this gear type"""
         field_names = []
@@ -299,6 +303,19 @@ class Gear(models.Model):
         else:
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
 
+    def get_display_gear_data(self):
+        """Return the gear data as a simple dict of field_name, field_value"""
+        simple_data = {}
+        attr_fields = self.geartype.data_fields.all()
+        gear_data = json.loads(self.gear_data)
+        for field in attr_fields:
+            simple_data[field.name] = field.get_str(gear_data[field.name])
+        return simple_data
+
+    @property
+    def edit_gear_url(self):
+        return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
+
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (
@@ -308,6 +325,9 @@ class Gear(models.Model):
             }
         )
         return fieldset
+
+    def get_status(self):
+        return self.status_choices[self.status][1]
 
     @property
     def name(self):
