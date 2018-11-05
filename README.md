@@ -263,4 +263,3 @@ This project also includes several tasks that run periodically and are managed b
 ```bash
 celery -A ExCSystem beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
-
