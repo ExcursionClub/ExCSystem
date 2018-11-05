@@ -22,6 +22,7 @@ class GearChangeForm(ModelForm):
 
     def clean_gear_data(self):
         """Compile the data from all the custom fields to be saved into gear_data"""
+        # TODO: Fix this
         gear_data_dict = {}
         original_gear_data = json.loads(self.instance.gear_data)
         for name in self.declared_fields.keys():
@@ -79,7 +80,7 @@ class GearAddForm(ModelForm):
             int(cleaned_rfid)
         except ValueError:
             raise ValidationError("The rfid can only contain digits")
-
+        # TODO: Validate that the rfid isn't already in use
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
