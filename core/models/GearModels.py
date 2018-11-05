@@ -303,11 +303,13 @@ class Gear(models.Model):
         else:
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
 
-    def get_simple_gear_data(self):
+    def get_display_gear_data(self):
         """Return the gear data as a simple dict of field_name, field_value"""
         simple_data = {}
-        for field_name in self.geartype.get_field_names():
-            simple_data[field_name] = self.__getattr__(field_name)
+        attr_fields = self.geartype.data_fields.all()
+        gear_data = json.loads(self.gear_data)
+        for field in attr_fields:
+            simple_data[field.name] = field.get_str(gear_data[field.name])
         return simple_data
 
     @property
