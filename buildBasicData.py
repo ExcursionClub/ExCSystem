@@ -2,6 +2,7 @@
 
 import os
 import setupDjango
+import random
 
 from django.contrib.sites.models import Site
 
@@ -25,6 +26,8 @@ def build_all():
 def build_images():
     print("Uploading gear images...")
 
+    sub_types = ["Fake SubType", "SubType I made up", "More Type", "Something"]
+
     # Build the default common shaka image
     img = AlreadyUploadedImage.objects.create(
         image_type="gear",
@@ -40,7 +43,8 @@ def build_images():
         img = AlreadyUploadedImage.objects.create(
             image_type="gear",
             image=pic_path,
-            name=pic_name
+            name=pic_name,
+            sub_type=random.choice(sub_types)
         )
         img.save()
 
