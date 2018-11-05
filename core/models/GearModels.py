@@ -1,4 +1,5 @@
 import json
+from django.urls import reverse
 
 from django.db import models
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
@@ -309,6 +310,9 @@ class Gear(models.Model):
             simple_data[field_name] = self.__getattr__(field_name)
         return simple_data
 
+    @property
+    def edit_gear_url(self):
+        return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
 
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""

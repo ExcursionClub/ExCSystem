@@ -36,7 +36,7 @@ class GearDetailView(UserPassesTestMixin, ModelDetailView):
     def get_context_data(self, **context):
         gear = self.get_object()
 
-        context['main_admin_url'] = WEB_BASE + "/admin"
+        context['can_edit_gear'] = self.request.user.has_permission("change_gear")
 
         context['department_url'] = reverse(
             "admin:core_department_detail",
