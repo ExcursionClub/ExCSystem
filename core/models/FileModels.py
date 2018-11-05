@@ -14,7 +14,11 @@ class AlreadyUploadedImage(models.Model):
             ("other", "Other Image")
         )
     )
-    sub_type = models.CharField(max_length=20, default="Unknown")
+    sub_type = models.CharField(
+        max_length=20,
+        default="Unknown",
+        help_text="Specific image category: i.e. Skis, Tent, Sleeping Bag etc."
+    )
 
     @property
     def url(self):
