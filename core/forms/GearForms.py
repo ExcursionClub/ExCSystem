@@ -15,6 +15,9 @@ class GearChangeForm(ModelForm):
         fields = '__all__'
     authorizer_rfid = None
 
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
+
     def __init__(self, *args, **kwargs):
         super(GearChangeForm, self).__init__(*args, **kwargs)
 
