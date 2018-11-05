@@ -130,6 +130,7 @@ class TransactionManager(models.Manager):
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being added
         :param gear_type: the type of gear that this is
+        :param gear_image: AlreadyUploadedImage object with an image of this piece of gear
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :param is_new: bool, notes whether this piece of gear was just acquired by the club. If the piece of gear is not
             newly acquired by the club, then it might be a piece of gear that lost it's tag!
@@ -346,7 +347,7 @@ class TransactionManager(models.Manager):
         """
         gear = Gear.objects.get(rfid=gear_rfid)
 
-        member = Member.objects.get(authorizer_rfid)
+        member = Member.objects.get(rfid=authorizer_rfid)
         if not member.has_permission('change_gear'):
             raise ValidationError("You don't have the permission to change gear!")
 

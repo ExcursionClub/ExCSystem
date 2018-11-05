@@ -77,12 +77,13 @@ class GearAddForm(ModelForm):
 
         # Django really wants to call this function, even though it does nothing for gear
         self.save_m2m = self._save_m2m
+        gear_data = self.build_gear_data()
 
         transaction, gear = Transaction.objects.add_gear(
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
-            self.cleaned_data['picture']
-            **self.build_gear_data()
+            self.cleaned_data['picture'],
+            **gear_data
         )
         return gear
