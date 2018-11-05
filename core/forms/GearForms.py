@@ -1,6 +1,6 @@
 import json
 
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 
 from core.models.DocumentModel import Document
 from core.models.GearModels import Gear
@@ -69,6 +69,17 @@ class GearAddForm(ModelForm):
         """During the initial creation of the gear, the gear data JSON must be created."""
         geartype = self.instance.geartype
         return geartype.build_empty_data()
+
+    def clean_rfid(self):
+        cleaned_rfid = self.cleaned_data.get('rfid')
+
+        if len(cleaned_rfid) != 10:
+            raise ValidationError('The rfid has to be 10 digits')
+        try:
+            int(cleaned_rfid)
+        except ValueError:
+            raise ValidationError("The rfid can only contain digits")
+
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
