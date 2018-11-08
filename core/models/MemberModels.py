@@ -115,7 +115,7 @@ class Member(AbstractBaseUser):
     rfid = RFIDField(verbose_name="RFID")
     picture = models.ImageField(
         verbose_name="Profile Picture",
-        default="Shaka.png",
+        default="shaka.png",
         upload_to=get_profile_pic_upload_location,
         null=True
     )
@@ -161,6 +161,10 @@ class Member(AbstractBaseUser):
     @property
     def edit_profile_url(self):
         return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
+
+    @property
+    def view_profile_url(self):
+        return reverse("admin:core_member_detail", kwargs={"pk": self.pk})
 
     def has_name(self):
         """Check whether the name of this member has been set"""

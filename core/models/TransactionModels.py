@@ -1,5 +1,8 @@
+import json
+
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from core.models.MemberModels import Member
 from core.models.GearModels import Gear
@@ -133,7 +136,7 @@ class TransactionManager(models.Manager):
 
         return transaction, gear
 
-    def add_gear(self, authorizer_rfid, gear_rfid, geartype, gear_image, *required_certs, is_new=True, **init_data):
+    def add_gear(self, authorizer_rfid, gear_rfid, gear_type, gear_image, *required_certs, is_new=True, **init_data):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -142,7 +145,8 @@ class TransactionManager(models.Manager):
 
         :param authorizer_rfid: string, the 10-digit rfid of entity authorizing the transaction (should be staffer)\
         :param gear_rfid: string, the 10-digit rfid of the gear being added
-        :param geartype: the type of gear that this is
+        :param gear_type: the type of gear that this is
+        :param gear_image: AlreadyUploadedImage object with an image of this piece of gear
         :param required_certs: a list of the minimum certifications required to check this piece of gear out
         :param is_new: bool, notes whether this piece of gear was just acquired by the club. If the piece of gear is not
             newly acquired by the club, then it might be a piece of gear that lost it's tag!
@@ -154,7 +158,7 @@ class TransactionManager(models.Manager):
         validate_rfid(gear_rfid)
 
         # Create the gear, because it is needed for creating the transaction
-        gear = Gear.objects._create(gear_rfid, geartype, gear_image, **init_data)
+        gear = Gear.objects._create(gear_rfid, gear_type, gear_image, **init_data)
         if required_certs:
             gear.min_required_certs.add(required_certs)
         gear.save()
@@ -381,7 +385,20 @@ class TransactionManager(models.Manager):
 
             if new_value != old_value:
                 gear.__setattr__(kwarg, new_value)
-                action += f"  Changed {kwarg} from {old_value} to {new_value};"
+
+                # Parse gear data action differently to not spew a bunch of unnecessary internal data
+                if kwarg == "gear_data":
+                    old_gear_data = json.loads(old_value)
+                    new_gear_data = json.loads(new_value)
+                    for field_name in new_gear_data.keys():
+                        # Save the action as a change for each data field individually
+                        old_field_value = old_gear_data[field_name]["initial"]
+                        new_field_value = new_gear_data[field_name]["initial"]
+                        if old_field_value != new_field_value:
+                            action += f"  Changed {field_name} from {old_field_value} to {new_field_value}"
+
+                else:
+                    action += f"  Changed {kwarg} from {old_value} to {new_value};"
 
         # Save the changes made in a transaction
         transaction = self.__make_transaction(authorizer_rfid, "Override", gear, comments=action)
@@ -449,3 +466,6 @@ class Transaction(models.Model):
     def __str__(self):
         return "{} Transaction for a {}".format(self.type, self.gear.name)
 
+    @property
+    def detail_url(self):
+        return reverse("admin:core_transaction_detail", kwargs={"pk": self.pk})
