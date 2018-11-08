@@ -1,6 +1,6 @@
 import json
 
-from django.forms import ModelForm, ModelChoiceField
+from django.forms import ModelForm, ModelChoiceField, ValidationError
 
 from core.forms.widgets import GearImageWidget
 from core.models.FileModels import AlreadyUploadedImage
@@ -26,6 +26,7 @@ class GearChangeForm(ModelForm):
 
     def clean_gear_data(self):
         """Compile the data from all the custom fields to be saved into gear_data"""
+        # TODO: Fix this
         gear_data_dict = {}
         original_gear_data = json.loads(self.instance.gear_data)
         for name in self.declared_fields.keys():
@@ -73,8 +74,19 @@ class GearAddForm(ModelForm):
 
     def build_gear_data(self):
         """During the initial creation of the gear, the gear data JSON must be created."""
-        gear_type = self.instance.geartype
-        return gear_type.build_empty_data()
+        geartype = self.instance.geartype
+        return geartype.build_empty_data()
+
+    def clean_rfid(self):
+        cleaned_rfid = self.cleaned_data.get('rfid')
+
+        if len(cleaned_rfid) != 10:
+            raise ValidationError('The rfid has to be 10 digits')
+        try:
+            int(cleaned_rfid)
+        except ValueError:
+            raise ValidationError("The rfid can only contain digits")
+        # TODO: Validate that the rfid isn't already in use
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
