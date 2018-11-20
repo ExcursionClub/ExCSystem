@@ -32,7 +32,7 @@ except FileNotFoundError:
 os.mkdir(migrations_path)
 open(os.path.join(migrations_path, '__init__.py'), 'w')
 
-call_command('makemigrations', 'core')
+call_command('makemigrations')
 call_command('migrate')
 
 # To finish setup, run the following from the command line:
