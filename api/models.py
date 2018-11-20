@@ -6,7 +6,8 @@ from core.models.MemberModels import Member
 
 class RfidCheckManager(models.Manager):
 
-    def create(self, rfid=None):
+    @staticmethod
+    def create(rfid=None):
 
         matching_members = list(Member.objects.filter(rfid=rfid))
         num_members = len(matching_members)
@@ -25,11 +26,12 @@ class RfidCheckManager(models.Manager):
             else:
                 is_valid = False
 
-        super(RfidCheckManager, self).create(rfid_checked=rfid, was_valid=is_valid, message=message)
+        check_entry = MemberRFIDCheck(rfid_checked=rfid, was_valid=is_valid, message=message)
+        check_entry.save()
 
 
 class MemberRFIDCheck(models.Model):
-    objects = RfidCheckManager
+    objects = RfidCheckManager()
 
     rfid_checked = models.CharField(max_length=12)
     was_valid = models.BooleanField()
