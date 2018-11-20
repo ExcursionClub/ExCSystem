@@ -9,8 +9,8 @@ from core.models.MemberModels import Member
 
 class CheckIfActiveMemberView(View):
 
-    def get(self, request, *args, **kwargs):
-        rfid = request.GET.get('rfid', '')
+    def get(self, request, rfid, *args, **kwargs):
+
         matching_members = list(Member.objects.filter(rfid=rfid))
         num_members = len(matching_members)
 
