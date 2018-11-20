@@ -1,8 +1,8 @@
-from django.shortcuts import render
 from django.views.generic.base import View
 from django.http.response import HttpResponse
 
-from core.models.MemberModels import Member
+from core.views.ViewList import RestrictedViewList
+from core.views.common import ModelDetailView
 from api.models import MemberRFIDCheck
 
 # Create your views here.
@@ -20,3 +20,14 @@ class CheckIfActiveMemberView(View):
             response = HttpResponse(status=401)
 
         return response
+
+
+class RFIDCheckLogViewList(RestrictedViewList):
+
+    def test_func(self):
+        return self.request.user.has_permission("view_rfid_check_log")
+
+
+class RFIDCheckLogDetailView(ModelDetailView):
+    model = MemberRFIDCheck
+
