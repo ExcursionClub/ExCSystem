@@ -295,7 +295,7 @@ for i in bar(range(n_gear_to_checkout)):
     except ValidationError as e:
         n_failed_checkouts += 1
 print('')
-print('{} out of {} checkouts failed to complete'.format(n_fafsaveiled_checkouts, n_gear_to_checkout))
+print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_gear_to_checkout))
 
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:

@@ -42,7 +42,7 @@ def validate_rfid(rfid):
 def validate_required_certs(member, gear):
     """Validate that the member has all the certifications required to check out this piece of gear."""
     missing_certs = []
-    for cert_required in gear.gear_type.min_required_certs.all():
+    for cert_required in gear.geartype.min_required_certs.all():
         if cert_required not in member.certifications.all():
             missing_certs.append(cert_required)
     if missing_certs:
