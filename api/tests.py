@@ -14,7 +14,8 @@ class MemberRFIDCheckTest(TestCase):
     base_url = '/api/memberRFIDcheck'
     used_rfids = []
 
-    def setUp(self):
+    @classmethod
+    def setUpTestData(cls):
         build_site()
         build_departments()
         build_certifications()
@@ -27,7 +28,7 @@ class MemberRFIDCheckTest(TestCase):
             timedelta(days=7),
             password='admin'
         )
-        member.group = Group.objects.get(group_name)
+        member.group = Group.objects.get(name=group_name)
         member.save()
 
     def gen_rfid(self):
@@ -72,7 +73,7 @@ class MemberRFIDCheckTest(TestCase):
 
     def test_staffer_is_valid(self):
         rfid = self.gen_rfid()
-        self.make_test_member(rfid, "Staffer")
+        self.make_test_member(rfid, "Staff")
         was_validated = self.is_valid_member_rfid(rfid)
         self.assertTrue(was_validated, "Staffers should be valid members!")
 

@@ -28,6 +28,7 @@ class RfidCheckManager(models.Manager):
 
         check_entry = MemberRFIDCheck(rfid_checked=rfid, was_valid=is_valid, message=message)
         check_entry.save()
+        return is_valid
 
 
 class MemberRFIDCheck(models.Model):
