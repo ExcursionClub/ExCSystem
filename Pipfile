@@ -13,6 +13,7 @@ progressbar2 = "==3.38.0"
 Django = "==2.1.2"
 Pillow = "==5.2.0"
 psycopg2 = "==2.7.5"
+sentry-sdk = "*"
 
 [dev-packages]
 flake8 = "==3.5.0"
