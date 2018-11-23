@@ -127,7 +127,6 @@ class GearView(View):
         return render(request, self.template_name, {'gear': gear})
 
 
-
 def get_name(member_rfid: str) -> str:
     try:
         name = Member.objects.get(rfid=member_rfid).get_full_name()

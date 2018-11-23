@@ -36,6 +36,3 @@ class AlreadyUploadedImage(models.Model):
     @property
     def url(self):
         return self.image.url
-
-
-
