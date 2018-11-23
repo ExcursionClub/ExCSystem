@@ -283,7 +283,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
-        gear_image=None,
+        gear_image=gear_image,
         **field_data
     )
     gear_rfids.append(gear_rfid)
