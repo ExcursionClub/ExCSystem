@@ -1,8 +1,9 @@
 import json
 
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ModelChoiceField, ValidationError
 
-from core.models.DocumentModel import Document
+from core.forms.widgets import GearImageWidget
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
 
@@ -13,6 +14,9 @@ class GearChangeForm(ModelForm):
         model = Gear
         fields = '__all__'
     authorizer_rfid = None
+
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
 
     def __init__(self, *args, **kwargs):
         super(GearChangeForm, self).__init__(*args, **kwargs)
@@ -26,6 +30,8 @@ class GearChangeForm(ModelForm):
         gear_data_dict = {}
         original_gear_data = json.loads(self.instance.gear_data)
         for name in self.declared_fields.keys():
+            if name == "picture":
+                continue
             value = self.cleaned_data[name]
             field_data = original_gear_data[name]
             field_data["initial"] = value
@@ -58,7 +64,9 @@ class GearAddForm(ModelForm):
         fields = '__all__'
 
     authorizer_rfid = None
-    image = Document
+
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
 
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)
@@ -81,18 +89,20 @@ class GearAddForm(ModelForm):
         except ValueError:
             raise ValidationError("The rfid can only contain digits")
         # TODO: Validate that the rfid isn't already in use
+        return cleaned_rfid
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
 
         # Django really wants to call this function, even though it does nothing for gear
         self.save_m2m = self._save_m2m
+        gear_data = self.build_gear_data()
 
         transaction, gear = Transaction.objects.add_gear(
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
-            self.cleaned_data['image'],
-            **self.build_gear_data(),
+            self.cleaned_data['picture'],
+            **gear_data
         )
         return gear

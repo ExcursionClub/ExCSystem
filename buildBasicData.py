@@ -1,10 +1,13 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
 
+import os
 import setupDjango
+import random
 
 from django.contrib.sites.models import Site
 
 from ExCSystem import settings
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.MemberModels import Staffer
@@ -17,7 +20,35 @@ def build_all():
     build_quiz_questions()
     build_certifications()
     build_departments()
+    build_images()
 
+
+def build_images():
+    print("Uploading gear images...")
+
+    sub_types = ["Fake SubType", "SubType I made up", "More Type", "Something"]
+
+    # Build the default common shaka image
+    img = AlreadyUploadedImage.objects.create(
+        image_type="gear",
+        image="shaka.png"
+    )
+    img.save()
+
+    # Upload all the images in the GearPics folder
+    images_path = "GearPics"
+    for pic_file in os.listdir(os.path.join("media", images_path)):
+        if "git" in pic_file:
+            continue
+        pic_path = os.path.join(images_path, pic_file)
+        pic_name = pic_file.split(".")[0]
+        img = AlreadyUploadedImage.objects.create(
+            image_type="gear",
+            image=pic_path,
+            name=pic_name,
+            sub_type=random.choice(sub_types)
+        )
+        img.save()
 
 def build_site():
     """Remane the Site in the sites framework to match actual data"""
@@ -25,6 +56,7 @@ def build_site():
     site.domain = settings.SITE_DOMAIN
     site.name = settings.SITE_NAME
     site.save()
+
 
 def build_permissions():
     """Run the script to build the group and permission structure"""
