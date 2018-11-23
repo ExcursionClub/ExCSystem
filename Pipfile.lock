@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8d6c3cc34c8cd14b41516409284c351d79ffd6e91bc87c136f280abbd7410e5e"
+            "sha256": "7c6973701d6fd1b630c59f8d5ffeb3cb77ac42b00a01b6d19dcad00893ddb4f2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -25,18 +25,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:4c45dc363daba811baeb7b6307ddf5c60beb9a43e1d0707d0786cd9acb20b563",
-                "sha256:767bc7273d4a3580d87b605bfe240745dcbdd7828e1dc85fa69ae692f56cfd00"
+                "sha256:177e9dd53db5028bb43050da20cc7956287889fc172e5e6275a634e42a10beeb",
+                "sha256:8c63e616b91907037ab19236afbcf0057efb31411faf38b46f4590e634dc17ea"
             ],
             "index": "pypi",
-            "version": "==1.9.37"
+            "version": "==1.9.50"
         },
         "botocore": {
             "hashes": [
-                "sha256:a256dbe50b05111a53640ac5defd71aa589d1fab27bd7df7310d7f0da72447a7",
-                "sha256:eed1b39027ee882ebd0df10dcb7307db20fc4b468debae513dc183743e850d17"
+                "sha256:07fae5a2b8cfb5a92c1dbee3f2feb4da7c471bcead7e18ce735babe5f39e270f",
+                "sha256:eeaa190f50ee05a56225ee78c64cb8bf0c3bf090ec605ca6c2f325aa3826a347"
             ],
-            "version": "==1.12.37"
+            "version": "==1.12.50"
         },
         "certifi": {
             "hashes": [
@@ -52,6 +52,14 @@
             ],
             "index": "pypi",
             "version": "==2.1.2"
+        },
+        "django-minio-storage": {
+            "hashes": [
+                "sha256:218e34fa2a6672e0e4cd115858a3864884de7626f09d2c602f7b90c53d79758d",
+                "sha256:b7cfdbde693ce9c6001a771ee6a99c1bd895d3f98a9a609abb9662a88ed86366"
+            ],
+            "index": "pypi",
+            "version": "==0.2.2"
         },
         "django-phonenumber-field": {
             "hashes": [
@@ -83,6 +91,13 @@
             ],
             "version": "==0.9.3"
         },
+        "minio": {
+            "hashes": [
+                "sha256:22fd76486287b9cf51536d030a02ae8c6b0c26ad9b9e817fe336692e3b3daac3",
+                "sha256:710135acaa242bced36022eba72d4093913a4ff201315fb45c97e7019cddae00"
+            ],
+            "version": "==4.0.6"
+        },
         "names": {
             "hashes": [
                 "sha256:726e46254f2ed03f1ffb5d941dae3bc67c35123941c29becd02d48d0caa2a671"
@@ -92,10 +107,10 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:e460a71c12b9e7c57ed9d27e2953d0318fe758d5089256bba41dd0b5177355b1",
-                "sha256:fdf0f13eea9e4aee9d6bffee4f6ff05c81f41e3fbeb9642189516d9dc67978c9"
+                "sha256:14f8dfdaffb50bae7a8c6f081767f6341882fb8f62bccd372f1d0b4e3100d21a",
+                "sha256:976646cfcfa6751af1ca10de0c4d6fa4104c4aaad138bb65b2687954df585ad2"
             ],
-            "version": "==8.9.16"
+            "version": "==8.10.0"
         },
         "pillow": {
             "hashes": [
@@ -208,11 +223,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:d4eb77414e21258943cdd7ea4aa216e2d994d38700d747d5d3da943edd414b58",
-                "sha256:e77795ca8bafbcf4a19d9c2fcd99f9cb68a9623e5f853a0758084a8b025e6c87"
+                "sha256:7625cfc4eb3673997a757a0f367c6899beda15e447becb6571fa95a3134c0ce8",
+                "sha256:c6e045a876d78270ba596b14a2faa95e235b6d896dd681b6fdcb00b705aafaaf"
             ],
             "index": "pypi",
-            "version": "==0.5.2"
+            "version": "==0.5.5"
         },
         "six": {
             "hashes": [

@@ -2,9 +2,18 @@
 Bottom up re-design of the Excursion system
 
 ## Getting Started
-This project requires python3.7 and Pipenv.
+This project requires python3.7, [Pipenv](https://github.com/pypa/pipenv/), Docker and [Minio](https://github.com/minio/minio).
 
-### Install
+### Install¨
+Setup local object storage. The file uploaded here are not persistent and will disappear when the container is closed. 
+```
+docker run -p 9000:9000 --name minio1 \
+  -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" \
+  -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
+  minio/minio server /data
+```
+
+Django
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ pipenv install --dev

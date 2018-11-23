@@ -4,6 +4,36 @@ DEBUG = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+MINIO_STORAGE_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY')
+MINIO_STORAGE_SECRET_KEY = os.environ.get('MINIO_SECRET_KEY')
+MINIO_STORAGE_ENDPOINT = os.environ.get('MINIO_STORAGE_ENDPOINT', "localhost:9000")
+MINIO_STORAGE_USE_HTTPS = False
+MINIO_STORAGE_MEDIA_BUCKET_NAME = "media"
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_STATIC_BUCKET_NAME = "static"
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+MINIO_STORAGE_STATIC_URL = f'http://{MINIO_STORAGE_ENDPOINT}/minio/static/'
+
+STATIC_URL = MINIO_STORAGE_STATIC_URL
+
+"""
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = os.environ.get('AWS_LOCATION')
+
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+"""
+
+
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
