@@ -38,6 +38,8 @@ def build_images():
     # Upload all the images in the GearPics folder
     images_path = "GearPics"
     for pic_file in os.listdir(os.path.join("media", images_path)):
+        if "git" in pic_file:
+            continue
         pic_path = os.path.join(images_path, pic_file)
         pic_name = pic_file.split(".")[0]
         img = AlreadyUploadedImage.objects.create(
