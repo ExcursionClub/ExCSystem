@@ -66,7 +66,7 @@ def pick_random(element_list: List[Any]) -> Any:
     return choice(element_list)
 
 
-def generate_rand_member() -> Member:
+def generate_member() -> Member:
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     membership_duration = gen_duration()
@@ -83,7 +83,7 @@ def generate_rand_member() -> Member:
         random_member.save()
     except IntegrityError:
         # If anything goes wrong when making this member, try again
-        random_member = generate_rand_member()
+        random_member = generate_member()
 
     return random_member
 
@@ -110,7 +110,7 @@ member_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(total_number_members)):
 
-    member = generate_rand_member()
+    member = generate_member()
     member_rfids.append(member.rfid)
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
@@ -130,7 +130,7 @@ number_staffers = 5
 staffer_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_staffers)):
-    member = generate_rand_member()
+    member = generate_member()
     member_rfids.append(member.rfid)
     staffer_rfids.append(member.rfid)
     nickname = member.first_name + str(i)
@@ -139,7 +139,7 @@ for i in bar(range(number_staffers)):
     staffer.save()
 
 # Add staffer with known rfid
-member = generate_rand_member()
+member = generate_member()
 member.rfid = 1234567890
 member_rfids.append(member.rfid)
 staffer_rfids.append(member.rfid)

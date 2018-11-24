@@ -132,29 +132,55 @@ class GearView(View):
         return render(request, self.template_name, args)
 
     @staticmethod
-    def post(request, rfid):
+    def post(request, rfid: str):
+        """Check in item or check it out to a member"""
         form = HomeForm(request.POST)
         if form.is_valid():
-            member_rfid = form.cleaned_data['rfid']
+            form_rfid = form.cleaned_data['rfid']
             staffer_rfid = request.user.rfid
-            gear_rfid = rfid
 
             try:
+                gear_rfid = form_rfid
                 gear = Gear.objects.get(rfid=gear_rfid)
             except Gear.DoesNotExist:
-                gear = None
+                try:
+                    gear_rfid = rfid
+                    gear = Gear.objects.get(rfid=gear_rfid)
+                except Gear.DoesNotExist:
+                    gear = None
+                    gear_rfid = None
+
+            try:
+                member_rfid = form_rfid
+                member = Member.objects.get(rfid=member_rfid)
+            except Member.DoesNotExist:
+                try:
+                    member_rfid = form_rfid
+                    member = Member.objects.get(rfid=member_rfid)
+                except Member.DoesNotExist:
+                    member = None
+                    member_rfid = None
 
             if gear:
-                if gear.is_available():
-                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
-                    alert_message = f'{gear.name} was checked out successfully'
-                    messages.add_message(request, messages.INFO, alert_message)
-                else:
-                    alert_message = 'Gear is already rented out'
+                if gear_rfid == form_rfid:
+                    if gear.is_rented_out():
+                        do_checkin(staffer_rfid, gear.rfid)
+                        alert_message = f'{gear.name} was checked in successfully'
+                        messages.add_message(request, messages.INFO, alert_message)
+                    else:
+                        alert_message = 'Gear is already checked in'
+                        messages.add_message(request, messages.WARNING, alert_message)
+                elif member and member_rfid == form_rfid:
+                    if gear.is_rented_out():
+                        do_checkin(staffer_rfid, gear_rfid)
+                    do_checkout(staffer_rfid, member_rfid, gear_rfid)
+                    alert_message = 'Gear checked out!'
                     messages.add_message(request, messages.WARNING, alert_message)
-                    # TODO: Check in and checkout if rented out (overwrite)
+                else:
+                    alert_message = 'The RFID is not registered to any gear'
+                    messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = 'The RFID tag is not registered to a piece of gear'
+                alert_message = 'The RFID is not registered to any gear'
                 messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('kiosk:gear', gear_rfid)

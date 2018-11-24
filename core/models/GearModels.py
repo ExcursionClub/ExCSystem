@@ -371,10 +371,7 @@ class Gear(models.Model):
 
     def is_available(self):
         """Returns True if the gear is available for renting"""
-        if self.status == 0:
-            return True
-        else:
-            return False
+        return True if self.status == 0 else False
 
     def is_rented_out(self):
         return True if self.status == 1 else False
