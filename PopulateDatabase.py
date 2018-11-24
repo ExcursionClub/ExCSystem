@@ -103,7 +103,7 @@ Staffer.objects.upgrade_to_staffer(
 
 # Add dummy members
 print('Making members...')
-total_number_members = 100
+total_number_members = 20
 number_new = int(total_number_members / 5)
 number_expired = int(total_number_members / 3)
 member_rfids = []
@@ -126,7 +126,7 @@ print('Made members')
 
 # Add some staffers
 print('Making staffers...')
-number_staffers = 10
+number_staffers = 5
 staffer_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_staffers)):
@@ -269,7 +269,7 @@ for name in bar(geartype_names):
 
 # Add gear
 print('Making Gear...')
-number_gear = 120
+number_gear = 60
 
 gear_rfids = []
 all_images = list(AlreadyUploadedImage.objects.all())
