@@ -1,7 +1,7 @@
 """Import member data from the old excursion database"""
 
 import os
-import setupDjango
+import setup_django
 import progressbar
 
 from django.core.files.images import ImageFile

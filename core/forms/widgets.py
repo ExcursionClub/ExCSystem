@@ -5,7 +5,6 @@ from core.models.FileModels import AlreadyUploadedImage
 
 
 class RFIDWidget(widgets.TextInput):
-
     change_button_text = "Enter Manually"
     allow_revert = True
     revert_button_text = "Hide Manual Input"
@@ -30,7 +29,6 @@ class RFIDWidget(widgets.TextInput):
 
 
 class ExistingImageWidget(widgets.ChoiceWidget):
-
     template_name = "widgets/ExistingImageWidget.html"
 
     def __init__(self, image_type, attrs=None):
@@ -79,5 +77,3 @@ class GearImageWidget(ExistingImageWidget):
 
     def __init__(self, attrs=None):
         super(GearImageWidget, self).__init__("gear", attrs=attrs)
-
-

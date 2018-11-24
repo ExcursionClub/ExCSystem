@@ -1,10 +1,9 @@
 """Populate the database with a complete set of randomly generated data"""
 
-import os  # TODO: This needs to be imported but is never used
 from random import choice, randint
 from typing import Any, List, Optional
 
-import setupDjango  # TODO: This needs to be imported but is never used
+import setup_django  # TODO: This needs to be imported but is never used
 
 import kiosk.CheckoutLogic as logic
 import names
@@ -19,8 +18,8 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
-import buildBasicData
-buildBasicData.build_all()
+import build_basic_data
+build_basic_data.build_all()
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
@@ -82,8 +81,8 @@ def generate_rand_member() -> Member:
         random_member.last_name = last_name
         random_member.phone_number = gen_phone_num()
         random_member.save()
-    # If anything goes wrong when making this member, try again
     except IntegrityError:
+        # If anything goes wrong when making this member, try again
         random_member = generate_rand_member()
 
     return random_member

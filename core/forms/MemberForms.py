@@ -175,6 +175,7 @@ class MemberFinishForm(forms.ModelForm):
     questions = Question.objects.filter(usage="membership")
 
     # Limit the size of the uploaded image, currently set to 20MB
+    # TODO: Move to utils
     max_image_MB = 20
     max_image_bytes = max_image_MB * 1048576
 
@@ -242,7 +243,7 @@ class MemberFinishForm(forms.ModelForm):
         return cleaner
 
     def clean_image(self):
-        # TODO: Move this to utils
+        # TODO: Move to utils
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
         image = self.cleaned_data['image']
 

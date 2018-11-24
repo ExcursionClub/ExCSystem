@@ -15,13 +15,14 @@ from .fields.RFIDField import RFIDField
 
 
 def get_profile_pic_upload_location(instance, filename):
-    extension = filename.split(".")[-1]
+    """Save profile pictures in object store"""
+    extension = filename.split('.')[-1]
 
     # Get the name with all special characters removed
     name_str = ''.join(e for e in instance.get_full_name() if e.isalnum())
 
     # Assemble file location and insert date data
-    location = f"ProfilePics/%Y/{name_str}_%m-%d.{extension}"
+    location = f'members/{name_str}.{extension}'
     location = datetime.strftime(datetime.now(), location)
     return location
 
@@ -77,15 +78,16 @@ class MemberManager(BaseUserManager):
 
 
 class StafferManager(models.Manager):
-    def upgrade_to_staffer(self, member, staffname, autobiography=None):
+    def upgrade_to_staffer(self, member, staff_name, autobiography=None):
         """
         Begins the process of turning a member into a staffer
 
         :param member: the member to make a staffer
-        :param staffname: the prefix (before @) part of the staffer's staff email
+        :param staff_name: the prefix (before @) part of the staffer's staff email
+        :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = "{}@excursionclubucsb.org".format(staffname)
+        exc_email = f'{staff_name}@excursionclubucsb.org'
         member.group = Group.objects.get(name="Staff")
         member.date_expires = datetime.max
         member.save()
@@ -261,7 +263,7 @@ class Member(AbstractBaseUser):
             settings.MEMBERSHIP_EMAIL_HOST_PASSWORD
         )
 
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, perm):
         if '.' in perm:
             # Perms passed by system are in the form 'app_label.permission_name'
             return self.has_permission(perm.split('.').pop())
@@ -292,4 +294,3 @@ class Staffer(models.Model):
                              max_length=30)
     autobiography = models.TextField(verbose_name="Self Description of the staffer",
                                      default="I am too lazy and lame to upload a bio!")
-

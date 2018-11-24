@@ -140,5 +140,4 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
 
 class StafferAdmin(ViewableModelAdmin):
-
     detail_view_class = StafferDetailView

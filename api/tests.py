@@ -4,7 +4,7 @@ from django.test import TestCase, Client
 from django.utils.timezone import timedelta
 from django.contrib.auth.models import Group
 
-from buildBasicData import *
+from build_basic_data import *
 
 from core.models.MemberModels import Member
 

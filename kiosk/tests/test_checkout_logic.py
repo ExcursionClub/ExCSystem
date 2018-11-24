@@ -9,7 +9,7 @@ from core.models.GearModels import Gear, GearType
 from core.models.TransactionModels import Transaction
 from kiosk.CheckoutLogic import do_checkout, do_checkin
 
-from buildPermissions import build_all as build_permissions
+from build_permissions import build_all as build_permissions
 
 ADMIN_RFID = '0000000000'
 MEMBER_RFID1 = '0000000001'

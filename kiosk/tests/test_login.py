@@ -4,7 +4,7 @@ from django.utils.timezone import timedelta
 
 from core.models.MemberModels import Member
 
-from buildPermissions import build_all as build_permissions
+from build_permissions import build_all as build_permissions
 
 
 class LoginTest(TestCase):
