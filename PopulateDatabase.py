@@ -285,7 +285,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
-        gear_image=None,
+        gear_image='shaka.png',
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -315,8 +315,13 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
     gear_type = pick_random(geartypes)
-    gear_image = None
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, gear_image, **field_data)
+    transaction, gear = Transaction.objects.add_gear(
+        authorizer,
+        gear_rfid,
+        gear_type,
+        gear_image='shaka.png',
+        **field_data
+    )
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

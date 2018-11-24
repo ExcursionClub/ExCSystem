@@ -1,7 +1,7 @@
 import os
 
 from django.db import models
-from django.urls import path, reverse
+from django.urls import reverse
 from django.core.mail import send_mail
 from django.utils.timezone import now, timedelta, datetime
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
@@ -113,11 +113,11 @@ class Member(AbstractBaseUser):
         unique=True,
     )
     rfid = RFIDField(verbose_name="RFID")
-    picture = models.ImageField(
+    image = models.ImageField(
         verbose_name="Profile Picture",
         default="shaka.png",
         upload_to=get_profile_pic_upload_location,
-        null=True
+        blank=True
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 

@@ -264,7 +264,11 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
-    image = models.FileField(null=True, blank=True)  # TODO: Should be shaka, also support None?
+    image = models.ImageField(
+        verbose_name='Gear Image',
+        default='shaka.png',
+        blank=True
+    )
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
@@ -331,8 +335,10 @@ class Gear(models.Model):
     def get_status(self):
         return self.status_choices[self.status][1]
 
-    def get_image_location(self):
-        return self.image.url
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
 
     @property
     def name(self):

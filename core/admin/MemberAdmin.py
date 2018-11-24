@@ -38,7 +38,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         }),
         ('Personal Info', {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'picture')
+            'fields': ('first_name', 'last_name', 'image')
         }),
         ('Club  Info', {
             'classes': ('wide',),
