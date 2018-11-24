@@ -68,6 +68,7 @@ class CheckoutLogicTest(TestCase):
             gear_name='test bag',
             gear_department=department,
             geartype=gear_type,
+            gear_image=None,
         )
 
     def test_checkout_gear(self):
@@ -147,7 +148,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkin_gear(self):
         """Do checkout then test checkin of checked out gear by valid staffer succeeds"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
-        do_checkin(ADMIN_RFID,GEAR_RFID)
+        do_checkin(ADMIN_RFID, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
 
@@ -155,7 +156,7 @@ class CheckoutLogicTest(TestCase):
         """Do checkout then test checkin of checked out gear by unauthorized member fails"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
         with self.assertRaises(ValidationError):
-            do_checkin(MEMBER_RFID1,GEAR_RFID)
+            do_checkin(MEMBER_RFID1, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_rented_out(), True)
 
@@ -163,7 +164,7 @@ class CheckoutLogicTest(TestCase):
         """Do checkout then test checkin of checked out gear by nonexistent member fails"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
         with self.assertRaises(Member.DoesNotExist):
-            do_checkin('0000010002',GEAR_RFID)
+            do_checkin('0000010002', GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_rented_out(), True)
 
@@ -171,6 +172,6 @@ class CheckoutLogicTest(TestCase):
         """Test checkin of available gear by valid staffer is fine"""
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
-        do_checkin(ADMIN_RFID,GEAR_RFID)
+        do_checkin(ADMIN_RFID, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
