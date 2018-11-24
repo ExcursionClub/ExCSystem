@@ -215,7 +215,7 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    def _create(self, rfid, geartype, gear_image, **gear_data):
+    def _create(self, rfid, geartype, image, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the geartype
 
@@ -227,7 +227,7 @@ class GearManager(models.Manager):
             rfid=rfid,
             status=0,
             geartype=geartype,
-            picture=gear_image
+            image=image
         )
 
         # Filter out any passed data that is not referenced by the gear type
@@ -264,7 +264,7 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
-    picture = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE)
+    image = models.FileField(null=True, blank=True)  # TODO: Should be shaka, also support None?
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
@@ -330,6 +330,9 @@ class Gear(models.Model):
 
     def get_status(self):
         return self.status_choices[self.status][1]
+
+    def get_image_location(self):
+        return self.image.url
 
     @property
     def name(self):

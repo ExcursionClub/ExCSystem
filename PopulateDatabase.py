@@ -1,15 +1,16 @@
 """Populate the database with a complete set of randomly generated data"""
 
-import os
+import os  # TODO: This needs to be imported but is never used
 from random import choice, randint
 from typing import Any, List, Optional
 
-import setupDjango
+import setupDjango  # TODO: This needs to be imported but is never used
 
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
 from core.models.DepartmentModels import Department
+from core.models.DocumentModel import Document
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
 from core.models.GearModels import GearType, CustomDataField
@@ -272,10 +273,11 @@ number_gear = 120
 
 gear_rfids = []
 all_images = list(AlreadyUploadedImage.objects.all())
+# TODO: Select shaka if no gear image is uploaded or choosen
+#shaka = f'static/img/shaka.webp'
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
-    gear_image = pick_random(all_images)
     authorizer: str = pick_random(staffer_rfids)
     geartype = pick_random(geartypes)
 
@@ -283,7 +285,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
-        gear_image=gear_image,
+        gear_image=None,
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -313,6 +315,7 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
     gear_type = pick_random(geartypes)
+    gear_image = None
     transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, gear_image, **field_data)
     gear_rfids.append(gear_rfid)
 

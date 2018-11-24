@@ -24,7 +24,7 @@ class GearAdmin(ViewableModelAdmin):
     fieldsets = [
         ('Gear Info', {
             'classes': ('wide',),
-            'fields': ("rfid", "geartype", "picture"),
+            'fields': ("rfid", "geartype", "image"),
         }),
         ('Checkout Info', {
             'classes': ('wide',),
