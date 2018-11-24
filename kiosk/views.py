@@ -124,7 +124,40 @@ class GearView(View):
         except Gear.DoesNotExist:
             raise Http404()
 
-        return render(request, self.template_name, {'gear': gear})
+        args = {
+            'form': HomeForm(),
+            'gear': gear,
+        }
+
+        return render(request, self.template_name, args)
+
+    @staticmethod
+    def post(request, rfid):
+        form = HomeForm(request.POST)
+        if form.is_valid():
+            member_rfid = form.cleaned_data['rfid']
+            staffer_rfid = request.user.rfid
+            gear_rfid = rfid
+
+            try:
+                gear = Gear.objects.get(rfid=gear_rfid)
+            except Gear.DoesNotExist:
+                gear = None
+
+            if gear:
+                if gear.is_available():
+                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
+                    alert_message = f'{gear.name} was checked out successfully'
+                    messages.add_message(request, messages.INFO, alert_message)
+                else:
+                    alert_message = 'Gear is already rented out'
+                    messages.add_message(request, messages.WARNING, alert_message)
+                    # TODO: Check in and checkout if rented out (overwrite)
+            else:
+                alert_message = 'The RFID tag is not registered to a piece of gear'
+                messages.add_message(request, messages.WARNING, alert_message)
+
+            return redirect('kiosk:gear', gear_rfid)
 
 
 def get_name(member_rfid: str) -> str:

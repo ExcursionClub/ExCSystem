@@ -273,8 +273,7 @@ number_gear = 60
 
 gear_rfids = []
 all_images = list(AlreadyUploadedImage.objects.all())
-# TODO: Select shaka if no gear image is uploaded or choosen
-#shaka = f'static/img/shaka.webp'
+# TODO: Select shaka if no gear image is uploaded or chosen
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()

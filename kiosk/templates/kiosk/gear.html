@@ -4,7 +4,27 @@
 
 {% block content %}
     <img src="{{ gear.image.url }}" alt="gear image" width="200px">
-    <h1>{{ gear.name }}</h1>
-    <p>Gear status: {{ gear.get_status }}</p>
-
+    <h1>{{ gear.geartype }}</h1>
+    <p>Brand: {{ gear.manufacturer }}</p>
+    <p>Status: {{ gear.get_status }}</p>
+    <br>
+    <p>Scan a member RFID tag to check this item out</p>
+    <p>Or type in the RFID number</p>
+     <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+    {% if messages %}
+        <br>
+        <ul class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        Error
+                    {% endif %} {{ message }}
+                </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
