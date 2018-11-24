@@ -90,11 +90,12 @@ class CheckOutView(View):
 
             if gear:
                 if gear.is_available():
-                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
+                    do_checkout(staffer_rfid, member_rfid, gear_rfid)
                     alert_message = f'{gear.name} was checked out successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = 'Gear is already rented out'
+                    do_checkin(staffer_rfid, gear_rfid)
+                    alert_message = f'{gear.name} was checked in successfully'
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
                 alert_message = 'The RFID tag is not registered to a piece of gear'
@@ -132,7 +133,7 @@ class GearView(View):
         return render(request, self.template_name, args)
 
     @staticmethod
-    def post(request, rfid: str):
+    def post_member_or_gear_rfid(request, rfid: str):
         """Check in item or check it out to a member"""
         form = HomeForm(request.POST)
         if form.is_valid():
