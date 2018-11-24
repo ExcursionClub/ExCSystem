@@ -67,7 +67,7 @@ class CheckoutLogicTest(TestCase):
             gear_rfid=GEAR_RFID,
             gear_name='test bag',
             gear_department=department,
-            gear_type=gear_type
+            geartype=gear_type,
         )
 
     def test_checkout_gear(self):
