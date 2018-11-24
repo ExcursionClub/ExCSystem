@@ -10,7 +10,6 @@ import kiosk.CheckoutLogic as logic
 import names
 import progressbar
 from core.models.DepartmentModels import Department
-from core.models.DocumentModel import Document
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
 from core.models.GearModels import GearType, CustomDataField
@@ -26,6 +25,8 @@ buildBasicData.build_all()
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
 PASSWORD = 'admin'
+
+SHAKA = 'shaka.png'
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
@@ -285,7 +286,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
-        gear_image='shaka.png',
+        gear_image=SHAKA,
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -319,7 +320,7 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
         authorizer,
         gear_rfid,
         gear_type,
-        gear_image='shaka.png',
+        gear_image=SHAKA,
         **field_data
     )
     gear_rfids.append(gear_rfid)
