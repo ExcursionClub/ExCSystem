@@ -16,9 +16,9 @@ psycopg2 = "==2.7.5"
 boto3 = "*"
 django-storages = "*"
 sentry-sdk = "*"
-django-minio-storage = "*"
 
 [dev-packages]
+django-minio-storage = "*"
 flake8 = "==3.5.0"
 isort = "==4.3.4"
 mypy = "==0.630"
