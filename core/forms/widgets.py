@@ -74,6 +74,5 @@ class ExistingImageWidget(widgets.ChoiceWidget):
 
 
 class GearImageWidget(ExistingImageWidget):
-
     def __init__(self, attrs=None):
         super(GearImageWidget, self).__init__("gear", attrs=attrs)

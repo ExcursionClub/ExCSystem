@@ -7,6 +7,9 @@ from core.models.MemberModels import Member
 from build_permissions import build_all as build_permissions
 
 
+EMAIL = 'testemail@test.com'
+
+
 class LoginTest(TestCase):
 
     @classmethod
@@ -15,7 +18,7 @@ class LoginTest(TestCase):
 
     def setUp(self):
         Member.objects.create_member(
-            email='testemail@test.com',
+            email=EMAIL,
             rfid='0000000001',
             membership_duration=timedelta(days=7),
             password='password'
@@ -33,4 +36,4 @@ class LoginTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # Logged in user should be the user that just logged in
-        self.assertEqual(str(response.context['user']), 'testemail@test.com')
+        self.assertEqual(str(response.context['user']), EMAIL)

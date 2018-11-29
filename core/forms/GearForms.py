@@ -1,7 +1,8 @@
 import json
 
-from django.forms import ModelForm, ValidationError
+from django.forms import ModelForm, ValidationError, ModelChoiceField
 
+from core.forms.widgets import GearImageWidget
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.DocumentModel import Document
 from core.models.GearModels import Gear
@@ -15,8 +16,9 @@ class GearChangeForm(ModelForm):
         fields = '__all__'
 
     authorizer_rfid = None
-    #existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
     image = Document
+    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
 
     def __init__(self, *args, **kwargs):
         super(GearChangeForm, self).__init__(*args, **kwargs)
@@ -65,7 +67,7 @@ class GearAddForm(ModelForm):
 
     authorizer_rfid = None
     # TODO: Get all images as objects from S3
-    #existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
     image = Document
 
     def __init__(self, *args, **kwargs):
