@@ -55,6 +55,14 @@ To run tests locally:
 $ python3.7 manage.py test
 ```
 
+### Test Coverage
+Generate reports to inspect test coverage line-by-line
+
+```bash
+$ coverage run manage.py test whatever -v 2
+$ coverage html
+```
+
 ### Functional Tests
 Install geckodriver and Firefox
 
