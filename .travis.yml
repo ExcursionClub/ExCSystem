@@ -1,10 +1,10 @@
-# Use containers instead of full VMs for faster startup.
-sudo: false
-
 language: python
-python:
-  - "3.6"
+sudo: required
+dist: xenial
+python: "3.7"
+
 install:
-  - pipenv install --dev
+  - "pip install pipenv"
+  - "pipenv install"
 script:
-  - pipenv run manage.py test
+  - "python manage.py test"
