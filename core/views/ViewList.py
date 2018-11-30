@@ -1,5 +1,5 @@
-from django.contrib.admin.views.main import ChangeList
 from django.contrib.admin.utils import quote
+from django.contrib.admin.views.main import ChangeList
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
 
@@ -65,4 +65,3 @@ class RestrictedViewList(UserPassesTestMixin, ViewList):
             queryset = queryset.filter(**self.restriction_filters)
 
         return queryset
-

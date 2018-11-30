@@ -1,17 +1,16 @@
 from collections import OrderedDict
 
-from django import forms
-from django.urls import reverse
-from django.utils.timezone import timedelta
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from phonenumber_field.formfields import PhoneNumberField
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
-
-from ExCSystem.settings import WEB_BASE
-from core.models import Member, Staffer
-from core.models.QuizModels import Question
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
+from core.models import Member, Staffer
+from core.models.QuizModels import Question
+from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.urls import reverse
+from django.utils.timezone import timedelta
+from ExCSystem.settings import WEB_BASE
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
 class MemberCreationForm(forms.ModelForm):

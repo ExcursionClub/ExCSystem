@@ -1,16 +1,13 @@
 import json
-
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.urls import reverse
-
-from core.models.MemberModels import Member
-from core.models.GearModels import Gear
-from core.models.fields.PrimaryKeyField import PrimaryKeyField
+import logging
 
 from core.convinience import get_all_rfids
-
-import logging
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from core.models.GearModels import Gear
+from core.models.MemberModels import Member
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 

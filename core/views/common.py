@@ -1,9 +1,8 @@
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
-from django.urls.exceptions import NoReverseMatch
-
 from ExCSystem.settings import WEB_BASE
 
 
@@ -128,8 +127,3 @@ class ModelDetailView(DetailView):
         context = get_default_context(self, context)
         context['html_representation'] = self.get_html_repr(kwargs['object'])
         return context
-
-
-
-
-

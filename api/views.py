@@ -1,9 +1,8 @@
-from django.views.generic.base import View
-from django.http.response import HttpResponse
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import ModelDetailView
 from api.models import MemberRFIDCheck
+from core.views.common import ModelDetailView
+from core.views.ViewList import RestrictedViewList
+from django.http.response import HttpResponse
+from django.views.generic.base import View
 
 # Create your views here.
 
@@ -30,4 +29,3 @@ class RFIDCheckLogViewList(RestrictedViewList):
 
 class RFIDCheckLogDetailView(ModelDetailView):
     model = MemberRFIDCheck
-

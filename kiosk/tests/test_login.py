@@ -1,11 +1,8 @@
+from build_permissions import build_all as build_permissions
+from core.models.MemberModels import Member
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import timedelta
-
-from core.models.MemberModels import Member
-
-from build_permissions import build_all as build_permissions
-
 
 EMAIL = 'testemail@test.com'
 PASSWORD = 'password'

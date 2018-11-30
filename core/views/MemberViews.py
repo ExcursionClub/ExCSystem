@@ -1,14 +1,14 @@
-from django.views.generic.edit import UpdateView
-from django.urls import reverse
-from django.contrib.auth.mixins import UserPassesTestMixin
-
-from ExCSystem.settings import WEB_BASE
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import get_default_context, ModelDetailView
+from core.forms.MemberForms import (
+    MemberChangeCertsForm, MemberChangeGroupsForm, MemberChangeRFIDForm, MemberFinishForm,
+    MemberUpdateContactForm, StafferDataForm
+)
 from core.models.MemberModels import Member, Staffer
-from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
-                                    MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
+from core.views.common import ModelDetailView, get_default_context
+from core.views.ViewList import RestrictedViewList
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
+from django.views.generic.edit import UpdateView
+from ExCSystem.settings import WEB_BASE
 
 
 class MemberListView(RestrictedViewList):
@@ -82,4 +82,3 @@ class StafferDetailView(UserPassesTestMixin, ModelDetailView):
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
         return self.request.user.has_permission('view_staffer')
-

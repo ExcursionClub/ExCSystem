@@ -1,5 +1,5 @@
-from django.db import models
 from core.models.MemberModels import Member
+from django.db import models
 
 # Create your models here.
 
@@ -38,7 +38,3 @@ class MemberRFIDCheck(models.Model):
     was_valid = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
     message = models.CharField(max_length=100)
-
-
-
-

@@ -1,10 +1,9 @@
-from django.urls import include, path
-from django.conf.urls.static import static
-from django.conf import settings
-from django.contrib.auth import views as auth_views
-
 from core.admin import admin_site
 from core.views.email import ExcPasswordResetView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.urls import include, path
 
 urlpatterns = [
     path('', include('front_page.urls', namespace='front-page')),

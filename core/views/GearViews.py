@@ -1,12 +1,10 @@
-from django.utils import timezone
-from django.contrib.auth.mixins import UserPassesTestMixin
-from django.urls import reverse
-
 from core.models.GearModels import Gear, GearType
 from core.models.TransactionModels import Transaction
-from core.views.ViewList import RestrictedViewList
 from core.views.common import ModelDetailView
-
+from core.views.ViewList import RestrictedViewList
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
+from django.utils import timezone
 from ExCSystem.settings import WEB_BASE
 
 

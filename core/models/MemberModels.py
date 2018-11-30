@@ -1,14 +1,13 @@
 import os
 
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission
+from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
-from django.core.mail import send_mail
-from django.utils.timezone import now, timedelta, datetime
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
-
-from phonenumber_field.modelfields import PhoneNumberField
-from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from django.utils.timezone import datetime, now, timedelta
 from ExCSystem import settings
+from phonenumber_field.modelfields import PhoneNumberField
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField

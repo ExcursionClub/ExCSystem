@@ -1,12 +1,14 @@
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
-from django.urls import path, reverse
 from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, StafferDetailView, )
+from core.views.MemberViews import (
+    MemberDetailView, MemberFinishView, MemberListView, StafferDetailView
+)
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 
 
 # Replace the option to create users with the option to create members

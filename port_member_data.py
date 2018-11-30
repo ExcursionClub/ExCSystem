@@ -1,16 +1,15 @@
 """Import member data from the old excursion database"""
 
 import os
-import setup_django
+
 import progressbar
-
-from django.core.files.images import ImageFile
-from mysql.connector import connect
-from django.utils.timezone import datetime, timedelta
-from django.contrib.auth.models import Group
+import setup_django
 from core.models.CertificationModels import Certification
-
 from core.models.MemberModels import Member, Staffer, get_profile_pic_upload_location
+from django.contrib.auth.models import Group
+from django.core.files.images import ImageFile
+from django.utils.timezone import datetime, timedelta
+from mysql.connector import connect
 
 skipped_members = []
 members_ported = 0
@@ -144,4 +143,3 @@ finally:
     print(f"Ported data for {staffers_ported} out of {len(all_staffers)} detected staffers!")
     print("Skipped the following staffers")
     print(skipped_staffers)
-

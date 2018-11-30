@@ -1,9 +1,8 @@
 """This file is intended to contain only the admin classes for models that do not require much admin functionality"""
 
-from django.contrib.admin import ModelAdmin
-
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.views.OtherModelViews import CertificationDetailView, DepartmentDetailView
+from django.contrib.admin import ModelAdmin
 
 
 class CertificationAdmin(ViewableModelAdmin):
@@ -23,11 +22,3 @@ class DepartmentAdmin(ViewableModelAdmin):
 class AlreadyUploadedImageAdmin(ModelAdmin):
 
     list_display = ("name", "image_type", "sub_type", "upload_date")
-
-
-
-
-
-
-
-

@@ -1,8 +1,7 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import ModelDetailView
 from core.models.TransactionModels import Transaction
+from core.views.common import ModelDetailView
+from core.views.ViewList import RestrictedViewList
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 class TransactionListView(RestrictedViewList):

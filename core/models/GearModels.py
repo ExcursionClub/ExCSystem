@@ -1,21 +1,18 @@
 import json
-from django.urls import reverse
 
-from django.db import models
-
+from core.forms.fields.RFIDField import RFIDField
+from core.forms.widgets import ExistingImageWidget
 from core.models.DocumentModel import Document
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
-
-from .MemberModels import Member
-from .DepartmentModels import Department
-from .CertificationModels import Certification
 from core.models.FileModels import AlreadyUploadedImage
+from django.db import models
+from django.forms.fields import BooleanField, CharField, ChoiceField, FloatField, IntegerField
+from django.forms.widgets import CheckboxInput, NumberInput, Select, Textarea, TextInput
+from django.urls import reverse
 
-from django.forms.widgets import TextInput, Textarea, NumberInput, CheckboxInput, Select
-from core.forms.widgets import ExistingImageWidget
-
-from django.forms.fields import CharField, ChoiceField, IntegerField, FloatField, BooleanField
-from core.forms.fields.RFIDField import RFIDField
+from .CertificationModels import Certification
+from .DepartmentModels import Department
+from .MemberModels import Member
 
 
 class CustomDataField(models.Model):

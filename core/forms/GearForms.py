@@ -1,12 +1,11 @@
 import json
 
-from django.forms import ModelForm, ValidationError, ModelChoiceField
-
 from core.forms.widgets import GearImageWidget
-from core.models.FileModels import AlreadyUploadedImage
 from core.models.DocumentModel import Document
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
+from django.forms import ModelChoiceField, ModelForm, ValidationError
 
 
 class GearChangeForm(ModelForm):

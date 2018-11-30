@@ -21,5 +21,3 @@ class RFIDField(forms.CharField):
 
         # If no errors were raised, just let the to_python method of CharField do the actual work.
         return super(RFIDField, self).to_python(value)
-
-

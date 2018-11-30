@@ -1,6 +1,5 @@
-from django import forms
-
 from core.models.GearModels import Gear
+from django import forms
 
 
 class HomeForm(forms.Form):

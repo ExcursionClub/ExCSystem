@@ -1,12 +1,10 @@
 from random import randint
 
-from django.test import TestCase, Client
-from django.utils.timezone import timedelta
-from django.contrib.auth.models import Group
-
 from build_basic_data import *
-
 from core.models.MemberModels import Member
+from django.contrib.auth.models import Group
+from django.test import Client, TestCase
+from django.utils.timezone import timedelta
 
 
 class MemberRFIDCheckTest(TestCase):

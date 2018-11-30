@@ -1,15 +1,13 @@
-from django.test import TestCase
-from django.utils.timezone import timedelta
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import Group
-
-from core.models.MemberModels import Member
+from build_permissions import build_all as build_permissions
 from core.models.DepartmentModels import Department
 from core.models.GearModels import Gear, GearType
+from core.models.MemberModels import Member
 from core.models.TransactionModels import Transaction
-from kiosk.CheckoutLogic import do_checkout, do_checkin
-
-from build_permissions import build_all as build_permissions
+from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
+from django.test import TestCase
+from django.utils.timezone import timedelta
+from kiosk.CheckoutLogic import do_checkin, do_checkout
 
 ADMIN_RFID = '0000000000'
 MEMBER_RFID1 = '0000000001'

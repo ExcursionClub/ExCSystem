@@ -1,14 +1,12 @@
-from django.db import IntegrityError, transaction
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
+from core.models.GearModels import CustomDataField, Gear, GearType
 from core.models.MemberModels import Member, Staffer
-from core.models.GearModels import Gear, GearType, CustomDataField
+from core.models.QuizModels import Answer, Question
 from core.models.TransactionModels import Transaction
-from core.models.QuizModels import Question, Answer
-
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError, transaction
 
 """
 As permissions are created, they are appended here. Then, all these permissions are appended to the next group. That

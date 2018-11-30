@@ -1,16 +1,15 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
 
 import os
-import setup_django
 import random
 
-from django.contrib.sites.models import Site
-
-from ExCSystem import settings
-from core.models.FileModels import AlreadyUploadedImage
+import setup_django
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
-from core.models.QuizModels import Question, Answer
+from core.models.FileModels import AlreadyUploadedImage
+from core.models.QuizModels import Answer, Question
+from django.contrib.sites.models import Site
+from ExCSystem import settings
 
 
 def build_all():

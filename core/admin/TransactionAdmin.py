@@ -1,5 +1,5 @@
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.views.TransactionViews import TransactionListView, TransactionDetailView
+from core.views.TransactionViews import TransactionDetailView, TransactionListView
 
 
 class TransactionAdmin(ViewableModelAdmin):

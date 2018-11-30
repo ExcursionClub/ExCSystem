@@ -1,5 +1,4 @@
 import setup_django
-
 from core.models.MemberModels import Member
 
 

@@ -1,7 +1,7 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.views.common import ModelDetailView
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 class CertificationDetailView(UserPassesTestMixin, ModelDetailView):
