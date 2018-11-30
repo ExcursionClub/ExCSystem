@@ -13,7 +13,7 @@ LAST_NAME = 'McTester'
 FULL_NAME = f'{FIRST_NAME} {LAST_NAME}'
 
 
-class ViewTest(TestCase):
+class HelpMethodTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
