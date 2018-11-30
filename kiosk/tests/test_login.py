@@ -8,6 +8,7 @@ from build_permissions import build_all as build_permissions
 
 
 EMAIL = 'testemail@test.com'
+PASSWORD = 'password'
 
 
 class LoginTest(TestCase):
@@ -21,15 +22,15 @@ class LoginTest(TestCase):
             email=EMAIL,
             rfid='0000000001',
             membership_duration=timedelta(days=7),
-            password='password'
+            password=PASSWORD
         )
 
     def test_redirect_if_not_logged_in(self):
         response = self.client.get(reverse('kiosk:home'))
         self.assertRedirects(response, '/kiosk/login/')
 
-    def test_user_login(self):
-        self.client.login(email='testemail@test.com', password='password')
+    def test_valid_user_login(self):
+        self.client.login(email=EMAIL, password=PASSWORD)
 
         response = self.client.get(reverse('kiosk:home'))
         # Should not redirect to login page since logged in
@@ -37,3 +38,10 @@ class LoginTest(TestCase):
 
         # Logged in user should be the user that just logged in
         self.assertEqual(str(response.context['user']), EMAIL)
+
+    def test_invalid_user_login(self):
+        self.client.login(email=EMAIL, password='hello')
+
+        response = self.client.get(reverse('kiosk:home'))
+        # Should redirect to login page when login fails
+        self.assertRedirects(response, '/kiosk/login/')
