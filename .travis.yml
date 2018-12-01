@@ -1,16 +1,17 @@
 language: python
 sudo: required
 dist: xenial
-python: "3.7"
+python: 3.7
 
 install:
-  - "pip install pipenv"
-  - "pipenv install --dev"
+  - pip install pipenv
+  - pipenv install --dev
 services:
-  - "postgresql"
+  - postgresql
 before_script:
-  - "psql -c 'create database travis_ci_test;' -U postgres"
+  - psql -c "CREATE DATABASE travis_ci_test;" -U postgres
+  - psql -c "CREATE USER foo WITH PASSWORD 'bar';" -U postgres
 script:
-  - "python manage.py makemigrations"
-  - "python manage.py migrate"
-  - "python manage.py test"
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test
