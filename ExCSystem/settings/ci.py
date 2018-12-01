@@ -12,11 +12,14 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_DB_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT': 5432
+        'NAME': 'travis_ci_test',
+        'USER': 'foo',
+        'PASSWORD': 'bar',
+        'HOST': 'localhost',
+        'PORT': 5432,
+        'TEST': {
+            'NAME': 'travis_ci_test',
+        },
     }
 }
 
