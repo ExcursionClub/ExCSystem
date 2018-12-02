@@ -1,5 +1,4 @@
-
-from __future__ import absolute_import, unicode_literals
+from sys import argv
 from celery import shared_task
 
 from django.utils.timezone import datetime, timedelta
@@ -37,3 +36,17 @@ def expire_members():
             # If members will expire soon, send them an email
             elif member.date_expires < expires_soon_time:
                 member.send_expires_soon_email()
+
+
+if __name__ == "__main__":
+    task_name = argv[1]
+    if task_name == "test":
+        test_task()
+    elif task_name == "getEmails":
+        make_listserv_email_file()
+    elif task_name == "expireMembers":
+        expire_members()
+    else:
+        print(f"Invalid task name: '{task_name}'!")
+
+
