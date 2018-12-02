@@ -16,8 +16,8 @@ psycopg2 = "==2.7.5"
 sentry-sdk = "*"
 
 [dev-packages]
-flake8 = "==3.5.0"
+flake8 = "==3.6.0"
 isort = "==4.3.4"
-mypy = "==0.630"
-selenium = "==3.14.0"
-yapf = "==0.24.0"
+mypy = "==0.641"
+selenium = "==3.141.0"
+yapf = "==0.25.0"

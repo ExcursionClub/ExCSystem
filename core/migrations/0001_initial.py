@@ -1,4 +1,3 @@
-
 import core.models.MemberModels
 import core.models.TransactionModels
 import core.models.fields.PrimaryKeyField
@@ -97,6 +96,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30)),
                 ('data_fields', models.ManyToManyField(to='core.CustomDataField')),
                 ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.Department')),
+                ('min_required_certs', models.ManyToManyField(blank=True, default=None, to='core.Certification', verbose_name='Minimal Certifications Required for Rental')),
             ],
         ),
         migrations.CreateModel(
@@ -116,6 +116,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('exc_email', models.EmailField(max_length=255, unique=True, verbose_name='Official ExC Email')),
+                ('title', models.CharField(default='Excursion Staff!', max_length=30, verbose_name='Position Title')),
                 ('autobiography', models.TextField(default='I am too lazy and lame to upload a bio!', verbose_name='Self Description of the staffer')),
                 ('member', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
@@ -138,11 +139,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.GearType'),
         ),
         migrations.AddField(
-            model_name='gear',
-            name='min_required_certs',
-            field=models.ManyToManyField(to='core.Certification', verbose_name='Minimal Certifications Required for Rental'),
-        ),
-        migrations.AddField(
             model_name='department',
             name='stls',
             field=models.ManyToManyField(related_name='STLs_of', to='core.Staffer'),
@@ -150,7 +146,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='member',
             name='certifications',
-            field=models.ManyToManyField(to='core.Certification'),
+            field=models.ManyToManyField(blank=True, to='core.Certification'),
         ),
         migrations.AddField(
             model_name='member',

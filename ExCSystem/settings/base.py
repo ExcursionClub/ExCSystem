@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     'core',
     'front_page',
     'kiosk',
+    'api',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'phonenumber_field',
     'django_celery_beat'
+
 ]
 
 MIDDLEWARE = [
