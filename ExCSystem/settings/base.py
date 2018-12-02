@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'phonenumber_field',
-    'django_celery_beat'
 
 ]
 
