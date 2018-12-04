@@ -16,14 +16,16 @@ def get_upload_path(instance, filename):
 class AlreadyUploadedImage(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
-    image = models.ImageField(
-        upload_to=get_upload_path
+    picture = models.ImageField(
+        upload_to=get_upload_path,
+        default="shaka.webp"
     )
     upload_date = models.DateTimeField(auto_now_add=True)
 
     image_type = models.CharField(
         max_length=10,
         choices=(
+            ("member", "Member Profile Picture"),
             ("gear", "Gear Image"),
             ("other", "Other Image")
         )
@@ -36,4 +38,4 @@ class AlreadyUploadedImage(models.Model):
 
     @property
     def url(self):
-        return self.image.url
+        return self.picture.url

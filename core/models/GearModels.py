@@ -2,7 +2,6 @@ import json
 
 from core.forms.fields.RFIDField import RFIDField
 from core.forms.widgets import ExistingImageWidget
-from core.models.DocumentModel import Document
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
 from core.models.FileModels import AlreadyUploadedImage
 from django.db import models
@@ -261,11 +260,7 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
-    image = models.ImageField(
-        verbose_name='Gear Image',
-        default='shaka.png',
-        blank=True
-    )
+    image = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE)
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again

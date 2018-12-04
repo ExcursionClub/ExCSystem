@@ -1,7 +1,6 @@
 import json
 
 from core.forms.widgets import GearImageWidget
-from core.models.DocumentModel import Document
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
@@ -16,8 +15,7 @@ class GearChangeForm(ModelForm):
 
     authorizer_rfid = None
     existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
-    image = Document
-    picture = ModelChoiceField(existing_images, widget=GearImageWidget)
+    image = ModelChoiceField(existing_images, widget=GearImageWidget)
 
     def __init__(self, *args, **kwargs):
         super(GearChangeForm, self).__init__(*args, **kwargs)
@@ -31,7 +29,7 @@ class GearChangeForm(ModelForm):
         gear_data_dict = {}
         original_gear_data = json.loads(self.instance.gear_data)
         for name in self.declared_fields.keys():
-            if name == "picture":
+            if name == "image":
                 continue
             value = self.cleaned_data[name]
             field_data = original_gear_data[name]
@@ -67,7 +65,6 @@ class GearAddForm(ModelForm):
     authorizer_rfid = None
     # TODO: Get all images as objects from S3
     existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
-    image = Document
 
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)

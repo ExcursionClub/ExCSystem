@@ -376,12 +376,12 @@
 </script>
 
 <div class="image-select-wrapper">
-    <select class="image-picker" id="id_picture" name="picture">
+    <select class="image-picker" id="id_picture" name="image">
         {% for imageType, typeImages in image_options.items %}
 
             <optgroup label="{{ imageType }}">
             {% for gearImage in typeImages %}
-                <option data-img-src="{{ gearImage.image.url }}"
+                <option data-img-src="{{ gearImage.picture.url }}"
                         data-img-class="image-style"
                         value="{{ gearImage.pk }}">
                     {{ gearImage.name }}

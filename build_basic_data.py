@@ -29,7 +29,7 @@ def build_images():
     # Build the default common shaka image
     img = AlreadyUploadedImage.objects.create(
         image_type="gear",
-        image="shaka.png"
+        picture="shaka.webp"
     )
     img.save()
 
@@ -42,7 +42,7 @@ def build_images():
         pic_name = pic_file.split(".")[0]
         img = AlreadyUploadedImage.objects.create(
             image_type="gear",
-            image=pic_path,
+            picture=pic_path,
             name=pic_name,
             sub_type=random.choice(sub_types)
         )

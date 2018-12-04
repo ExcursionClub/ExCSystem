@@ -264,14 +264,13 @@ for name in bar(geartype_names):
         geartype.data_fields.add(pick_random(custom_fields))
     geartype.save()
     geartypes.append(geartype)
-    print(geartype)
 
 # Add gear
 print('Making Gear...')
 number_gear = 60
 
 gear_rfids = []
-all_images = list(AlreadyUploadedImage.objects.all())
+all_gear_images = list(AlreadyUploadedImage.objects.all())
 # TODO: Select shaka if no gear image is uploaded or chosen
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
@@ -283,7 +282,7 @@ for i in bar(range(number_gear)):
         authorizer_rfid=authorizer,
         gear_rfid=gear_rfid,
         geartype=geartype,
-        gear_image=SHAKA,
+        gear_image=pick_random(all_gear_images),
         **field_data
     )
     gear_rfids.append(gear_rfid)
@@ -317,7 +316,7 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
         authorizer,
         gear_rfid,
         gear_type,
-        gear_image=SHAKA,
+        gear_image=pick_random(all_gear_images),
         **field_data
     )
     gear_rfids.append(gear_rfid)
