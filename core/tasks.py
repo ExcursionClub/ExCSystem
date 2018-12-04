@@ -1,24 +1,23 @@
 from sys import argv
-from celery import shared_task
 
 from django.utils.timezone import datetime, timedelta
 
 from core.models.MemberModels import Member
-from get_listserv_email_file import *
+from listserv_interface import *
 
 
-@shared_task
 def test_task():
     print("Tested a task")
 
 
-@shared_task()
 def make_listserv_email_file():
     emails = get_active_emails()
     write_emails(emails)
 
+def push_emails_to_listserv():
+    pass
 
-@shared_task
+
 def expire_members():
 
     now = datetime.now()

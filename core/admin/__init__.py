@@ -1,5 +1,4 @@
 from django.contrib.auth.models import Group
-from django_celery_beat.models import PeriodicTask, CrontabSchedule, IntervalSchedule
 
 from ..models.MemberModels import Member, Staffer
 from ..models.GearModels import Gear, GearType, CustomDataField
@@ -29,9 +28,6 @@ admin_site.register(Staffer, StafferAdmin)
 admin_site.register(Question)
 admin_site.register(Answer)
 admin_site.register(Group)
-admin_site.register(PeriodicTask)
-admin_site.register(IntervalSchedule)
-admin_site.register(CrontabSchedule)
 
 # Now register the new MemberAdmin...
 admin_site.register(Member, MemberAdmin)
