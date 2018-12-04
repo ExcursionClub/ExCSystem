@@ -3,6 +3,7 @@ from core.models.DepartmentModels import Department
 from core.models.GearModels import Gear, GearType
 from core.models.MemberModels import Member
 from core.models.TransactionModels import Transaction
+from core.models.FileModels import AlreadyUploadedImage
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -60,13 +61,19 @@ class CheckoutLogicTest(TestCase):
         )
         gear_type.save()
 
+        img = AlreadyUploadedImage.objects.create(
+            image_type="gear",
+            picture="shaka.webp"
+        )
+        img.save()
+
         _, gear = Transaction.objects.add_gear(
             authorizer_rfid=ADMIN_RFID,
             gear_rfid=GEAR_RFID,
             gear_name='test bag',
             gear_department=department,
             geartype=gear_type,
-            gear_image=None,
+            gear_image=img,
         )
 
     def test_checkout_gear(self):
