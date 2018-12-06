@@ -29,7 +29,7 @@ class TransactionDetailView(UserPassesTestMixin, ModelDetailView):
             related_to_self = self.request.user.pk == transaction_to_view.member.pk
         except AttributeError:  # Transaction need not have a member
             related_to_self = False
-        is_staffer = self.request.user.is_staffer
+        is_staffer = self.request.user.has_permission('view_all_transactions')
         return is_staffer or related_to_self
 
     def post(self, request, *args, **kwargs):
