@@ -126,6 +126,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
+    group = models.CharField(default="Unset", max_length=30)
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
     is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
@@ -247,9 +248,16 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return self.has_perm(permission_name)
 
     def move_to_group(self, group_name):
+        """
+        Convenience function to move a member to a group
+
+        Always use this function since it changes the group and the group shortcut field
+        """
         new_group = Group.objects.filter(name=group_name)
         self.groups.set(new_group)
         self.save()
+
+        self.group = str(new_group[0])
 
 
 class Staffer(models.Model):

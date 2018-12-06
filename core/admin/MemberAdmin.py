@@ -44,7 +44,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         }),
         ('Club  Info', {
             'classes': ('wide',),
-            'fields': ('rfid', 'group', 'certifications')
+            'fields': ('rfid', 'groups', 'certifications')
         })
     )
     editable_profile_fieldsets = (
