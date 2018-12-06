@@ -325,7 +325,7 @@ class MemberChangeGroupsForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('group',)
+        fields = ('groups',)
 
 
 class StafferDataForm(forms.ModelForm):
@@ -379,5 +379,5 @@ class MemberChangeForm(forms.ModelForm):
                   'last_name',
                   'phone_number',
                   'rfid',
-                  'group',
+                  'groups',
                   'image')

@@ -17,16 +17,16 @@ def validate_auth(authorizer):
     # TODO: should this be given a second argument of min status level?
 
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
-    required_perm = 'authorize_transactions'
+    required_perm = 'core.authorize_transactions'
     if not authorizer.has_permission(required_perm):
-        msg = f'{authorizer.get_short_name} is not allowed to authorize a transaction'
+        msg = f'{authorizer.get_full_name()} is not allowed to authorize transactions'
         logger.info(msg)
         raise ValidationError(msg)
 
 
 def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
-    required_perm = 'rent_gear'
+    required_perm = 'core.rent_gear'
     if not member.has_permission(required_perm):
         msg = f'{member.get_full_name()} is not allowed to check out gear, because they do not have the {required_perm} permission'
         logger.info(msg)
@@ -57,7 +57,7 @@ def validate_required_certs(member, gear):
             missing_certs.append(cert_required)
     if missing_certs:
         cert_names = [cert.title for cert in missing_certs]
-        msg = f'{member.get_full_name()} is missin the following certifications: {cert_names}'
+        msg = f'{member.get_full_name()} is missing the following certifications: {cert_names}'
         logger.info(msg)
         raise ValidationError(msg)
 
@@ -364,7 +364,7 @@ class TransactionManager(models.Manager):
         gear = Gear.objects.get(rfid=gear_rfid)
 
         member = Member.objects.get(rfid=authorizer_rfid)
-        if not member.has_permission('change_gear'):
+        if not member.has_permission('core.change_gear'):
             raise ValidationError("You don't have the permission to change gear!")
 
         # All the changes made will be described here

@@ -96,11 +96,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         else:
             current_user = request.user
             is_self = current_user.primary_key == member.primary_key
-            return is_self or current_user.has_permission("change_member")
+            return is_self or current_user.has_permission("core.change_member")
     
     @staticmethod
     def can_edit_all_data(request):
-        return request.user.has_permission("change_member")
+        return request.user.has_permission("core.change_member")
 
     def has_view_or_change_permission(self, request, obj=None):
         return self.has_change_permission(request, obj=obj) or self.has_view_permission(request, obj=obj)
