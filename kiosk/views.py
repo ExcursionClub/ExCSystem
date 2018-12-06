@@ -66,8 +66,16 @@ class CheckOutView(View):
 
     def get(self, request, rfid: str):
         form = HomeForm()
-        name = get_name(rfid)
+
+        try:
+            name = get_name(rfid)
+        except ValidationError:
+            alert_message = 'RFID is not registered'
+            messages.add_message(request, messages.WARNING, alert_message)
+            return redirect('kiosk:home')
+
         checked_out_gear = get_checked_out_gear(rfid)
+
         args = {
             'form': form,
             'name': name,
