@@ -63,6 +63,10 @@ def build_member():
     """Create permissions for regular, active members"""
     member = Group.objects.create(name="Member")
     add_permission(
+        codename="is_active_member",
+        name="Is an active member",
+        content_type=member_type)
+    add_permission(
         codename="rent_gear",
         name="Allowed to rent gear",
         content_type=gear_type)
