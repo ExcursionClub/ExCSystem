@@ -43,12 +43,12 @@ class CheckoutLogicTest(TestCase):
             password='password'
         )
 
-        member.group = Group.objects.get(name="Member")
+        member.promote_to_active()
         member.first_name = "Jo"
         member.last_name = "McTester1"
         member.save()
 
-        other_member.group = Group.objects.get(name="Member")
+        other_member.promote_to_active()
         other_member.first_name = "Jo"
         other_member.last_name = "McTester2"
         other_member.save()
