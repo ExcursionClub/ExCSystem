@@ -95,8 +95,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkout_to_new_member(self):
         """Test checkout of available gear to new member by valid staffer fails"""
         member = Member.objects.get(rfid=MEMBER_RFID1)
-        member.group = Group.objects.get(name="Just Joined")
-        member.save()
+        member.move_to_group('Just Joined')
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
         with self.assertRaises(ValidationError):
@@ -107,8 +106,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkout_to_expired_member(self):
         """Test checkout of available gear to expired member by valid staffer fails"""
         member = Member.objects.get(rfid=MEMBER_RFID1)
-        member.group = Group.objects.get(name="Expired")
-        member.save()
+        member.expire()
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
         with self.assertRaises(ValidationError):

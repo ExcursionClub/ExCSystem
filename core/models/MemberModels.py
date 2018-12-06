@@ -194,12 +194,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def expire(self):
         """Expires this member's membership"""
         self.move_to_group("Expired")
-        return self
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
         self.move_to_group("Member")
-        return self
 
     def extend_membership(self, duration, rfid='', password=''):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
@@ -255,9 +253,8 @@ class Member(AbstractBaseUser, PermissionsMixin):
         """
         new_group = Group.objects.filter(name=group_name)
         self.groups.set(new_group)
-        self.save()
-
         self.group = str(new_group[0])
+        self.save()
 
 
 class Staffer(models.Model):

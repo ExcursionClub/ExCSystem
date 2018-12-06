@@ -25,7 +25,7 @@ class HelpMethodTest(TestCase):
             membership_duration=timedelta(days=7),
             password='password',
         )
-        member.group = Group.objects.get(name="Member")
+        member.move_to_group("Member")
         member.first_name = FIRST_NAME
         member.last_name = LAST_NAME
         member.save()

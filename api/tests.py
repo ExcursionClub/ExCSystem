@@ -26,7 +26,8 @@ class MemberRFIDCheckTest(TestCase):
             timedelta(days=7),
             password='admin'
         )
-        member.group = Group.objects.get(name=group_name)
+
+        member.move_to_group(group_name)
         member.save()
 
     def gen_rfid(self):

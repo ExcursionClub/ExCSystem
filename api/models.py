@@ -20,7 +20,7 @@ class RfidCheckManager(models.Manager):
             is_valid = False
         else:
             member = matching_members[0]
-            message = f"{member.get_full_name()}: {member.group.name}"
+            message = f"{member.get_full_name()}: {member.group}"
             if member.is_active_member:
                 is_valid = True
             else:
