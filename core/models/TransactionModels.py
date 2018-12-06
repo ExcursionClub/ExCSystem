@@ -19,7 +19,7 @@ def validate_auth(authorizer):
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
     required_perm = 'authorize_transactions'
     if not authorizer.has_permission(required_perm):
-        msg = f'{authorizer.get_short_name} is not allowed to authorize a transaction'
+        msg = f'{authorizer.get_short_name()} is not allowed to authorize transactions'
         logger.info(msg)
         raise ValidationError(msg)
 
