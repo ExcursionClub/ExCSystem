@@ -24,7 +24,7 @@ class CheckIfActiveMemberView(View):
 class RFIDCheckLogViewList(RestrictedViewList):
 
     def test_func(self):
-        return self.request.user.has_permission("view_rfid_check_log")
+        return self.request.user.has_permission("core.view_rfid_check_log")
 
 
 class RFIDCheckLogDetailView(ModelDetailView):

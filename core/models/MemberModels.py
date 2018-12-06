@@ -137,7 +137,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     @property
     def is_active_member(self):
         """Return true if the member has a valid membership"""
-        return self.has_permission('is_active_member')
+        return self.has_permission('core.is_active_member')
 
     @property
     def is_staff(self):

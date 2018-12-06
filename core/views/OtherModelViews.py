@@ -13,7 +13,7 @@ class CertificationDetailView(UserPassesTestMixin, ModelDetailView):
     permission_denied_message = "You are not allowed to view the Certifications!"
 
     def test_func(self):
-        return self.request.user.has_permission("view_certification")
+        return self.request.user.has_permission("core.view_certification")
 
     def post(self, request, *args, **kwargs):
         """Treat post requests as get requests"""
@@ -28,7 +28,7 @@ class DepartmentDetailView(UserPassesTestMixin, ModelDetailView):
     permission_denied_message = "You are not allowed to view the Gear departments!"
 
     def test_func(self):
-        return self.request.user.has_permission("view_department")
+        return self.request.user.has_permission("core.view_department")
 
     def post(self, request, *args, **kwargs):
         """Treat post requests as get requests"""
