@@ -36,7 +36,7 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
 
             try:
                 Gear.objects.get(rfid=rfid)
-                return redirect('kiosk:gear', int(rfid))
+                return redirect('kiosk:gear', rfid)
             except Gear.DoesNotExist:
                 pass
 
@@ -66,8 +66,16 @@ class CheckOutView(View):
 
     def get(self, request, rfid: str):
         form = HomeForm()
-        name = get_name(rfid)
+
+        try:
+            name = get_name(rfid)
+        except ValidationError:
+            alert_message = 'The member has not yet completed the registration'
+            messages.add_message(request, messages.WARNING, alert_message)
+            return redirect('kiosk:home')
+
         checked_out_gear = get_checked_out_gear(rfid)
+
         args = {
             'form': form,
             'name': name,
