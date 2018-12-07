@@ -1,4 +1,5 @@
 from collections import OrderedDict
+import json
 
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
@@ -381,3 +382,14 @@ class MemberChangeForm(forms.ModelForm):
                   'rfid',
                   'groups',
                   'image')
+
+    def clean_groups(self):
+        groups = self.cleaned_data['groups']
+        if len(groups) != 1:
+            raise forms.ValidationError('Each member must be in exactly one group!')
+        self.cleaned_data['group'] = str(groups[0])
+        return groups
+
+    def save(self, commit=True):
+        self.instance.move_to_group(self.cleaned_data['group'])
+        return super(MemberChangeForm, self).save(commit=commit)
