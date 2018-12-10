@@ -18,7 +18,7 @@ class GearAdmin(ViewableModelAdmin):
     list_filter = ('status', "geartype__department", "geartype")
 
     # Choose which fields can be searched for
-    search_fields = ('name', 'rfid', "checked_out_to__first_name", "checked_out_to__last_name")
+    search_fields = ('geartype__name', 'gear_data', 'rfid', 'checked_out_to__first_name', 'checked_out_to__last_name')
 
     fieldsets = [
         ('Gear Info', {
