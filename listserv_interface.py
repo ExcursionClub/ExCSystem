@@ -1,13 +1,15 @@
 import setupDjango
 import ExCSystem.settings as settings
-import os
-import re
+import time
 import ssl
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions, wait
 
+from core.convinience import notify_info
 from core.models.MemberModels import Member
+
+LOAD_WAIT_SECS = 10
 
 
 def get_active_emails():
@@ -17,14 +19,20 @@ def get_active_emails():
 
 
 def write_emails(email_list):
-    with open("listserv_emails.txt", 'w') as email_file:
+    filename = "listserv_emails.txt"
+    with open(filename, 'w') as email_file:
         email_file.writelines(email_list)
+    return filename
 
 
 def push_to_listserv(emails_file):
 
-    browser = webdriver.Firefox()
-    browser.addheaders = [('User-agent', 'Firefox')]
+    profile = webdriver.FirefoxProfile()
+    profile.accept_untrusted_certs = True
+    profile.assume_untrusted_cert_issuer = True
+    capabilities = webdriver.DesiredCapabilities().FIREFOX.copy()
+    capabilities['acceptInsecureCerts'] = True
+    browser = webdriver.Firefox(firefox_profile=profile, capabilities=capabilities)
     try:
         _create_unverified_https_context = ssl._create_unverified_context
     except AttributeError:
@@ -61,12 +69,30 @@ def push_to_listserv(emails_file):
     replace_all_button = browser.find_element_by_id("radiob")
     replace_all_button.click()
     file_upload = browser.find_element_by_id("Input File")
+
     file_upload.send_keys(emails_file)
+
+    print("Waiting for file upload...")
+    time.sleep(LOAD_WAIT_SECS)
+
     file_upload.submit()
 
     # TODO: parse response and notify someone
-    wait.WebDriverWait(browser, 10)
+    print("Waiting for listserv to process...")
+    time.sleep(LOAD_WAIT_SECS)
+
+    print('pause')
+    change_message = browser.find_element_by_class_name('message').text
+
+    return change_message
+
+
+def run_update():
+    emails = get_active_emails()
+    email_file = write_emails(emails)
+    change_message = push_to_listserv(email_file)
+    notify_info("Listserv Updated", change_message)
 
 
 if __name__ == "__main__":
-    push_to_listserv("/home/tomek/Work/Excursion/listserv_emails_11-27.txt") #get_active_emails()
+    run_update()
