@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from kiosk import views
 
 
 class ViewTestCase(TestCase):
@@ -15,9 +14,9 @@ class SmokeTest(ViewTestCase):
         self.assertStatusCode(response)
 
     def test_view_url_by_name(self):
-        response = self.client.get(reverse('home'), follow=True)
+        response = self.client.get(reverse('kiosk:home'), follow=True)
         self.assertStatusCode(response)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('home'), follow=True)
+        response = self.client.get(reverse('kiosk:home'), follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')

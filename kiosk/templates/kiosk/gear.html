@@ -1,0 +1,33 @@
+{% extends "kiosk/../base.html" %}
+
+{% block title %}Kiosk | {{ gear.name }}{% endblock %}
+
+{% block content %}
+    <img src="{{ gear.image.url }}" alt="gear image" width="200px">
+    <h1>{{ gear.geartype }}</h1>
+    <p>Brand: {{ gear.manufacturer|default:'N/A' }}</p>
+    <p>Status: {{ gear.get_status }}</p>
+    <br>
+    <p>Scan a member RFID tag to check this item out</p>
+    {% if gear.get_status == 'Checked Out' %}
+        <p>Or check this item in by scanning the gear RFID again</p>
+    {% endif %}
+    <p></p>
+     <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+    {% if messages %}
+        <br>
+        <ul class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                        Error
+                    {% endif %} {{ message }}
+                </div>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

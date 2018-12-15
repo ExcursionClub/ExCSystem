@@ -1,17 +1,17 @@
 import json
 
-from django.db import models
-from core.models.fields.PrimaryKeyField import PrimaryKeyField
-
-from .MemberModels import Member
-from .DepartmentModels import Department
-from .CertificationModels import Certification
-
-from django.forms.widgets import TextInput, Textarea, NumberInput, CheckboxInput, Select
-from core.forms.widgets.RFIDWidget import RFIDWidget
-
-from django.forms.fields import CharField, ChoiceField, IntegerField, FloatField, BooleanField
 from core.forms.fields.RFIDField import RFIDField
+from core.forms.widgets import ExistingImageWidget
+from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from core.models.FileModels import AlreadyUploadedImage
+from django.db import models
+from django.forms.fields import BooleanField, CharField, ChoiceField, FloatField, IntegerField
+from django.forms.widgets import CheckboxInput, NumberInput, Select, Textarea, TextInput
+from django.urls import reverse
+
+from .CertificationModels import Certification
+from .DepartmentModels import Department
+from .MemberModels import Member
 
 
 class CustomDataField(models.Model):
@@ -191,6 +191,9 @@ class GearType(models.Model):
     def __str__(self):
         return self.name
 
+    def requires_certs(self):
+        return True if self.min_required_certs else False
+
     def get_field_names(self):
         """Return a list of the names of fields included in this gear type"""
         field_names = []
@@ -208,9 +211,9 @@ class GearType(models.Model):
 
 class GearManager(models.Manager):
 
-    def _create(self, rfid, gear_type, **gear_data):
+    def _create(self, rfid, geartype, image, **gear_data):
         """
-        Create a piece of gear that contains the basic data, and all additional data specified by the gear_type
+        Create a piece of gear that contains the basic data, and all additional data specified by the geartype
 
         NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
@@ -219,11 +222,12 @@ class GearManager(models.Manager):
         gear = Gear(
             rfid=rfid,
             status=0,
-            geartype=gear_type
+            geartype=geartype,
+            image=image
         )
 
         # Filter out any passed data that is not referenced by the gear type
-        extra_fields = CustomDataField.objects.filter(geartype=gear_type)
+        extra_fields = CustomDataField.objects.filter(geartype=geartype)
         data_dict = {}
         for field in extra_fields:
             data_dict[field.name] = field.serialize(**gear_data[field.name])
@@ -234,14 +238,14 @@ class GearManager(models.Manager):
 
         return gear
 
-    def _add(self, rfid, name, gear_type, **gear_data):
+    def _add(self, rfid, name, geartype, **gear_data):
         """
         Alias for gear creation
 
 
         NOTE: THIS SHOULD ALWAYS BE CALLED THROUGH A TRANSACTION!
         """
-        return self.create(rfid, gear_type, name=name, **gear_data)
+        return self.create(rfid, geartype, name=name, **gear_data)
 
 
 class Gear(models.Model):
@@ -256,6 +260,7 @@ class Gear(models.Model):
 
     primary_key = PrimaryKeyField()
     rfid = models.CharField(max_length=10, unique=True)
+    image = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE)
     status_choices = [
         (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
         (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
@@ -277,8 +282,6 @@ class Gear(models.Model):
 
     gear_data = models.CharField(max_length=2000)
 
-    # TODO: Add image of gear
-
     def __str__(self):
         return self.name
 
@@ -292,11 +295,24 @@ class Gear(models.Model):
         if item is None:
             return self
         elif item in gear_data.keys():
-            gear_type = self.__getattribute__('geartype')
-            field = gear_type.data_fields.get(name=item)
+            geartype = self.__getattribute__('geartype')
+            field = geartype.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
             raise AttributeError(f'No attribute {item} for {repr(self)}!')
+
+    def get_display_gear_data(self):
+        """Return the gear data as a simple dict of field_name, field_value"""
+        simple_data = {}
+        attr_fields = self.geartype.data_fields.all()
+        gear_data = json.loads(self.gear_data)
+        for field in attr_fields:
+            simple_data[field.name] = field.get_str(gear_data[field.name])
+        return simple_data
+
+    @property
+    def edit_gear_url(self):
+        return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
 
     def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
@@ -307,6 +323,14 @@ class Gear(models.Model):
             }
         )
         return fieldset
+
+    def get_status(self):
+        return self.status_choices[self.status][1]
+
+    @property
+    def image_url(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
 
     @property
     def name(self):
@@ -339,10 +363,7 @@ class Gear(models.Model):
 
     def is_available(self):
         """Returns True if the gear is available for renting"""
-        if self.status == 0:
-            return True
-        else:
-            return False
+        return True if self.status == 0 else False
 
     def is_rented_out(self):
         return True if self.status == 1 else False
@@ -360,5 +381,3 @@ class Gear(models.Model):
             return True
         else:
             return False
-
-

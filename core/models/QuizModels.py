@@ -43,5 +43,3 @@ class Question(models.Model):
 
     def is_correct(self, selected_answer_phrase):
         return selected_answer_phrase == self.correct_answer.answer_phrase
-
-

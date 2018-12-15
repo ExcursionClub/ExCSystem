@@ -1,0 +1,176 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<style>
+    .transaction-list {
+        max-width: 90%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container emp-profile">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="profile-img">
+                <img src="{{ object.image_url|default_if_none:'static/img/shaka.png' }}" alt="Gear Picture" width="90%" align="left"/>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="profile-head">
+                <h5> {{ object.name }} </h5>
+                <br/>
+                <h6> Status: &nbsp; {{ object.get_status }} </h6>
+            </div>
+            <div class="col-md-8">
+                <br/><br/>
+                <div class="gearData">
+                    <div class="" id="gearData">
+                        {% if object.is_rented_out %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Checked out to</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><a href="{{checked_out_to_url}}">
+                                        {{ object.checked_out_to.get_full_name }}
+                                    </a></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Due back by</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{ object.due_date }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>RFID #</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.rfid }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Gear Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p><a href="{{ geartype_url }}">
+                                    {{ object.geartype.name }}
+                                </a></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Department</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p><a href="{{ department_url }}">
+                                    {{ object.geartype.department.name }}
+                                </a></p>
+                            </div>
+                        </div>
+                        {% for field, value in gear.get_display_gear_data.items %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>{{ field }}</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>{{ value }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Minimum Certifications</label>
+                            </div>
+                            <div class="col-md-6">
+                                {% if object.requires_certs %}
+                                    {% for cert in object.gear_type.min_required_certs %}
+                                        <p><a href="{{cert.get_page_url}}"> {{ cert.title }} </a></p>
+                                    {% endfor %}
+                                {% else %}
+                                    No certifications required!
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1">
+            {% if can_edit_gear %}
+                <form action="{{ gear.edit_gear_url }}">
+                    <input type="submit" class="profile-edit-btn" value="Edit">
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <br/><br/>
+</div>
+<div class="container transaction-list">
+    <div class="row">
+        <h4>Related Transactions</h4>
+        <div class="col-12">
+            <br/><br/>
+            <div class="row">
+                <div class="col-2">
+                    <strong>Transaction Type</strong>
+                </div>
+                <div class="col-2">
+                    <strong>Time Stamp</strong>
+                </div>
+                <div class="col-2">
+                    <strong>Authorizer</strong>
+                </div>
+                <div class="col-2">
+                    <strong>Related Member</strong>
+                </div>
+                <div class="col-4">
+                    <strong>Comments</strong>
+                </div>
+            </div>
+            <br/>
+            {% for transaction in related_transactions %}
+                <div class="row">
+                    <div class="col-2">
+                        <p><a href="{{ transaction.detail_url }}">
+                            {{ transaction.type }}
+                        </a></p>
+                    </div>
+                    <div class="col-2">
+                        <p>{{ transaction.timestamp }}</p>
+                    </div>
+                    <div class="col-2">
+                        <p><a href="{{ transaction.authorizer.view_profile_url }}">
+                            {{ transaction.authorizer.get_full_name }}
+                        </a></p>
+                    </div>
+                    <div class="col-2">
+                        <p><a href="{{ transaction.member.view_profile_url }}">
+                            {{ transaction.member.get_full_name }}
+                        </a></p>
+                    </div>
+                    <div class="col-4">
+                        <p>{{ transaction.comments }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+
+{% endblock %}

@@ -1,6 +1,7 @@
-from time import time
-from django.db.models import BigIntegerField
 import secrets
+from time import time
+
+from django.db.models import BigIntegerField
 
 START_TIME = 1537758068554
 

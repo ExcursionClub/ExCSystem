@@ -2,10 +2,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-STATIC_URL = '/static/'
+
 MEDIA_URL = '/media/'
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -16,8 +14,13 @@ SITE_NAME = "Excursion System"
 
 ALLOWED_HOSTS = ['*']
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
-# Application definition
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+DEFAULT_FILE_STORAGE = 'ExCSystem.settings.storage_backends.MediaStorage'
 
 INSTALLED_APPS = [
     'core',
@@ -32,6 +35,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'phonenumber_field',
+
+    'minio_storage',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -51,8 +57,9 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
-            os.path.join(BASE_DIR, 'kiosk/templates'),
             os.path.join(BASE_DIR, 'core/templates'),
+            os.path.join(BASE_DIR, 'front_page/templates'),
+            os.path.join(BASE_DIR, 'kiosk/templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -105,5 +112,5 @@ USE_L10N = True
 USE_TZ = True
 
 LOGIN_URL = '/admin/login/'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'kiosk:home'
+LOGOUT_REDIRECT_URL = 'front-page:home'

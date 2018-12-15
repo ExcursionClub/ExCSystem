@@ -1,10 +1,9 @@
-from django.urls import include, path
-from django.conf.urls.static import static
-from django.conf import settings
-from django.contrib.auth import views as auth_views
-
 from core.admin import admin_site
 from core.views.email import ExcPasswordResetView
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
+from django.urls import include, path
 
 urlpatterns = [
     path('', include('front_page.urls', namespace='front-page')),
@@ -30,6 +29,7 @@ urlpatterns = [
     ),
     path('admin/', admin_site.urls),
     path('kiosk/', include('kiosk.urls', namespace='kiosk')),
-    path('api/', include('api.urls', namespace='api'))
+    path('core/', include('core.urls')),
+    path('api/', include('api.urls', namespace='api')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

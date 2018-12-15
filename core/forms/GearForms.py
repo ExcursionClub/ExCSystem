@@ -1,9 +1,10 @@
 import json
 
-from django.forms import ModelForm
-
+from core.forms.widgets import GearImageWidget
+from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 from core.models.TransactionModels import Transaction
+from django.forms import ModelChoiceField, ModelForm, ValidationError
 
 
 class GearChangeForm(ModelForm):
@@ -11,7 +12,10 @@ class GearChangeForm(ModelForm):
     class Meta:
         model = Gear
         fields = '__all__'
+
     authorizer_rfid = None
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
+    image = ModelChoiceField(existing_images, widget=GearImageWidget)
 
     def __init__(self, *args, **kwargs):
         super(GearChangeForm, self).__init__(*args, **kwargs)
@@ -21,9 +25,12 @@ class GearChangeForm(ModelForm):
 
     def clean_gear_data(self):
         """Compile the data from all the custom fields to be saved into gear_data"""
+        # TODO: Fix this
         gear_data_dict = {}
         original_gear_data = json.loads(self.instance.gear_data)
         for name in self.declared_fields.keys():
+            if name == "image":
+                continue
             value = self.cleaned_data[name]
             field_data = original_gear_data[name]
             field_data["initial"] = value
@@ -54,7 +61,10 @@ class GearAddForm(ModelForm):
     class Meta:
         model = Gear
         fields = '__all__'
+
     authorizer_rfid = None
+    # TODO: Get all images as objects from S3
+    existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
 
     def __init__(self, *args, **kwargs):
         super(GearAddForm, self).__init__(*args, **kwargs)
@@ -64,8 +74,20 @@ class GearAddForm(ModelForm):
 
     def build_gear_data(self):
         """During the initial creation of the gear, the gear data JSON must be created."""
-        gear_type = self.instance.geartype
-        return gear_type.build_empty_data()
+        geartype = self.instance.geartype
+        return geartype.build_empty_data()
+
+    def clean_rfid(self):
+        cleaned_rfid = self.cleaned_data.get('rfid')
+
+        if len(cleaned_rfid) != 10:
+            raise ValidationError('The rfid has to be 10 digits')
+        try:
+            int(cleaned_rfid)
+        except ValueError:
+            raise ValidationError("The rfid can only contain digits")
+        # TODO: Validate that the rfid isn't already in use
+        return cleaned_rfid
 
     def save(self, commit=True):
         """Save this new instance, making sure to use the Transaction method"""
@@ -77,6 +99,7 @@ class GearAddForm(ModelForm):
             self.authorizer_rfid,
             self.cleaned_data['rfid'],
             self.cleaned_data['geartype'],
-            **self.build_gear_data()
+            self.cleaned_data['image'],
+            **self.build_gear_data(),
         )
         return gear

@@ -1,6 +1,5 @@
-from django.urls import include, path
 from api.views import CheckIfActiveMemberView
-
+from django.urls import include, path
 
 app_name = 'kiosk'
 urlpatterns = [

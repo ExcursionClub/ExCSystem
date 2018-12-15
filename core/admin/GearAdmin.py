@@ -1,14 +1,13 @@
 import json
-
 from collections import OrderedDict
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.contrib.admin.utils import quote
-from django.contrib.admin import ModelAdmin
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.views.GearViews import GearDetailView, GearViewList, GearTypeDetailView
-from core.forms.GearForms import GearChangeForm, GearAddForm
+from core.forms.GearForms import GearAddForm, GearChangeForm
+from core.views.GearViews import GearDetailView, GearTypeDetailView, GearViewList
+from django.contrib.admin import ModelAdmin
+from django.contrib.admin.utils import quote
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 class GearAdmin(ViewableModelAdmin):
@@ -24,7 +23,7 @@ class GearAdmin(ViewableModelAdmin):
     fieldsets = [
         ('Gear Info', {
             'classes': ('wide',),
-            'fields': ("rfid", "geartype"),
+            'fields': ("rfid", "geartype", "image"),
         }),
         ('Checkout Info', {
             'classes': ('wide',),
@@ -108,4 +107,3 @@ class CustomDataFieldAdmin(ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
-

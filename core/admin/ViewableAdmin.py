@@ -1,17 +1,17 @@
 from functools import update_wrapper
 
-from django.contrib.admin.options import csrf_protect_m, IncorrectLookupParameters
+from core.views.common import ModelDetailView
+from core.views.ViewList import RestrictedViewList
+from django.contrib.admin import ModelAdmin
+from django.contrib.admin.options import IncorrectLookupParameters, csrf_protect_m
 from django.contrib.admin.views.main import ERROR_FLAG
+from django.contrib.auth import get_permission_codename
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
-from django.template.response import TemplateResponse, SimpleTemplateResponse
+from django.template.response import SimpleTemplateResponse, TemplateResponse
 from django.urls import path
-from django.contrib.admin import ModelAdmin
-from django.contrib.auth import get_permission_codename
-from django.utils.translation import gettext as _, ngettext
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import ModelDetailView
+from django.utils.translation import gettext as _
+from django.utils.translation import ngettext
 
 
 class ViewableModelAdmin(ModelAdmin):

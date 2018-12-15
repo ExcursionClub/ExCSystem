@@ -1,9 +1,8 @@
 """All updates that should be regularly executed on the database should be found here"""
-from django.utils.timezone import now, timedelta
-
-from core.models.MemberModels import Member, Staffer
 from core.models.GearModels import Gear
+from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
+from django.utils.timezone import now, timedelta
 
 
 def expire_members():
@@ -46,7 +45,3 @@ def expire_gear():
     for gear in missing_gear:
         if right_now > gear.due_date + expiration_threshold:
             Transaction.objects.expire_gear("1111111111", gear.rfid)
-
-
-
-

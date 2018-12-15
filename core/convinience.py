@@ -1,5 +1,5 @@
-from core.models.MemberModels import Member
 from core.models.GearModels import Gear
+from core.models.MemberModels import Member
 
 
 def get_all_rfids():
