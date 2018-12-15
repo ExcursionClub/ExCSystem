@@ -10,12 +10,9 @@ def test_task():
     print("Tested a task")
 
 
-def make_listserv_email_file():
-    emails = get_active_emails()
-    write_emails(emails)
-
-def push_emails_to_listserv():
-    pass
+def update_listserv():
+    import listserv_interface
+    listserv_interface.run_update()
 
 
 def expire_members():
@@ -41,8 +38,8 @@ if __name__ == "__main__":
     task_name = argv[1]
     if task_name == "test":
         test_task()
-    elif task_name == "getEmails":
-        make_listserv_email_file()
+    elif task_name == "updateListserv":
+        update_listserv()
     elif task_name == "expireMembers":
         expire_members()
     else:
