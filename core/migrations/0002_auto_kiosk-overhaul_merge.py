@@ -96,9 +96,7 @@ class Migration(migrations.Migration):
                 verbose_name='user permissions'),
         ),
         migrations.RunSQL(
-            "UPDATE core_member_groups "
-            "SET member_id = (SELECT primary_key FROM core_member WHERE core_member_groups.id = core_member.id),"
-            "group_id = (SELECT group_id FROM core_member WHERE core_member_groups.id = core_member.id);"
+            ["INSERT INTO core_member_groups (member_id, group_id) SELECT primary_key, group_id FROM core_member;"]
         ),
         migrations.RemoveField(
             model_name='member',
