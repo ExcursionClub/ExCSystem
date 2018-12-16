@@ -9,13 +9,6 @@ from django.utils.timezone import now
 import django.db.models.deletion
 
 
-def map_group_to_groups():
-    """Transfers all the data from the ForeignKey group to the ManyToMany field groups"""
-    for member in core.models.Member.objects.all():
-        group_name = member.group.name
-        member.groups.set(Group.objects.filter(name=group_name))
-        member.save()
-
 
 class Migration(migrations.Migration):
 
@@ -55,9 +48,9 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             [(
-                "INSERT INTO core_alreadyuploadedimage ('name', 'picture', 'image_type', 'sub_type', 'date_uploaded') "
-                "VALUES ('Shaka', 'shaka.webp', 'other', 'default', '%s');",
-                now()
+                "INSERT INTO core_alreadyuploadedimage ('name', 'picture', 'image_type', 'sub_type', 'upload_date') "
+                "VALUES ('Shaka', 'shaka.webp', 'other', 'default', %s);",
+                [now(), ]
             )]
         ),
         migrations.AddField(
@@ -72,9 +65,9 @@ class Migration(migrations.Migration):
         ),
 
         # Fix member permissions and groups
-        migrations.AlterField(
+        migrations.AddField(
             model_name='member',
-            name='group',
+            name='groups',
             field=models.ManyToManyField(
                 blank=True,
                 help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
@@ -102,16 +95,18 @@ class Migration(migrations.Migration):
                 to='auth.Permission',
                 verbose_name='user permissions'),
         ),
-        migrations.RunPython(map_group_to_groups()),
-        migrations.RenameField(
+        migrations.RunSQL(
+            "UPDATE core_member_groups "
+            "SET member_id = (SELECT primary_key FROM core_member),"
+            "group_id = (SELECT group_id FROM core_member);"
+        ),
+        migrations.RemoveField(
             model_name='member',
-            old_name='group',
-            new_name='groups'
+            name='group'
         ),
         migrations.AddField(
             model_name='member',
             name='group',
             field=models.CharField(default='Unset', max_length=30),
         ),
-        migrations.RunPython(helper_scripts.fix_member_group.fix_all())
     ]
