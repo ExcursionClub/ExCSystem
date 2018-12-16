@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'phonenumber_field',
 
-    'minio_storage',
     'storages',
 ]
 
