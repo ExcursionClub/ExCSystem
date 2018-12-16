@@ -1,3 +1,5 @@
+import setup_django
+
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.GearModels import CustomDataField, Gear, GearType
@@ -267,14 +269,17 @@ def build_admin():
 
 
 def add_group(name, permissions):
+    """Add the group, only creating it if it doesn't already exist"""
     try:
-        group = Group.objects.create(name=name)
-    except Exception as e:
+        with transaction.atomic():
+            group = Group.objects.create(name=name)
+    except IntegrityError:
         group = Group.objects.get(name=name)
 
     group.permissions.set(permissions)
     group.save()
     return group
+
     
 def add_permission(codename=None, name=None, content_type=None):
     """Add the permission, only creating if it does not already exist"""
