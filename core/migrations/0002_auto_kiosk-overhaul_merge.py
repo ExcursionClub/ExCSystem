@@ -97,8 +97,8 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             "UPDATE core_member_groups "
-            "SET member_id = (SELECT primary_key FROM core_member),"
-            "group_id = (SELECT group_id FROM core_member);"
+            "SET member_id = (SELECT primary_key FROM core_member WHERE core_member_groups.id = core_member.id),"
+            "group_id = (SELECT group_id FROM core_member WHERE core_member_groups.id = core_member.id);"
         ),
         migrations.RemoveField(
             model_name='member',
