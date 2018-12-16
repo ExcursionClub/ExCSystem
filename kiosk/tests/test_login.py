@@ -1,4 +1,4 @@
-from build_permissions import build_all as build_permissions
+from helper_scripts.build_permissions import build_all as build_permissions
 from core.models.MemberModels import Member
 from django.test import TestCase
 from django.urls import reverse

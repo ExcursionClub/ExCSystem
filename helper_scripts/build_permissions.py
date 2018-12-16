@@ -1,5 +1,3 @@
-import setup_django
-
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.GearModels import CustomDataField, Gear, GearType

@@ -1,6 +1,5 @@
-from build_permissions import build_all as build_permissions
+from helper_scripts.build_permissions import build_all as build_permissions
 from core.models.MemberModels import Member
-from django.contrib.auth.models import Group
 from django.test import TestCase
 from django.utils.timezone import timedelta
 from kiosk.views import get_name

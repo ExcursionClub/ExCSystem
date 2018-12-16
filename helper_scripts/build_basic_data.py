@@ -3,7 +3,6 @@
 import os
 import random
 
-import setup_django
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
@@ -59,7 +58,7 @@ def build_site():
 
 def build_permissions():
     """Run the script to build the group and permission structure"""
-    import build_permissions
+    from helper_scripts import build_permissions
     build_permissions.build_all()
 
 
