@@ -2,8 +2,19 @@
 
 import core.models.FileModels
 import core.models.MemberModels
+import helper_scripts.fix_member_group
+from django.contrib.auth.models import Group
 from django.db import migrations, models
+from django.utils.timezone import now
 import django.db.models.deletion
+
+
+def map_group_to_groups():
+    """Transfers all the data from the ForeignKey group to the ManyToMany field groups"""
+    for member in core.models.Member.objects.all():
+        group_name = member.group.name
+        member.groups.set(Group.objects.filter(name=group_name))
+        member.save()
 
 
 class Migration(migrations.Migration):
@@ -43,10 +54,11 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.RunSQL(
-            "INSERT INTO core_alreadyuploadedimage "
-            "('name', 'picture', 'image_type', 'sub_type') "
-            "VALUES "
-            "('Shaka', 'shaka.webp', 'other', 'default');"
+            [(
+                "INSERT INTO core_alreadyuploadedimage ('name', 'picture', 'image_type', 'sub_type', 'date_uploaded') "
+                "VALUES ('Shaka', 'shaka.webp', 'other', 'default', '%s');",
+                now()
+            )]
         ),
         migrations.AddField(
             model_name='gear',
@@ -71,6 +83,26 @@ class Migration(migrations.Migration):
                 to='auth.Group',
                 verbose_name='groups'),
         ),
+        migrations.AddField(
+            model_name='member',
+            name='is_superuser',
+            field=models.BooleanField(
+                default=False,
+                help_text='Designates that this user has all permissions without explicitly assigning them.',
+                verbose_name='superuser status'),
+        ),
+        migrations.AddField(
+            model_name='member',
+            name='user_permissions',
+            field=models.ManyToManyField(
+                blank=True,
+                help_text='Specific permissions for this user.',
+                related_name='user_set',
+                related_query_name='user',
+                to='auth.Permission',
+                verbose_name='user permissions'),
+        ),
+        migrations.RunPython(map_group_to_groups()),
         migrations.RenameField(
             model_name='member',
             old_name='group',
@@ -78,17 +110,8 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='member',
-            name='is_superuser',
-            field=models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status'),
-        ),
-        migrations.AddField(
-            model_name='member',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
-        ),
-        migrations.AddField(
-            model_name='member',
             name='group',
             field=models.CharField(default='Unset', max_length=30),
         ),
+        migrations.RunPython(helper_scripts.fix_member_group.fix_all())
     ]
