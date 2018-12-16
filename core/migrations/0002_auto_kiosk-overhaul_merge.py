@@ -14,6 +14,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+
+        # Create the already uploaded image model, fix fields to reference images through this model
         migrations.CreateModel(
             name='AlreadyUploadedImage',
             fields=[
@@ -25,19 +27,54 @@ class Migration(migrations.Migration):
                 ('sub_type', models.CharField(default='Unknown', help_text='Specific image category: i.e. Skis, Tent, Sleeping Bag etc.', max_length=20)),
             ],
         ),
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name='member',
-            name='picture',
+            old_name='picture',
+            new_name='image',
         ),
-        migrations.AddField(
-            model_name='member',
-            name='groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups'),
-        ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name='member',
             name='image',
-            field=models.ImageField(blank=True, default='shaka.webp', upload_to=core.models.MemberModels.get_profile_pic_upload_location, verbose_name='Profile Picture'),
+            field=models.ImageField(
+                blank=True,
+                default='shaka.webp',
+                upload_to=core.models.MemberModels.get_profile_pic_upload_location,
+                verbose_name='Profile Picture'
+            ),
+        ),
+        migrations.RunSQL(
+            "INSERT INTO core_alreadyuploadedimage "
+            "('name', 'picture', 'image_type', 'sub_type') "
+            "VALUES "
+            "('Shaka', 'shaka.webp', 'other', 'default');"
+        ),
+        migrations.AddField(
+            model_name='gear',
+            name='image',
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to='core.AlreadyUploadedImage'
+            ),
+            preserve_default=False,
+        ),
+
+        # Fix member permissions and groups
+        migrations.AlterField(
+            model_name='member',
+            name='group',
+            field=models.ManyToManyField(
+                blank=True,
+                help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                related_name='user_set',
+                related_query_name='user',
+                to='auth.Group',
+                verbose_name='groups'),
+        ),
+        migrations.RenameField(
+            model_name='member',
+            old_name='group',
+            new_name='groups'
         ),
         migrations.AddField(
             model_name='member',
@@ -49,15 +86,9 @@ class Migration(migrations.Migration):
             name='user_permissions',
             field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
         ),
-        migrations.AlterField(
+        migrations.AddField(
             model_name='member',
             name='group',
             field=models.CharField(default='Unset', max_length=30),
-        ),
-        migrations.AddField(
-            model_name='gear',
-            name='image',
-            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, to='core.AlreadyUploadedImage'),
-            preserve_default=False,
         ),
     ]
