@@ -88,7 +88,8 @@ class Migration(migrations.Migration):
             model_name='member',
             name='user_permissions',
             field=models.ManyToManyField(
-                blank=True,
+                blank=False,
+                default=1,
                 help_text='Specific permissions for this user.',
                 related_name='user_set',
                 related_query_name='user',
