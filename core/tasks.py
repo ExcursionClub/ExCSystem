@@ -18,7 +18,7 @@ def update_listserv():
 def expire_members():
 
     now = datetime.now()
-    expires_soon_time = now + timedelta(days=7)
+    expires_in_week = (now + timedelta(days=6), now + timedelta(days=8))
 
     for member in Member.objects.all():
 
@@ -30,7 +30,7 @@ def expire_members():
                 member.expire()
 
             # If members will expire soon, send them an email
-            elif member.date_expires < expires_soon_time:
+            elif expires_in_week[0] < member.date_expires < expires_in_week[1]:
                 member.send_expires_soon_email()
 
 
