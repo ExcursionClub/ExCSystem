@@ -1,5 +1,5 @@
-from django.db import models
 from core.models.MemberModels import Member
+from django.db import models
 
 # Create your models here.
 
@@ -20,7 +20,7 @@ class RfidCheckManager(models.Manager):
             is_valid = False
         else:
             member = matching_members[0]
-            message = f"{member.get_full_name()}: {member.group.name}"
+            message = f"{member.get_full_name()}: {member.group}"
             if member.is_active_member:
                 is_valid = True
             else:
@@ -38,7 +38,3 @@ class MemberRFIDCheck(models.Model):
     was_valid = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
     message = models.CharField(max_length=100)
-
-
-
-

@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from ExCSystem.settings import WEB_BASE
 
+
 class Certification(models.Model):
     """
     General class for all types of certifications for renting gear or going on trips
@@ -21,5 +22,3 @@ class Certification(models.Model):
 
     def get_page_url(self):
         return WEB_BASE + reverse("admin:core_certification_detail", kwargs={'pk': self.pk})
-
-

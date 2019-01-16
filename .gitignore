@@ -8,7 +8,8 @@ db.sqlite3
 postgres-data/
 media
 static/*
-!static/.gitkeep
+!static/img
+!static/css
 
 ### macOS ###
 *.DS_Store
@@ -26,3 +27,7 @@ venv/
 
 ### Env vars ###
 .env
+
+### Unit tests / Coverage reports ###
+.coverage
+htmlcov/

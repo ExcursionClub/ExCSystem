@@ -1,15 +1,25 @@
-# ExCSystem [![Build Status](https://travis-ci.org/ExcursionClub/ExCSystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/ExCSystem) [![Maintainability](https://api.codeclimate.com/v1/badges/27d1df00c121f0e32ada/maintainability)](https://codeclimate.com/github/ExcursionClub/ExCSystem/maintainability) 
+# ExCSystem [![Build Status](https://travis-ci.org/ExcursionClub/ExCSystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/ExCSystem) [![Coverage Status](https://coveralls.io/repos/github/ExcursionClub/ExCSystem/badge.svg?branch=master)](https://coveralls.io/github/ExcursionClub/ExCSystem?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/27d1df00c121f0e32ada/maintainability)](https://codeclimate.com/github/ExcursionClub/ExCSystem/maintainability) 
 Bottom up re-design of the Excursion system
 
 ## Getting Started
-This project requires python3.7 and Pipenv.
+This project requires python3.7, [Pipenv](https://github.com/pypa/pipenv/), Docker and [Minio](https://github.com/minio/minio).
 
 ### Install
+Setup local object storage. The file uploaded here are not persistent and will disappear when the container is closed. 
+```
+docker run -p 9000:9000 --name minio1 \
+  -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" \
+  -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
+  minio/minio server /data
+```
+
+Django
 ```bash
 $ git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
 $ pipenv install --dev
 $ pipenv shell
-$ ENV_CONFIG="development"; python3 manage.py runserver
+$ python3.7 manage.py collectstatic
+$ ENV_CONFIG="development"; python3.7 manage.py runserver
 ```
 
 ### Emails
@@ -43,6 +53,14 @@ To run tests locally:
 
 ```bash
 $ python3.7 manage.py test
+```
+
+### Test Coverage
+Generate reports to inspect test coverage line-by-line
+
+```bash
+$ coverage run manage.py test whatever -v 2
+$ coverage html
 ```
 
 ### Functional Tests
@@ -253,13 +271,11 @@ python3.7 manage.py collectstatic
 
 ### Run in production
 ```bash
-nohup ENV_CONFIG="production"; python3.7 manage.py runserver &
+nohup ENV_CONFIG="production"; python manage.py runserver &
+```
+
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
-```
+
 Note: Crontab (automatic linux scheduling utility) is configured to run this command whenever the server is rebooted
 
-This project also includes several tasks that run periodically and are managed by celery. To enable celery:
-```bash
-celery -A ExCSystem beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-```

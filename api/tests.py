@@ -1,12 +1,10 @@
 from random import randint
 
-from django.test import TestCase, Client
-from django.utils.timezone import timedelta
-from django.contrib.auth.models import Group
-
-from buildBasicData import *
-
+from build_basic_data import *
 from core.models.MemberModels import Member
+from django.contrib.auth.models import Group
+from django.test import Client, TestCase
+from django.utils.timezone import timedelta
 
 
 class MemberRFIDCheckTest(TestCase):
@@ -28,7 +26,8 @@ class MemberRFIDCheckTest(TestCase):
             timedelta(days=7),
             password='admin'
         )
-        member.group = Group.objects.get(name=group_name)
+
+        member.move_to_group(group_name)
         member.save()
 
     def gen_rfid(self):

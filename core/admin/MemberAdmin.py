@@ -1,12 +1,14 @@
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
-from django.urls import path, reverse
 from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
-from core.views.MemberViews import (MemberDetailView, MemberFinishView, MemberListView, StafferDetailView, )
+from core.views.MemberViews import (
+    MemberDetailView, MemberFinishView, MemberListView, StafferDetailView
+)
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseRedirect
+from django.urls import path, reverse
 
 
 # Replace the option to create users with the option to create members
@@ -38,11 +40,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         }),
         ('Personal Info', {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'picture')
+            'fields': ('first_name', 'last_name', 'image')
         }),
         ('Club  Info', {
             'classes': ('wide',),
-            'fields': ('rfid', 'group', 'certifications')
+            'fields': ('rfid', 'groups', 'certifications')
         })
     )
     editable_profile_fieldsets = (
@@ -94,11 +96,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         else:
             current_user = request.user
             is_self = current_user.primary_key == member.primary_key
-            return is_self or current_user.has_permission("change_member")
+            return is_self or current_user.has_permission("core.change_member")
     
     @staticmethod
     def can_edit_all_data(request):
-        return request.user.has_permission("change_member")
+        return request.user.has_permission("core.change_member")
 
     def has_view_or_change_permission(self, request, obj=None):
         return self.has_change_permission(request, obj=obj) or self.has_view_permission(request, obj=obj)
@@ -140,5 +142,4 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
 
 class StafferAdmin(ViewableModelAdmin):
-
     detail_view_class = StafferDetailView

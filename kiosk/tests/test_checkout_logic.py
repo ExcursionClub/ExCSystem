@@ -1,15 +1,14 @@
-from django.test import TestCase
-from django.utils.timezone import timedelta
-from django.core.exceptions import ValidationError
-from django.contrib.auth.models import Group
-
-from core.models.MemberModels import Member
+from build_permissions import build_all as build_permissions
 from core.models.DepartmentModels import Department
 from core.models.GearModels import Gear, GearType
+from core.models.MemberModels import Member
 from core.models.TransactionModels import Transaction
-from kiosk.CheckoutLogic import do_checkout, do_checkin
-
-from buildPermissions import build_all as build_permissions
+from core.models.FileModels import AlreadyUploadedImage
+from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
+from django.test import TestCase
+from django.utils.timezone import timedelta
+from kiosk.CheckoutLogic import do_checkin, do_checkout
 
 ADMIN_RFID = '0000000000'
 MEMBER_RFID1 = '0000000001'
@@ -44,12 +43,12 @@ class CheckoutLogicTest(TestCase):
             password='password'
         )
 
-        member.group = Group.objects.get(name="Member")
+        member.promote_to_active()
         member.first_name = "Jo"
         member.last_name = "McTester1"
         member.save()
 
-        other_member.group = Group.objects.get(name="Member")
+        other_member.promote_to_active()
         other_member.first_name = "Jo"
         other_member.last_name = "McTester2"
         other_member.save()
@@ -62,12 +61,19 @@ class CheckoutLogicTest(TestCase):
         )
         gear_type.save()
 
+        img = AlreadyUploadedImage.objects.create(
+            image_type="gear",
+            picture="shaka.webp"
+        )
+        img.save()
+
         _, gear = Transaction.objects.add_gear(
             authorizer_rfid=ADMIN_RFID,
             gear_rfid=GEAR_RFID,
             gear_name='test bag',
             gear_department=department,
-            gear_type=gear_type
+            geartype=gear_type,
+            gear_image=img,
         )
 
     def test_checkout_gear(self):
@@ -89,8 +95,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkout_to_new_member(self):
         """Test checkout of available gear to new member by valid staffer fails"""
         member = Member.objects.get(rfid=MEMBER_RFID1)
-        member.group = Group.objects.get(name="Just Joined")
-        member.save()
+        member.move_to_group('Just Joined')
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
         with self.assertRaises(ValidationError):
@@ -101,8 +106,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkout_to_expired_member(self):
         """Test checkout of available gear to expired member by valid staffer fails"""
         member = Member.objects.get(rfid=MEMBER_RFID1)
-        member.group = Group.objects.get(name="Expired")
-        member.save()
+        member.expire()
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
         with self.assertRaises(ValidationError):
@@ -147,7 +151,7 @@ class CheckoutLogicTest(TestCase):
     def test_checkin_gear(self):
         """Do checkout then test checkin of checked out gear by valid staffer succeeds"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
-        do_checkin(ADMIN_RFID,GEAR_RFID)
+        do_checkin(ADMIN_RFID, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
 
@@ -155,7 +159,7 @@ class CheckoutLogicTest(TestCase):
         """Do checkout then test checkin of checked out gear by unauthorized member fails"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
         with self.assertRaises(ValidationError):
-            do_checkin(MEMBER_RFID1,GEAR_RFID)
+            do_checkin(MEMBER_RFID1, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_rented_out(), True)
 
@@ -163,7 +167,7 @@ class CheckoutLogicTest(TestCase):
         """Do checkout then test checkin of checked out gear by nonexistent member fails"""
         do_checkout(ADMIN_RFID, MEMBER_RFID1, GEAR_RFID)
         with self.assertRaises(Member.DoesNotExist):
-            do_checkin('0000010002',GEAR_RFID)
+            do_checkin('0000010002', GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_rented_out(), True)
 
@@ -171,6 +175,6 @@ class CheckoutLogicTest(TestCase):
         """Test checkin of available gear by valid staffer is fine"""
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)
-        do_checkin(ADMIN_RFID,GEAR_RFID)
+        do_checkin(ADMIN_RFID, GEAR_RFID)
         gear = Gear.objects.get(rfid=GEAR_RFID)
         self.assertEqual(gear.is_available(), True)

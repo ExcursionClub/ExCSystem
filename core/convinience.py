@@ -1,6 +1,7 @@
-from core.models.MemberModels import Member
 from core.models.GearModels import Gear
 from django.core.mail import send_mail
+from core.models.MemberModels import Member
+
 
 def get_all_rfids():
     """Return a list of all the RFIDs currently in use by the system"""
@@ -11,6 +12,7 @@ def get_all_rfids():
 
     all_rfids = member_rfids + gear_rfids
     return all_rfids
+
 
 
 def notify_admin(title='No Title Provided', message='No message provided'):
@@ -25,3 +27,4 @@ def notify_info(title='No Title Provided', message='No message provided'):
     from_email = 'system-noreply@excursionclubucsb.org'
     to_email = 'info@excursionclubucsb.org'
     send_mail(title, message, from_email, to_email)
+

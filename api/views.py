@@ -1,9 +1,8 @@
-from django.views.generic.base import View
-from django.http.response import HttpResponse
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import ModelDetailView
 from api.models import MemberRFIDCheck
+from core.views.common import ModelDetailView
+from core.views.ViewList import RestrictedViewList
+from django.http.response import HttpResponse
+from django.views.generic.base import View
 
 # Create your views here.
 
@@ -25,9 +24,8 @@ class CheckIfActiveMemberView(View):
 class RFIDCheckLogViewList(RestrictedViewList):
 
     def test_func(self):
-        return self.request.user.has_permission("view_rfid_check_log")
+        return self.request.user.has_permission("core.view_rfid_check_log")
 
 
 class RFIDCheckLogDetailView(ModelDetailView):
     model = MemberRFIDCheck
-

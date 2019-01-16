@@ -1,6 +1,5 @@
-from django.utils.timezone import now, timedelta
-
 from core.models.TransactionModels import Transaction
+from django.utils.timezone import now, timedelta
 
 
 def do_checkout(staffer_rfid: str, member_rfid: str, gear_rfid: str) -> None:

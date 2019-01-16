@@ -1,10 +1,17 @@
-# Use containers instead of full VMs for faster startup.
-sudo: false
-
 language: python
-python:
-  - "3.6"
+sudo: required
+dist: xenial
+python: 3.7
+
 install:
+  - pip install pipenv
   - pipenv install --dev
+services:
+  - postgresql
+before_script:
+  - psql -c "CREATE USER foo WITH PASSWORD 'bar';" -U postgres
+  - psql -c "ALTER ROLE foo CREATEDB;" -U postgres
 script:
-  - pipenv run manage.py test
+  - python manage.py makemigrations
+  - python manage.py migrate
+  - python manage.py test

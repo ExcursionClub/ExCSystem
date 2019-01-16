@@ -4,19 +4,22 @@
 
 {% block content %}
     {% if user.is_authenticated %}
-        <h1>Check out gear for {{ name }}</h1>
-        <p>Scan RFID tag to check out more gear</p>
-        <p>Or type in the RFID number</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit">
-        </form>
+        <h1>{{ name }}</h1>
+        <h2>Check out gear</h2>
         <ul>
             {% for gear in checked_out_gear %}
                 <li>{{ gear }}, (Due {{ gear.due_date }})</li>
             {% endfor %}
         </ul>
+        <p>Scan RFID tag to check out more gear</p>
+        {% if checked_out_gear %}
+            <p>Or check this item in by scanning the gear RFID again</p>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
         {% if messages %}
             <br>
             <ul class="messages">

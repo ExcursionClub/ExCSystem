@@ -1,14 +1,12 @@
-from django.db import IntegrityError, transaction
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
+from core.models.GearModels import CustomDataField, Gear, GearType
 from core.models.MemberModels import Member, Staffer
-from core.models.GearModels import Gear, GearType, CustomDataField
+from core.models.QuizModels import Answer, Question
 from core.models.TransactionModels import Transaction
-from core.models.QuizModels import Question, Answer
-
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db import IntegrityError, transaction
 
 """
 As permissions are created, they are appended here. Then, all these permissions are appended to the next group. That
@@ -22,7 +20,7 @@ member_type = ContentType.objects.get_for_model(Member)
 staffer_type = ContentType.objects.get_for_model(Staffer)
 transaction_type = ContentType.objects.get_for_model(Transaction)
 gear_type = ContentType.objects.get_for_model(Gear)
-geartype_type = ContentType.objects.get_for_model(GearType)
+gear_type_type = ContentType.objects.get_for_model(GearType)
 custom_field_type = ContentType.objects.get_for_model(CustomDataField)
 group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
@@ -64,6 +62,10 @@ def build_expired():
 def build_member():
     """Create permissions for regular, active members"""
     member = Group.objects.create(name="Member")
+    add_permission(
+        codename="is_active_member",
+        name="Is an active member",
+        content_type=member_type)
     add_permission(
         codename="rent_gear",
         name="Allowed to rent gear",
@@ -131,7 +133,7 @@ def build_staffer():
     add_permission(
         codename="view_gear_type",
         name="Can view gear types",
-        content_type=geartype_type
+        content_type=gear_type_type
     )
     staffer.permissions.set(all_permissions)
     staffer.save()
@@ -150,14 +152,14 @@ def build_board():
         content_type=gear_type
     )
     add_permission(
-        codename="add_geartype",
+        codename="add_gear_type",
         name="Can change gear types",
-        content_type=geartype_type
+        content_type=gear_type_type
     )
     add_permission(
-        codename="delete_geartype",
+        codename="delete_gear_type",
         name="Can delete gear types",
-        content_type=geartype_type
+        content_type=gear_type_type
     )
     add_permission(
         codename="add_customdatafield",
@@ -286,6 +288,7 @@ def add_permission(codename=None, name=None, content_type=None):
     
     all_permissions.append(permission)
     return permission
+
 
 if __name__ == "__main__":
     build_all()

@@ -1,29 +1,30 @@
 """Populate the database with a complete set of randomly generated data"""
 
-import os
 from random import choice, randint
 from typing import Any, List, Optional
 
-import setupDjango
-
+import build_basic_data
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
+import setup_django  # TODO: This needs to be imported but is never used
 from core.models.DepartmentModels import Department
+from core.models.FileModels import AlreadyUploadedImage
+from core.models.GearModels import CustomDataField, GearType
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
-from core.models.GearModels import GearType, CustomDataField
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
 
-import buildBasicData
-buildBasicData.build_all()
+build_basic_data.build_all()
 
 ADMIN_RFID = '0000000000'
 SYSTEM_RFID = '1111111111'
 PASSWORD = 'admin'
+
+SHAKA = 'shaka.png'
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
@@ -64,7 +65,7 @@ def pick_random(element_list: List[Any]) -> Any:
     return choice(element_list)
 
 
-def generate_rand_member() -> Member:
+def generate_member() -> Member:
     first_name = names.get_first_name()
     last_name = names.get_last_name()
     membership_duration = gen_duration()
@@ -79,9 +80,9 @@ def generate_rand_member() -> Member:
         random_member.last_name = last_name
         random_member.phone_number = gen_phone_num()
         random_member.save()
-    # If anything goes wrong when making this member, try again
     except IntegrityError:
-        random_member = generate_rand_member()
+        # If anything goes wrong when making this member, try again
+        random_member = generate_member()
 
     return random_member
 
@@ -91,7 +92,7 @@ admin = Member.objects.create_superuser(
     "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
 )
 system = Member.objects.create_member(
-    "system@excursionclubucsb.org", SYSTEM_RFID, membership_duration=timedelta.max,
+    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max,
     password=PASSWORD
 )
 Staffer.objects.upgrade_to_staffer(
@@ -101,34 +102,34 @@ Staffer.objects.upgrade_to_staffer(
 
 # Add dummy members
 print('Making members...')
-total_number_members = 100
+total_number_members = 20
 number_new = int(total_number_members / 5)
 number_expired = int(total_number_members / 3)
 member_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(total_number_members)):
 
-    member = generate_rand_member()
+    member = generate_member()
     member_rfids.append(member.rfid)
     # Members are made to be new by default
     # After the correct number of new members are made, start making expired members
     if number_new < i < (number_new + number_expired):
-        member.group = Group.objects.get(name="Expired")
+        member.expire()
         member.save()
     # The rest of the members should be active
     elif i > (number_new + number_expired):
-        member.group = Group.objects.get(name="Member")
+        member.promote_to_active()
         member.save()
 print('')
 print('Made members')
 
 # Add some staffers
 print('Making staffers...')
-number_staffers = 10
+number_staffers = 5
 staffer_rfids = []
 bar = progressbar.ProgressBar()
 for i in bar(range(number_staffers)):
-    member = generate_rand_member()
+    member = generate_member()
     member_rfids.append(member.rfid)
     staffer_rfids.append(member.rfid)
     nickname = member.first_name + str(i)
@@ -137,7 +138,7 @@ for i in bar(range(number_staffers)):
     staffer.save()
 
 # Add staffer with known rfid
-member = generate_rand_member()
+member = generate_member()
 member.rfid = 1234567890
 member_rfids.append(member.rfid)
 staffer_rfids.append(member.rfid)
@@ -149,7 +150,7 @@ staffer.save()
 print('')
 print('Made staffers')
 
-# Add custom fields and gear_types
+# Add custom fields and geartypes
 field_data = {
     "length": {
         "data_type": "float",
@@ -226,7 +227,7 @@ for field_name in field_data.keys():
     field.save()
     custom_fields.append(field)
 
-gear_type_names = [
+geartype_names = [
     'Sleeping Bag',
     'Sleeping Pad',
     'Tent',
@@ -249,32 +250,41 @@ gear_type_names = [
     'Wetsuit',
 ]
 departments = Department.objects.all()
-gear_types = []
+geartypes = []
 print("Making Gear Types")
 bar = progressbar.ProgressBar()
-for name in bar(gear_type_names):
-    gear_type = GearType(
+for name in bar(geartype_names):
+    geartype = GearType(
         name=name,
         department=pick_random(departments),
     )
-    gear_type.save()
+    geartype.save()
     # Add between 1 and 4 custom fields
     for i in range(1, randint(2, 5)):
-        gear_type.data_fields.add(pick_random(custom_fields))
-    gear_type.save()
-    gear_types.append(gear_type)
+        geartype.data_fields.add(pick_random(custom_fields))
+    geartype.save()
+    geartypes.append(geartype)
 
 # Add gear
 print('Making Gear...')
-number_gear = 120
+number_gear = 60
 
 gear_rfids = []
+all_gear_images = list(AlreadyUploadedImage.objects.all())
+# TODO: Select shaka if no gear image is uploaded or chosen
 bar = progressbar.ProgressBar()
 for i in bar(range(number_gear)):
     gear_rfid = gen_rfid()
     authorizer: str = pick_random(staffer_rfids)
-    gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+    geartype = pick_random(geartypes)
+
+    transaction, gear = Transaction.objects.add_gear(
+        authorizer_rfid=authorizer,
+        gear_rfid=gear_rfid,
+        geartype=geartype,
+        gear_image=pick_random(all_gear_images),
+        **field_data
+    )
     gear_rfids.append(gear_rfid)
 
 print('')
@@ -282,10 +292,10 @@ print('Made gear')
 
 # Check out gear to random members
 print('Checking out random gear...')
-n_gear_to_checkout = int(number_gear / 2)
-n_failed_checkouts = 0
+gear_to_checkout = int(number_gear / 2)
+failed_checkouts = 0
 bar = progressbar.ProgressBar()
-for i in bar(range(n_gear_to_checkout)):
+for i in bar(range(gear_to_checkout)):
     gear_rfid = pick_random(gear_rfids)
     member_rfid: str = pick_random(member_rfids)
     authorizer: str = pick_random(staffer_rfids)
@@ -293,16 +303,22 @@ for i in bar(range(n_gear_to_checkout)):
     try:
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
-        n_failed_checkouts += 1
+        failed_checkouts += 1
 print('')
-print('{} out of {} checkouts failed to complete'.format(n_failed_checkouts, n_gear_to_checkout))
+print(f'{failed_checkouts} out of {gear_to_checkout} checkouts failed to complete')
 
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = '1234567890'
     department = pick_random(departments)
-    gear_type = pick_random(gear_types)
-    transaction, gear = Transaction.objects.add_gear(authorizer, gear_rfid, gear_type, **field_data)
+    gear_type = pick_random(geartypes)
+    transaction, gear = Transaction.objects.add_gear(
+        authorizer,
+        gear_rfid,
+        gear_type,
+        gear_image=pick_random(all_gear_images),
+        **field_data
+    )
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID
@@ -314,7 +330,6 @@ for i in range(5):
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
         pass
-
 
 
 print('Finished')

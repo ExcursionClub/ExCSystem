@@ -1,14 +1,15 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
 
-import setupDjango
+import os
+import random
 
-from django.contrib.sites.models import Site
-
-from ExCSystem import settings
+import setup_django
 from core.models.CertificationModels import Certification
 from core.models.DepartmentModels import Department
-from core.models.MemberModels import Staffer
-from core.models.QuizModels import Question, Answer
+from core.models.FileModels import AlreadyUploadedImage
+from core.models.QuizModels import Answer, Question
+from django.contrib.sites.models import Site
+from ExCSystem import settings
 
 
 def build_all():
@@ -17,23 +18,53 @@ def build_all():
     build_quiz_questions()
     build_certifications()
     build_departments()
+    build_images()
+
+
+def build_images():
+    print("Uploading gear images...")
+
+    sub_types = ["Fake SubType", "SubType I made up", "More Type", "Something"]
+
+    # Build the default common shaka image
+    img = AlreadyUploadedImage.objects.create(
+        image_type="gear",
+        picture="shaka.webp"
+    )
+    img.save()
+
+    # Upload all the images in the GearPics folder
+    images_path = "GearPics"
+    for pic_file in os.listdir(os.path.join("media", images_path)):
+        if "git" in pic_file:
+            continue
+        pic_path = os.path.join(images_path, pic_file)
+        pic_name = pic_file.split(".")[0]
+        img = AlreadyUploadedImage.objects.create(
+            image_type="gear",
+            picture=pic_path,
+            name=pic_name,
+            sub_type=random.choice(sub_types)
+        )
+        img.save()
 
 
 def build_site():
-    """Remane the Site in the sites framework to match actual data"""
+    """Re-name the Site in the sites framework to match actual data"""
     site = Site.objects.all()[0]
     site.domain = settings.SITE_DOMAIN
     site.name = settings.SITE_NAME
     site.save()
 
+
 def build_permissions():
     """Run the script to build the group and permission structure"""
-    import buildPermissions
-    buildPermissions.build_all()
+    import build_permissions
+    build_permissions.build_all()
 
 
-def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0, error_message="You're Wrong!"):
-
+def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0,
+                  error_message="You're Wrong!"):
     # Make and save all of the answers
     answers = []
     for answer in choices:
@@ -119,35 +150,33 @@ def build_quiz_questions():
 
 
 def build_certifications():
-    # Add certifications
     kayak_cert = Certification(
         title='Kayaking',
         requirements='1) Be able to swim, dammit\n'
-        '2) Have received the safety talk, know about wind and current dangers\n'
-        '3) Be able to take the kayak out into the surf safely\n'
-        '4) Be able to get off of, flip, and get back into a kayak out in deep water\n'
-        '5) Be able to bring the kayak back in to shore safely\n'
+                     '2) Have received the safety talk, know about wind and current dangers\n'
+                     '3) Be able to take the kayak out into the surf safely\n'
+                     '4) Be able to get off of, flip, and get back into a kayak out in deep water\n'
+                     '5) Be able to bring the kayak back in to shore safely\n'
     )
     kayak_cert.save()
 
     sup_cert = Certification(
         title='Stand Up Paddleboarding',
         requirements='1) Be able to swim, dammit\n'
-        '2) Have received the safety talk, know about wind and current dangers\n'
-        '3) Be able to take the SUP out into the surf safely\n'
-        '4) Be able to get off of, flip, and get back onto the SUP out in deep water\n'
-        '5) Be able to bring the SUP back in to shore safely\n'
+                     '2) Have received the safety talk, know about wind and current dangers\n'
+                     '3) Be able to take the SUP out into the surf safely\n'
+                     '4) Be able to get off of, flip, and get back onto the SUP out in deep water\n'
+                     '5) Be able to bring the SUP back in to shore safely\n'
     )
     sup_cert.save()
 
 
 def build_departments():
-    # Add departments
     departments = [
         'Camping', 'Backpacking', 'Rock Climbing', 'Skiing/Snowboarding', 'Kayaking', 'Paddleboarding',
         'Surfing', 'Wetsuits', 'Mountaineering', 'Archery', 'Paintballing', 'Free Diving', 'Off-Road'
     ]
-    all_staffers = Staffer.objects.all()
+
     for dept in departments:
         name = dept
         details = 'All the gear related to {}'.format(name)

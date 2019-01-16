@@ -1,21 +1,21 @@
-from django.views.generic.edit import UpdateView
-from django.urls import reverse
-from django.contrib.auth.mixins import UserPassesTestMixin
-
-from ExCSystem.settings import WEB_BASE
-
-from core.views.ViewList import RestrictedViewList
-from core.views.common import get_default_context, ModelDetailView
+from core.forms.MemberForms import (
+    MemberChangeCertsForm, MemberChangeGroupsForm, MemberChangeRFIDForm, MemberFinishForm,
+    MemberUpdateContactForm, StafferDataForm
+)
 from core.models.MemberModels import Member, Staffer
-from core.forms.MemberForms import (MemberFinishForm, MemberUpdateContactForm, MemberChangeCertsForm,
-                                    MemberChangeRFIDForm, MemberChangeGroupsForm, StafferDataForm)
+from core.views.common import ModelDetailView, get_default_context
+from core.views.ViewList import RestrictedViewList
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.urls import reverse
+from django.views.generic.edit import UpdateView
+from ExCSystem.settings import WEB_BASE
 
 
 class MemberListView(RestrictedViewList):
 
     def can_view_all(self):
         """Only staffers should be a"""
-        return self.request.user.has_permission("view_all_members")
+        return self.request.user.has_permission("core.view_all_members")
 
     def set_restriction_filters(self):
         """Non-staffers should only be able to see themselves"""
@@ -35,7 +35,7 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
         member_to_view = self.get_object()
         is_self = self.request.user.rfid == member_to_view.rfid
-        view_others = self.request.user.has_permission('view_member')
+        view_others = self.request.user.has_permission('core.view_member')
         return view_others or is_self
 
     def post(self, request, *args, **kwargs):
@@ -81,5 +81,4 @@ class StafferDetailView(UserPassesTestMixin, ModelDetailView):
 
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
-        return self.request.user.has_permission('view_staffer')
-
+        return self.request.user.has_permission('core.view_staffer')

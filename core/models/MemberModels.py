@@ -1,27 +1,27 @@
 import os
 
-from django.db import models
-from django.urls import path, reverse
-from django.core.mail import send_mail
-from django.utils.timezone import now, timedelta, datetime
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Group, Permission
-
-from phonenumber_field.modelfields import PhoneNumberField
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission, PermissionsMixin
+from django.core.mail import send_mail
+from django.db import models
+from django.urls import reverse
+from django.utils.timezone import datetime, now, timedelta
 from ExCSystem import settings
+from phonenumber_field.modelfields import PhoneNumberField
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
 
 
 def get_profile_pic_upload_location(instance, filename):
-    extension = filename.split(".")[-1]
+    """Save profile pictures in object store"""
+    extension = filename.split('.')[-1]
 
     # Get the name with all special characters removed
     name_str = ''.join(e for e in instance.get_full_name() if e.isalnum())
 
     # Assemble file location and insert date data
-    location = f"ProfilePics/%Y/{name_str}_%m-%d.{extension}"
+    location = f'members/{name_str}.{extension}'
     location = datetime.strftime(datetime.now(), location)
     return location
 
@@ -45,10 +45,11 @@ class MemberManager(BaseUserManager):
             email=self.normalize_email(email),
             rfid=rfid,
             date_expires=expiration_date,
-            group=Group.objects.get(name="Just Joined")
         )
         member.set_password(password)
         member.save(using=self._db)
+
+        member.move_to_group("Just Joined")
 
         return member
 
@@ -70,23 +71,25 @@ class MemberManager(BaseUserManager):
         superuser.last_name = "Admin"
         superuser.phone_number = '+15555555555'
         superuser.certifications.set(Certification.objects.all())
-        superuser.group = Group.objects.get(name='Admin')
         superuser.save(using=self._db)
+
+        superuser.move_to_group("Admin")
 
         return superuser
 
 
 class StafferManager(models.Manager):
-    def upgrade_to_staffer(self, member, staffname, autobiography=None):
+    def upgrade_to_staffer(self, member, staff_name, autobiography=None):
         """
         Begins the process of turning a member into a staffer
 
         :param member: the member to make a staffer
-        :param staffname: the prefix (before @) part of the staffer's staff email
+        :param staff_name: the prefix (before @) part of the staffer's staff email
+        :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = "{}@excursionclubucsb.org".format(staffname)
-        member.group = Group.objects.get(name="Staff")
+        exc_email = f'{staff_name}@excursionclubucsb.org'
+        member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
@@ -97,13 +100,11 @@ class StafferManager(models.Manager):
         return staffer
 
 
-class Member(AbstractBaseUser):
+class Member(AbstractBaseUser, PermissionsMixin):
     """This is the base model for all members (this includes staffers)"""
     objects = MemberManager()
 
     primary_key = PrimaryKeyField()
-
-    group = models.ForeignKey(to=Group, on_delete=models.PROTECT)
 
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
@@ -113,11 +114,11 @@ class Member(AbstractBaseUser):
         unique=True,
     )
     rfid = RFIDField(verbose_name="RFID")
-    picture = models.ImageField(
+    image = models.ImageField(
         verbose_name="Profile Picture",
-        default="Shaka.png",
+        default="shaka.png",
         upload_to=get_profile_pic_upload_location,
-        null=True
+        blank=True
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
@@ -125,6 +126,7 @@ class Member(AbstractBaseUser):
     date_expires = models.DateField(null=False)
 
     is_admin = models.BooleanField(default=False)
+    group = models.CharField(default="Unset", max_length=30)
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
     is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
@@ -136,9 +138,7 @@ class Member(AbstractBaseUser):
     @property
     def is_active_member(self):
         """Return true if the member has a valid membership"""
-        is_expired = self.group.name == "Expired"
-        is_new = self.group.name == "Just Joined"
-        return not is_expired and not is_new
+        return self.has_permission('core.is_active_member')
 
     @property
     def is_staff(self):
@@ -148,43 +148,24 @@ class Member(AbstractBaseUser):
         return True
 
     @property
-    def is_staffer(self):
-        """
-        Returns true if this member has staffer privileges
-
-        NOTE: Avoid using this function, it's much better to explicitly check for permissions
-        """
-        return self.group.name == "Staff" \
-            or self.group.name == "Board" \
-            or self.group.name == "Admin"
-
-    @property
     def edit_profile_url(self):
         return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
+
+    @property
+    def view_profile_url(self):
+        return reverse("admin:core_member_detail", kwargs={"pk": self.pk})
 
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
 
-    def has_permission(self, permission_name):
-        """Loop through all the permissions of the group associated with this member to see if they have this one"""
-        try:
-            # all_permissions and all_perms_list for debugging purposes only
-            all_permissions = self.group.permissions.all()
-            all_perms_list = list(all_permissions)
-            self.group.permissions.get(codename=permission_name)
-        except Permission.DoesNotExist:
-            return False
-        else:
-            return True
-
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
         if self.has_name():
-            return "{first} {last}".format(first=self.first_name, last=self.last_name)
+            return f'{self.first_name} {self.last_name}'
         else:
-            return "New Member"
-    get_full_name.short_description = "Full Name"
+            return 'New Member'
+    get_full_name.short_description = 'Full Name'
 
     def get_short_name(self):
         # The user is identified by their email address
@@ -208,21 +189,20 @@ class Member(AbstractBaseUser):
 
     def update_admin(self):
         """Updates the admin status of the user in the django system"""
-        self.is_admin = self.group.name == "Admin"
+        self.is_admin = self.groups.name == "Admin"
 
     def expire(self):
         """Expires this member's membership"""
-        self.group = Group.objects.get(name="Expired")
+        self.move_to_group("Expired")
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
-        self.group = Group.objects.get(name="Member")
-        return self
+        self.move_to_group("Member")
 
     def extend_membership(self, duration, rfid='', password=''):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
 
-        self.group = Group.objects.get(name="Just Joined")
+        self.move_to_group("Just Joined")
 
         if self.date_expires < datetime.date(now()):
             self.date_expires = now() + duration
@@ -270,16 +250,24 @@ class Member(AbstractBaseUser):
         body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
         self.send_membership_email(title, body)
 
-    def has_perm(self, perm, obj=None):
-        if '.' in perm:
-            # Perms passed by system are in the form 'app_label.permission_name'
-            return self.has_permission(perm.split('.').pop())
-        else:
-            return self.has_permission(perm)
-
     def has_module_perms(self, app_label):
         """This is required by django, determine whether the user is allowed to view the app"""
         return True
+
+    def has_permission(self, permission_name):
+        """Loop through all the permissions of the group associated with this member to see if they have this one"""
+        return self.has_perm(permission_name)
+
+    def move_to_group(self, group_name):
+        """
+        Convenience function to move a member to a group
+
+        Always use this function since it changes the group and the group shortcut field
+        """
+        new_group = Group.objects.filter(name=group_name)
+        self.groups.set(new_group)
+        self.group = str(new_group[0])
+        self.save()
 
 
 class Staffer(models.Model):
@@ -301,4 +289,3 @@ class Staffer(models.Model):
                              max_length=30)
     autobiography = models.TextField(verbose_name="Self Description of the staffer",
                                      default="I am too lazy and lame to upload a bio!")
-

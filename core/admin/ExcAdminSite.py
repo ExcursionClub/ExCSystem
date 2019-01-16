@@ -1,6 +1,6 @@
+from django.apps import apps
 from django.contrib.admin import AdminSite
 from django.urls import NoReverseMatch, reverse
-from django.apps import apps
 from django.utils.text import capfirst
 
 

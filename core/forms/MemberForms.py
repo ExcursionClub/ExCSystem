@@ -1,17 +1,17 @@
 from collections import OrderedDict
+import json
 
-from django import forms
-from django.urls import reverse
-from django.utils.timezone import timedelta
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from phonenumber_field.formfields import PhoneNumberField
-from phonenumber_field.widgets import PhoneNumberPrefixWidget
-
-from ExCSystem.settings import WEB_BASE
-from core.models import Member, Staffer
-from core.models.QuizModels import Question, Answer
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
+from core.models import Member, Staffer
+from core.models.QuizModels import Question
+from django import forms
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.urls import reverse
+from django.utils.timezone import timedelta
+from ExCSystem.settings import WEB_BASE
+from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 
 class MemberCreationForm(forms.ModelForm):
@@ -166,7 +166,7 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    member_field_names = ['first_name', 'last_name', 'phone_number', 'picture']
+    member_field_names = ['first_name', 'last_name', 'phone_number', 'image']
 
     # Instantiate the non-default member data fields
     phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
@@ -175,8 +175,9 @@ class MemberFinishForm(forms.ModelForm):
     questions = Question.objects.filter(usage="membership")
 
     # Limit the size of the uploaded image, currently set to 20MB
-    max_picture_MB = 20
-    max_picture_bytes = max_picture_MB * 1048576
+    # TODO: Move to utils
+    max_image_MB = 20
+    max_image_bytes = max_image_MB * 1048576
 
     def __init__(self, *args, **kwargs):
         super(MemberFinishForm, self).__init__(*args, **kwargs)
@@ -194,7 +195,7 @@ class MemberFinishForm(forms.ModelForm):
     # This meta class allows the django backend to link this for to the model
     class Meta:
         model = Member
-        fields = ('first_name', 'last_name', 'phone_number', 'picture')
+        fields = ('first_name', 'last_name', 'phone_number', 'image')
 
     def as_table_member(self):
         """Make it possible to get the HTML of just the member information section of this form"""
@@ -241,14 +242,15 @@ class MemberFinishForm(forms.ModelForm):
 
         return cleaner
 
-    def clean_picture(self):
-        """Ensures that the picture is of a sufficiently small size before it gets uploaded"""
-        picture = self.cleaned_data['picture']
+    def clean_image(self):
+        # TODO: Move to utils
+        """Ensures that the image is of a sufficiently small size before it gets uploaded"""
+        image = self.cleaned_data['image']
 
-        if picture.size > self.max_picture_bytes:
-            raise forms.ValidationError(f"Selected image is too large! Max {self.max_picture_MB}MB")
+        if image.size > self.max_image_bytes:
+            raise forms.ValidationError(f"Selected image is too large! Max {self.max_image_MB}MB")
 
-        return picture
+        return image
 
     def save(self, commit=True):
         # We will always commit the save, so make sure m2m fields are always saved
@@ -258,7 +260,7 @@ class MemberFinishForm(forms.ModelForm):
         member.first_name = self.cleaned_data['first_name']
         member.last_name = self.cleaned_data['last_name']
         member.phone_number = self.cleaned_data['phone_number']
-        member.picture = self.cleaned_data['picture']
+        member.image = self.cleaned_data['image']
         member = member.promote_to_active()
 
         member.save()
@@ -324,7 +326,7 @@ class MemberChangeGroupsForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('group',)
+        fields = ('groups',)
 
 
 class StafferDataForm(forms.ModelForm):
@@ -378,6 +380,16 @@ class MemberChangeForm(forms.ModelForm):
                   'last_name',
                   'phone_number',
                   'rfid',
-                  'group',
-                  'picture')
+                  'groups',
+                  'image')
 
+    def clean_groups(self):
+        groups = self.cleaned_data['groups']
+        if len(groups) != 1:
+            raise forms.ValidationError('Each member must be in exactly one group!')
+        self.cleaned_data['group'] = str(groups[0])
+        return groups
+
+    def save(self, commit=True):
+        self.instance.move_to_group(self.cleaned_data['group'])
+        return super(MemberChangeForm, self).save(commit=commit)

@@ -5,8 +5,8 @@ from core.models.MemberModels import Member
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
+from django.http import Http404
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
 from kiosk.forms import HomeForm, RetagGearForm
@@ -33,34 +33,25 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
         form = HomeForm(request.POST)
         if form.is_valid():
             rfid = form.cleaned_data['rfid']
-            staffer_rfid = request.user.rfid
 
             try:
-                gear = Gear.objects.get(rfid=rfid)
+                Gear.objects.get(rfid=rfid)
+                return redirect('kiosk:gear', rfid)
             except Gear.DoesNotExist:
-                gear = None
+                pass
 
             try:
-                member = Member.objects.get(rfid=rfid)
-            except Member.DoesNotExist:
-                member = None
-
-            if member:
+                Member.objects.get(rfid=rfid)
                 return redirect('kiosk:check_out', rfid)
-            elif gear:
-                if gear.is_rented_out():
-                    do_checkin(staffer_rfid, rfid)
-                    alert_message = f'{gear.name} was checked in successfully'
-                    messages.add_message(request, messages.INFO, alert_message)
-                else:
-                    alert_message = f'{gear.name} is already checked in'
-                    messages.add_message(request, messages.INFO, alert_message)
+            except Member.DoesNotExist:
+                pass
+
+            if rfid.isdigit() and len(rfid) == 10:
+                alert_message = f'The RFID {rfid} is not registered'
+                messages.add_message(request, messages.WARNING, alert_message)
             else:
-                if rfid.isdigit():
-                    return redirect('kiosk:retag_gear', int(rfid))
-                else:
-                    alert_message = f'{rfid} is not a valid RFID'
-                    messages.add_message(request, messages.WARNING, alert_message)
+                alert_message = f'{rfid} is not a valid RFID'
+                messages.add_message(request, messages.WARNING, alert_message)
 
             return redirect('kiosk:home')
 
@@ -75,8 +66,16 @@ class CheckOutView(View):
 
     def get(self, request, rfid: str):
         form = HomeForm()
-        name = get_name(rfid)
+
+        try:
+            name = get_name(rfid)
+        except ValidationError:
+            alert_message = 'The member has not yet completed the registration'
+            messages.add_message(request, messages.WARNING, alert_message)
+            return redirect('kiosk:home')
+
         checked_out_gear = get_checked_out_gear(rfid)
+
         args = {
             'form': form,
             'name': name,
@@ -99,11 +98,12 @@ class CheckOutView(View):
 
             if gear:
                 if gear.is_available():
-                    do_checkout(staffer_rfid, member_rfid, gear.rfid)
+                    do_checkout(staffer_rfid, member_rfid, gear_rfid)
                     alert_message = f'{gear.name} was checked out successfully'
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
-                    alert_message = 'Gear is already rented out'
+                    do_checkin(staffer_rfid, gear_rfid)
+                    alert_message = f'{gear.name} was checked in successfully'
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
                 alert_message = 'The RFID tag is not registered to a piece of gear'
@@ -122,6 +122,77 @@ class RetagGearView(View):
             'rfid': rfid
         }
         return render(request, self.template_name, args)
+
+
+class GearView(View):
+    template_name = 'kiosk/gear.html'
+
+    def get(self, request, rfid: str):
+        try:
+            gear = Gear.objects.get(rfid=rfid)
+        except Gear.DoesNotExist:
+            raise Http404()
+
+        args = {
+            'form': HomeForm(),
+            'gear': gear,
+        }
+
+        return render(request, self.template_name, args)
+
+    @staticmethod
+    def post_member_or_gear_rfid(request, rfid: str):
+        """Check in item or check it out to a member"""
+        form = HomeForm(request.POST)
+        if form.is_valid():
+            form_rfid = form.cleaned_data['rfid']
+            staffer_rfid = request.user.rfid
+
+            try:
+                gear_rfid = form_rfid
+                gear = Gear.objects.get(rfid=gear_rfid)
+            except Gear.DoesNotExist:
+                try:
+                    gear_rfid = rfid
+                    gear = Gear.objects.get(rfid=gear_rfid)
+                except Gear.DoesNotExist:
+                    gear = None
+                    gear_rfid = None
+
+            try:
+                member_rfid = form_rfid
+                member = Member.objects.get(rfid=member_rfid)
+            except Member.DoesNotExist:
+                try:
+                    member_rfid = form_rfid
+                    member = Member.objects.get(rfid=member_rfid)
+                except Member.DoesNotExist:
+                    member = None
+                    member_rfid = None
+
+            if gear:
+                if gear_rfid == form_rfid:
+                    if gear.is_rented_out():
+                        do_checkin(staffer_rfid, gear.rfid)
+                        alert_message = f'{gear.name} was checked in successfully'
+                        messages.add_message(request, messages.INFO, alert_message)
+                    else:
+                        alert_message = 'Gear is already checked in'
+                        messages.add_message(request, messages.WARNING, alert_message)
+                elif member and member_rfid == form_rfid:
+                    if gear.is_rented_out():
+                        do_checkin(staffer_rfid, gear_rfid)
+                    do_checkout(staffer_rfid, member_rfid, gear_rfid)
+                    alert_message = 'Gear checked out!'
+                    messages.add_message(request, messages.WARNING, alert_message)
+                else:
+                    alert_message = 'The RFID is not registered to any gear'
+                    messages.add_message(request, messages.WARNING, alert_message)
+            else:
+                alert_message = 'The RFID is not registered to any gear'
+                messages.add_message(request, messages.WARNING, alert_message)
+
+            return redirect('kiosk:gear', gear_rfid)
 
 
 def get_name(member_rfid: str) -> str:

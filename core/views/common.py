@@ -1,9 +1,8 @@
 from django.urls import reverse
+from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
-from django.urls.exceptions import NoReverseMatch
-
 from ExCSystem.settings import WEB_BASE
 
 
@@ -20,10 +19,10 @@ def get_default_context(view, context):
     context['app_label'] = view.model._meta.app_label
     context['is_popup'] = False
     context['add'] = is_add
-    context['has_delete_permission'] = user.has_permission(f"delete_{obj_name}")
-    context['has_change_permission'] = user.has_permission(f"change_{obj_name}")
-    context['has_add_permission'] = user.has_permission(f"add_{obj_name}")
-    context['has_view_permission'] = user.has_permission(f"view_{obj_name}")
+    context['has_delete_permission'] = user.has_permission(f"core.delete_{obj_name}")
+    context['has_change_permission'] = user.has_permission(f"core.change_{obj_name}")
+    context['has_add_permission'] = user.has_permission(f"core.add_{obj_name}")
+    context['has_view_permission'] = user.has_permission(f"core.view_{obj_name}")
 
     # Not entirely sure the full meaning of these, but editProfile or detail fail to load if they are not set, Sorry
     context['save_as'] = False
@@ -128,8 +127,3 @@ class ModelDetailView(DetailView):
         context = get_default_context(self, context)
         context['html_representation'] = self.get_html_repr(kwargs['object'])
         return context
-
-
-
-
-
