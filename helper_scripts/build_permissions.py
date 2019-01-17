@@ -130,7 +130,7 @@ def build_staffer():
         content_type=gear_type_type
     )
     add_permission(
-        codename="add_image",
+        codename="add_alreadyuploadedimage",
         name="Can add and Already Uploaded Image",
         content_type=image_type
     )
@@ -270,12 +270,12 @@ def build_admin():
         content_type=answer_type
     )
     add_permission(
-        codename="delete_image",
+        codename="delete_alreadyuploadedimage",
         name="Can delete and Already Uploaded Image",
         content_type=image_type
     )
     add_permission(
-        codename="change_image",
+        codename="change_alreadyuploadedimage",
         name="Can change and Already Uploaded Image",
         content_type=image_type
     )
