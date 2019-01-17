@@ -238,6 +238,10 @@ export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 # Tell the server whether to run in 'production' or 'development'
 export ENV_CONFIG=production
 
+# Tell celery how to  connect to Amazon SQS
+export AWS_ACCESS_KEY_ID= 
+export AWS_SECRET_ACCESS_KEY=
+
 python3.7 manage.py makemigrations
 python3.7 manage.py migrate
 ```
@@ -273,5 +277,5 @@ nohup ENV_CONFIG="production"; python manage.py runserver &
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
 
-
 Note: Crontab (automatic linux scheduling utility) is configured to run this command whenever the server is rebooted
+

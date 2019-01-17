@@ -45,6 +45,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
 
+# Tells celery we will use Amazon SQS, interpets rest from env variables
+BROKER_URL = 'sqs://'
+
 # Base address of where the page is available
 WEB_BASE = "https://www.excursionclub.info"
 SITE_DOMAIN = "www.excursionclub.info"
