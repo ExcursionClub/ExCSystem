@@ -4,6 +4,7 @@ from core.models.GearModels import CustomDataField, Gear, GearType
 from core.models.MemberModels import Member, Staffer
 from core.models.QuizModels import Answer, Question
 from core.models.TransactionModels import Transaction
+from core.models.FileModels import AlreadyUploadedImage
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
@@ -25,7 +26,7 @@ custom_field_type = ContentType.objects.get_for_model(CustomDataField)
 group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
-
+image_type = ContentType.objects.get_for_model(AlreadyUploadedImage)
 
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
@@ -127,6 +128,11 @@ def build_staffer():
         codename="view_gear_type",
         name="Can view gear types",
         content_type=gear_type_type
+    )
+    add_permission(
+        codename="add_image",
+        name="Can add and Already Uploaded Image",
+        content_type=image_type
     )
     add_group("Staff", all_permissions)
 
@@ -262,6 +268,16 @@ def build_admin():
         codename="delete_answer",
         name="Can delete quiz answers",
         content_type=answer_type
+    )
+    add_permission(
+        codename="delete_image",
+        name="Can delete and Already Uploaded Image",
+        content_type=image_type
+    )
+    add_permission(
+        codename="change_image",
+        name="Can change and Already Uploaded Image",
+        content_type=image_type
     )
     add_group("Admin", all_permissions)
 
