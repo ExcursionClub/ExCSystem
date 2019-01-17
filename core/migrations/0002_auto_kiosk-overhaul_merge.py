@@ -2,7 +2,7 @@
 
 import core.models.FileModels
 import core.models.MemberModels
-import helper_scripts.fix_member_group
+from helper_scripts.fix_member_group import fix_all_group_names
 from django.contrib.auth.models import Group
 from django.db import migrations, models
 from django.utils.timezone import now
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             [(
-                "INSERT INTO core_alreadyuploadedimage ('name', 'picture', 'image_type', 'sub_type', 'upload_date') "
+                "INSERT INTO core_alreadyuploadedimage (name, picture, image_type, sub_type, upload_date) "
                 "VALUES ('Shaka', 'shaka.webp', 'other', 'default', %s);",
                 [now(), ]
             )]
@@ -109,6 +109,6 @@ class Migration(migrations.Migration):
             field=models.CharField(default='Unset', max_length=30),
         ),
         migrations.RunPython(
-            helper_scripts.fix_member_group.fix_all_group_names
+            fix_all_group_names
         )
     ]
