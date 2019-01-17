@@ -1,3 +1,4 @@
+import os
 from core.models.GearModels import Gear
 from django.core.mail import send_mail
 from core.models.MemberModels import Member
@@ -14,7 +15,14 @@ def get_all_rfids():
     return all_rfids
 
 
-def notify_admin(title="No Title Provided", message="No message provided"):
+def get_email_template(name):
+    """Get the absolute path equivalent of going up one level and then into the templates directory"""
+    templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
+    template_file = open(os.path.join(templates_dir, 'emails', f'{name}.txt'))
+    return template_file.read()
+
+
+def notify_admin(title='No Title Provided', message='No message provided'):
     """Send a email notification to the system admins"""
     from_email = "system-noreply@excursionclubucsb.org"
     to_email = "admin@excursionclubucsb.org"
