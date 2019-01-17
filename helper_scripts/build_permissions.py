@@ -39,7 +39,6 @@ def build_all():
 
 def build_just_joined():
     """Create all the permissions for the lowest group, of freshly joined members"""
-    just_joined = Group.objects.create(name="Just Joined")
     add_permission(
         codename="view_staffer",
         name="Can see staffer information",
@@ -48,20 +47,16 @@ def build_just_joined():
         codename="check_availability_gear",
         name="Check to see if the club has gear available",
         content_type=gear_type)
-    just_joined.permissions.set(all_permissions)
-    just_joined.save()
+    add_group("Just Joined", all_permissions)
 
 
 def build_expired():
     """Create permissions for expired members"""
-    expired = Group.objects.create(name="Expired")
-    expired.permissions.set(all_permissions)
-    expired.save()
+    add_group("Expired", all_permissions)
 
 
 def build_member():
     """Create permissions for regular, active members"""
-    member = Group.objects.create(name="Member")
     add_permission(
         codename="is_active_member",
         name="Is an active member",
@@ -87,13 +82,11 @@ def build_member():
         name="Can view transactions",
         content_type=transaction_type
     )
-    member.permissions.set(all_permissions)
-    member.save()
+    add_group("Member", all_permissions)
 
 
 def build_staffer():
     """Create permissions for regular staffers"""
-    staffer = Group.objects.create(name="Staff")
     add_permission(
         codename="add_gear",
         name="Can add a piece of gear",
@@ -135,13 +128,11 @@ def build_staffer():
         name="Can view gear types",
         content_type=gear_type_type
     )
-    staffer.permissions.set(all_permissions)
-    staffer.save()
+    add_group("Staff", all_permissions)
 
 
 def build_board():
     """Create a group of the board members who have extra permissions on a club-wide scale"""
-    board = Group.objects.create(name="Board")
     add_permission(
         codename="view_all_gear",
         name="Can view gear with any status",
@@ -212,13 +203,11 @@ def build_board():
         name="Can delete gear checkout certifications",
         content_type=certification_type
     )
-    board.permissions.set(all_permissions)
-    board.save()
+    add_group("Board", all_permissions)
 
 
 def build_admin():
     """Create the admin group, which has all possible permissions"""
-    admin = Group.objects.create(name="Admin")
     add_permission(
         codename="add_group",
         name="Can add permission groups",
@@ -274,9 +263,21 @@ def build_admin():
         name="Can delete quiz answers",
         content_type=answer_type
     )
-    admin.permissions.set(Permission.objects.all())
-    admin.save()
-    
+    add_group("Admin", all_permissions)
+
+
+def add_group(name, permissions):
+    """Add the group, only creating it if it doesn't already exist"""
+    try:
+        with transaction.atomic():
+            group = Group.objects.create(name=name)
+    except IntegrityError:
+        group = Group.objects.get(name=name)
+
+    group.permissions.set(permissions)
+    group.save()
+    return group
+
     
 def add_permission(codename=None, name=None, content_type=None):
     """Add the permission, only creating if it does not already exist"""

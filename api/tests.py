@@ -1,8 +1,7 @@
 from random import randint
 
-from build_basic_data import *
+from helper_scripts.build_basic_data import *
 from core.models.MemberModels import Member
-from django.contrib.auth.models import Group
 from django.test import Client, TestCase
 from django.utils.timezone import timedelta
 

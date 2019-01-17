@@ -3,17 +3,15 @@
 from random import choice, randint
 from typing import Any, List, Optional
 
-import build_basic_data
+from helper_scripts import build_basic_data
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
-import setup_django  # TODO: This needs to be imported but is never used
 from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import CustomDataField, GearType
 from core.models.MemberModels import Member, Staffer
 from core.models.TransactionModels import Transaction
-from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.utils.timezone import timedelta
