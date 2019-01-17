@@ -29,6 +29,7 @@ def expire_members():
             # Expire members
             if member.date_expires < now:
                 member.expire()
+                member.send_expired_email()
 
             # If members will expire soon, send them an email
             elif expires_in_week[0] < member.date_expires < expires_in_week[1]:

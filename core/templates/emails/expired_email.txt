@@ -1,0 +1,17 @@
+Hi {member_name},
+
+As of today, {today} your Excursion Club membership is expired! You are no longer able to check out gear or go on any of
+our trips.
+
+If you would like to renew your membership, please come to one of our meetings or to office hours. You will need to fill
+out the forms again, but will get a 33% discount on your membership fees. That means a year membership will be only $40
+and a quarter membership will be only $20!
+Check out our website or the most recent trip email for meeting and office hours times.
+
+We hope to see you back and getting stoked with us soon!
+
+-Your friendly Excursion Robot
+
+
+Membership Information: membership@excursionclubucsb.org
+General Club Information: info@excursionclubucsb.org
