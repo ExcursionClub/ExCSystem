@@ -39,3 +39,6 @@ class AlreadyUploadedImage(models.Model):
     @property
     def url(self):
         return self.picture.url
+
+    def __str__(self):
+        return self.name
