@@ -1,0 +1,7 @@
+django==2.1.1
+django-phonenumber-field==2.0.1
+names==0.3.0
+progressbar2==3.38.0
+pillow==5.2.0
+celery==4.2.1
+django-celery-beat==1.1.1

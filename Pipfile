@@ -16,6 +16,7 @@ Django = "==2.1.5"
 boto3 = "*"
 django-storages = "*"
 sentry-sdk = "*"
+sqlparse = "*"
 
 [dev-packages]
 django-minio-storage = "*"

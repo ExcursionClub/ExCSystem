@@ -1,5 +1,3 @@
-import setup_django
-
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import Gear
 

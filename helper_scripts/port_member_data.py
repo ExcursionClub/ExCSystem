@@ -3,12 +3,11 @@
 import os
 
 import progressbar
-import setup_django
 from core.models.CertificationModels import Certification
 from core.models.MemberModels import Member, Staffer, get_profile_pic_upload_location
 from django.contrib.auth.models import Group
 from django.core.files.images import ImageFile
-from django.utils.timezone import datetime, timedelta
+from django.utils.timezone import datetime
 from mysql.connector import connect
 
 skipped_members = []

@@ -2,6 +2,8 @@ from ExCSystem.settings.base import *
 
 DEBUG = True
 
+INSTALLED_APPS.append('minio_storage')
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 INSTALLED_APPS.append('minio_storage')
@@ -39,6 +41,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Base address of where the page is available
 WEB_BASE = "http://localhost:8000"
+
 SITE_DOMAIN = "localhost:8000"
 
 LOGGING = {
@@ -85,3 +88,10 @@ LOGGING = {
         },
     }
 }
+
+BROKER_USER = 'user'
+BROKER_PASSWORD = 'devpassword'
+BROKER_HOST = 'localhost'
+BROKER_PORT = '5672'
+BROKER_VIRTUAL_HOST = 'vhost'
+BROKER_URL = f'amqp://{BROKER_USER}:{BROKER_PASSWORD}@{BROKER_HOST}:5672/myvhost'

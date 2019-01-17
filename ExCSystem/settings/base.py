@@ -112,3 +112,7 @@ USE_TZ = True
 LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = 'kiosk:home'
 LOGOUT_REDIRECT_URL = 'front-page:home'
+
+LISTSERV_USERNAME = os.environ.get('LISTSERV_USERNAME')
+LISTSERV_PASSWORD = os.environ.get('LISTSERV_PASSWORD')
+LISTSERV_FORM_ADDRESS = os.environ.get('LISTSERV_FORM_ADDRESS')
