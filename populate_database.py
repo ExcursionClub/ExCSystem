@@ -1,4 +1,5 @@
 """Populate the database with a complete set of randomly generated data"""
+import helper_scripts.setup_django
 
 from random import choice, randint
 from typing import Any, List, Optional
