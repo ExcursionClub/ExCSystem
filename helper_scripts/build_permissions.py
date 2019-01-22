@@ -5,6 +5,7 @@ from core.models.MemberModels import Member, Staffer
 from core.models.QuizModels import Answer, Question
 from core.models.TransactionModels import Transaction
 from core.models.FileModels import AlreadyUploadedImage
+from api.models import MemberRFIDCheck
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import IntegrityError, transaction
@@ -27,6 +28,8 @@ group_type = ContentType.objects.get_for_model(Group)
 question_type = ContentType.objects.get_for_model(Question)
 answer_type = ContentType.objects.get_for_model(Answer)
 image_type = ContentType.objects.get_for_model(AlreadyUploadedImage)
+rfid_check_type = ContentType.objects.get_for_model(MemberRFIDCheck)
+
 
 def build_all():
     """Build all the groups. Must be done in ascending order of power"""
@@ -133,6 +136,11 @@ def build_staffer():
         codename="add_alreadyuploadedimage",
         name="Can add and Already Uploaded Image",
         content_type=image_type
+    )
+    add_permission(
+        codename="view_memberrfidcheck",
+        name="View member RFID check log",
+        content_type=rfid_check_type
     )
     add_group("Staff", all_permissions)
 
