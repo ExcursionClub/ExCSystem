@@ -6,8 +6,6 @@ INSTALLED_APPS.append('minio_storage')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
-INSTALLED_APPS.append('minio_storage')
-
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
 MINIO_STORAGE_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY')
