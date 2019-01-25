@@ -13,6 +13,10 @@ def wrap_str(start_str, length=20):
         return str(start_str)
 
 
+print("Interesting choice to remove a member forever.")
+print("Let's see which members you're gonna be brutally destroying...")
+sleep(1)
+
 members = Member.objects.filter(email=member_email)
 print("Found the following member(s):")
 print("---------------------------------------------------------")
