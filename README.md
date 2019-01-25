@@ -307,9 +307,9 @@ Before you run the server it's advisable that you make sure all the following ar
   git checkout master
   git pull
   ```
-- You are set to run with production settings (```echo $ENV_CONFIG``` gives ```production``` )
+- You are set to run with production settings (```echo $ENV_CONFIG``` gives ```production```)
 - All your environment variables are set with the newest values (see [Environment Variables](#environment-variables))
-- All packages are installed correctly  (run  ```pipenv install``` )
+- All packages are installed correctly  (run  ```pipenv install```)
 
 #### Boot and Reboot:
 To run the server on the production machine
@@ -322,4 +322,19 @@ This will run Django in the background, even after you exit your SSH session.
 
 For convenience, you can easily reboot the server using ```./rebootServer.sh```
 
+
+#### Monitoring status
+The server is connected to Sentry, which logs all errors online and sends notifications to the 'verybadbugs' channel in 
+Slack. 
+
+All server output is stored in logs in the 'logs' directory. Debug stores all output in significant detail, requests 
+stores a list of all requests made to the server.
+
+Current server output is redirected via nohup, and can be followed with:
+```bash
+tail -f nohup.out
+```
+Exit by pressing Ctrl+C
+
 ## Scheduled tasks
+There are certain scheduled tasks which are 

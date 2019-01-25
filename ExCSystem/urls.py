@@ -1,3 +1,5 @@
+"""Master URL config for the project"""
+
 from core.admin import admin_site
 from core.views.email import ExcPasswordResetView
 from django.conf import settings

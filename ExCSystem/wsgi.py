@@ -1,3 +1,5 @@
+"""Top level loading for django application"""
+
 import os
 
 from django.core.wsgi import get_wsgi_application
