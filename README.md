@@ -337,4 +337,31 @@ tail -f nohup.out
 Exit by pressing Ctrl+C
 
 ## Scheduled tasks
-There are certain scheduled tasks which are 
+There are certain scheduled tasks which are run automatically and periodically. Currently we use ```crontab``` to manage
+scheduling. Tasks should be run through a ```tasks.py``` in each app in the system. 
+
+#### How to change scheduling
+To edit the scheduling, simply ssh into the server and run:
+```bash
+crontab -e
+``` 
+This will open the scheduling file in ```vi```. These links give you more information on how to use 
+[vi](https://www.openvim.com/) and [crontab](https://crontab.guru).
+
+### Current Tasks
+
+This is a list of all the currently scheduled tasks. Please keep this as up to date as you can!
+
+- Expire Members
+    - Command: ```python core/tasks.py expireMembers```
+    - Should be run once a day, preferably in the evening/night
+    - This task goes through all the active members in the database and sets all those whose expiration data has passed to
+    be in the 'expired' group. Additionally any members who will expire in a week are sent a warning email that they 
+    will soon expire.
+- Update Listserv
+    - Command ```python core/tasks.py updateListserv```
+    - Should be run at least once a week, shortly before the general email is sent out
+    - This tasks collect all the emails of all members with an active membership (in groups 'Member', 'Staff' or 
+    'Board'), saves these to a text file, and uploads this file to the listserv
+
+
