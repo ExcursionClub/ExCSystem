@@ -9,7 +9,7 @@ Bottom up re-design of the Excursion system
 - [Scheduled Tasks](#scheduled-tasks)
 
 ## Getting Started
-This project requires python3.7, [Pipenv](https://github.com/pypa/pipenv/), Docker and [Minio](https://github.com/minio/minio).
+This project requires [python3.7](https://www.python.org/downloads/release/python-372/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
 
 ### Install
 Setup local object storage. The file uploaded here are not persistent and will disappear when the container is closed. 
@@ -20,14 +20,36 @@ docker run -p 9000:9000 --name minio1 \
   minio/minio server /data
 ```
 
-Django
+Get the latest version of the code from git:
 ```bash
-git clone git@github.com:TomekFraczek/ExCSystem.git && cd ExCSystem/
+git clone git@github.com:TomekFraczek/ExCSystem.git 
+cd ExCSystem/
+```
+
+Use pipenv to install all dependencies used by the development version:
+```bash
 pipenv install --dev
 pipenv shell
+```
+
+Set environment variables:
+```bash
+# Tell the server whether to run 'development' mode (all changes are local so you can break anything and not worry)
+export ENV_CONFIG=development
+
+
+# Tell the system how to connect to minio
+export MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
+export MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+```
+
+You're now ready to run the test server
+```bash
 python manage.py collectstatic
 ENV_CONFIG="development"; python manage.py runserver
 ```
+
+Tada! You should have gotten a prompt that the server is now running. Just go to http://127.0.0.1:8000 to see!
 
 ### Emails
 Several parts of the project send out emails (i.e. when creating a new user). These processes will generally 
@@ -192,8 +214,7 @@ requests will never actually reach the server.
 ### Postgres
 Use RDS to create a free-tier Postgres instance. This will also create a default database.
 
-Since the database is on a different server than the app, it needs a more describing name. Something like this:
-The hostname `excursion.xho0gsojfppx.us-east-1.rds.amazonaws.com`
+Since the database is on a different server than the app, it needs a more describing name. Something like this: `excursion.xho0gsojfppx.us-east-1.rds.amazonaws.com`
 
 Connect to the database with psql from the EC2 instance. This way you don't have to open the network to the outside world.
 You can easily do this by executing the script: 
@@ -205,7 +226,7 @@ sudo -su postgres
 createuser --interactive -P
 ```
 
-Now fill out the propts you receive as below
+Now fill out the prompts you receive as below
 ```
 Enter name of role to add: admin
 Enter password for new role:
