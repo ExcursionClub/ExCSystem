@@ -27,7 +27,7 @@ docker run -p 9000:9000 --name minio1 \
 
 Get the latest version of the code from git:
 ```bash
-git clone git@github.com:TomekFraczek/ExCSystem.git 
+git clone git@github.com:ExcursionClub/ExCSystem.git 
 cd ExCSystem/
 ```
 
