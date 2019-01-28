@@ -287,6 +287,11 @@ def build_admin():
         name="Can change and Already Uploaded Image",
         content_type=image_type
     )
+    add_permission(
+        codename="delete_member",
+        name="Can delete existing members",
+        content_type=member_type
+    )
     add_group("Admin", all_permissions)
 
 
