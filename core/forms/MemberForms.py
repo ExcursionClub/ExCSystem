@@ -247,6 +247,8 @@ class MemberFinishForm(forms.ModelForm):
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
         image = self.cleaned_data['image']
 
+        if not hasattr(image, 'size'):
+            raise forms.ValidationError("Please upload a profile picture!")
         if image.size > self.max_image_bytes:
             raise forms.ValidationError(f"Selected image is too large! Max {self.max_image_MB}MB")
 
