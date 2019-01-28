@@ -3,10 +3,15 @@ Bottom up re-design of the Excursion system
 
 #### Table of Contents
 - [Getting Started](#getting-started)
+    - Minimum setup to just get the project running
 - [Development](#development)
-- [AWS deployment](#aws-deployment)
+    - Please read this before pushing any changes to git
 - [Running Production](#run-in-production)
+    - Quick, everyday tasks to maintain the productions server
 - [Scheduled Tasks](#scheduled-tasks)
+    - Reference for automatic recurring tasks in production
+- [AWS deployment](#aws-deployment)
+    - Reference for how the real production server is setup
 
 ## Getting Started
 This project requires [python3.7](https://www.python.org/downloads/release/python-372/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
@@ -142,7 +147,91 @@ work as it tries to add users with the same RFID and that would violate the uniq
 NOTE: **NEVER** push your dev database or migrations to the repository. The only migrations that should ever be pushed are 
 those that are intended to be applied on the production server.
 
+
+
+## Run in production
+It is often necessary to run updates and basic maintainence on the server. This section explains how this should be done.
+
+#### Run checklist
+Before you run the server it's advisable that you make sure all the following are true:
+- All packages are up to date
+  ```bash
+  sudo apt update
+  sudo apt upgrade
+  ```
+- You are executing commands from the ExCSystem directory
+  ```bash
+  cd ~/ExCSystem
+  ```
+- You have the newest version of the code
+  ```bash
+  git checkout master
+  git pull
+  ```
+- You are set to run with production settings (```echo $ENV_CONFIG``` gives ```production```)
+- All your environment variables are set with the newest values (see [Environment Variables](#environment-variables))
+- All python packages are installed correctly (run  ```pipenv install```)
+
+#### Boot and Reboot:
+To run the server on the production machine
+```bash
+pipenv shell
+nohup ENV_CONFIG="production"; python manage.py runserver &
+```
+This will run Django in the background, even after you exit your SSH session.
+('fg' brings process to current shell)
+
+For convenience, you can easily reboot the server using ```./rebootServer.sh```
+It is also useful to periodically reboot the AWS server itself with ```sudo reboot```
+
+#### Monitoring status
+The server is connected to Sentry, which logs all errors online and sends notifications to the 'verybadbugs' channel in 
+Slack. 
+
+All server output is stored in logs in the 'logs' directory. Debug stores all output in significant detail, requests 
+stores a list of all requests made to the server.
+
+Current server output is redirected via nohup, and can be followed with:
+```bash
+tail -f nohup.out
+```
+Exit by pressing Ctrl+C
+
+
+
+## Scheduled tasks
+There are certain scheduled tasks which are run automatically and periodically. Currently we use ```crontab``` to manage
+scheduling. Tasks should be run through a ```tasks.py``` in each app in the system. 
+
+#### How to change scheduling
+To edit the scheduling, simply ssh into the server and run:
+```bash
+crontab -e
+``` 
+This will open the scheduling file in ```vi```. These links give you more information on how to use 
+[vi](https://www.openvim.com/) and [crontab](https://crontab.guru).
+
+### Current Tasks
+
+This is a list of all the currently scheduled tasks. Please keep this as up to date as you can!
+
+- Expire Members
+    - Command: ```python core/tasks.py expireMembers```
+    - Should be run once a day, preferably in the evening/night
+    - This task goes through all the active members in the database and sets all those whose expiration data has passed to
+    be in the 'expired' group. Additionally any members who will expire in a week are sent a warning email that they 
+    will soon expire.
+- Update Listserv
+    - Command ```python core/tasks.py updateListserv```
+    - Should be run at least once a week, shortly before the general email is sent out
+    - This tasks collect all the emails of all members with an active membership (in groups 'Member', 'Staff' or 
+    'Board'), saves these to a text file, and uploads this file to the listserv
+
+
 ## AWS Deployment
+This section is a reference for how the production server and database are set up. Hopefully it will never need to be 
+used to re-construct things from scratch, but in case it does, please keep this up to date!
+
 Start by launching an EC2 instance with Ubuntu 18.04. Use the free tier. SSH into the instance.
 For help on how to do this look [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html).
 
@@ -276,7 +365,8 @@ python3.7 manage.py shell -c 'from django.core.management import utils; print(f"
 ```
 #### Environment Variables
 All the below variables must be set with the appropriate values (from the above configuration process). None of these 
-values should ever be shared publicly as they would give anyone access to the server internals.
+values should ever be shared publicly as they would give anyone access to the server internals. If you need to know 
+these values, please look on slack or ask one of the admins.
 ```bash
 # Login data to the database
 export POSTGRES_USER=ex
@@ -296,12 +386,14 @@ export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_STORAGE_BUCKET_NAME =
 ```
+To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 
-```
+#### Prepare Database
+For django to be able to store data, we need to create the database schema. to do this run:
+```bash
 python3.7 manage.py makemigrations
 python3.7 manage.py migrate
 ```
-To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 
 To populate the database with start data (groups, permissions, quiz questions etc) run:
 ```bash
@@ -316,73 +408,5 @@ To make sure the server is getting access to s3, ensure the above environment va
 ENV_CONFIG=production; python3.7 manage.py collectstatic
 ```
 
-
-## Run in production
-
-
-#### Run checklist
-Before you run the server it's advisable that you make sure all the following are true:
-- You are executing commands from the ExCSystem directory
-- You have the newest version of the code
-  ```bash
-  git checkout master
-  git pull
-  ```
-- You are set to run with production settings (```echo $ENV_CONFIG``` gives ```production```)
-- All your environment variables are set with the newest values (see [Environment Variables](#environment-variables))
-- All packages are installed correctly  (run  ```pipenv install```)
-
-#### Boot and Reboot:
-To run the server on the production machine
-```bash
-pipenv shell
-nohup ENV_CONFIG="production"; python manage.py runserver &
-```
-This will run Django in the background, even after you exit your SSH session.
-('fg' brings process to current shell)
-
-For convenience, you can easily reboot the server using ```./rebootServer.sh```
-
-
-#### Monitoring status
-The server is connected to Sentry, which logs all errors online and sends notifications to the 'verybadbugs' channel in 
-Slack. 
-
-All server output is stored in logs in the 'logs' directory. Debug stores all output in significant detail, requests 
-stores a list of all requests made to the server.
-
-Current server output is redirected via nohup, and can be followed with:
-```bash
-tail -f nohup.out
-```
-Exit by pressing Ctrl+C
-
-## Scheduled tasks
-There are certain scheduled tasks which are run automatically and periodically. Currently we use ```crontab``` to manage
-scheduling. Tasks should be run through a ```tasks.py``` in each app in the system. 
-
-#### How to change scheduling
-To edit the scheduling, simply ssh into the server and run:
-```bash
-crontab -e
-``` 
-This will open the scheduling file in ```vi```. These links give you more information on how to use 
-[vi](https://www.openvim.com/) and [crontab](https://crontab.guru).
-
-### Current Tasks
-
-This is a list of all the currently scheduled tasks. Please keep this as up to date as you can!
-
-- Expire Members
-    - Command: ```python core/tasks.py expireMembers```
-    - Should be run once a day, preferably in the evening/night
-    - This task goes through all the active members in the database and sets all those whose expiration data has passed to
-    be in the 'expired' group. Additionally any members who will expire in a week are sent a warning email that they 
-    will soon expire.
-- Update Listserv
-    - Command ```python core/tasks.py updateListserv```
-    - Should be run at least once a week, shortly before the general email is sent out
-    - This tasks collect all the emails of all members with an active membership (in groups 'Member', 'Staff' or 
-    'Board'), saves these to a text file, and uploads this file to the listserv
-
-
+Everything should now be set up correctly. Check out [Run in Production](#run-in-production) for info on how to run the
+server.
