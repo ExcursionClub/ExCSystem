@@ -31,3 +31,10 @@ venv/
 ### Unit tests / Coverage reports ###
 .coverage
 htmlcov/
+
+### Production Outputs ###
+*.out
+listserv_emails.txt
+
+### Production Scrits ###
+rebootServer.sh
