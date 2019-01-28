@@ -1,6 +1,8 @@
 from os import path
 
 from django.db import models
+from django.utils.html import format_html
+
 
 
 def get_upload_path(instance, filename):
@@ -42,3 +44,9 @@ class AlreadyUploadedImage(models.Model):
 
     def __str__(self):
         return self.name
+
+    def image_tag(self):
+        return format_html(u'<img src="{}" height=100px/>', self.url)
+    image_tag.short_description = "Image"
+    image_tag.allow_tags = True
+
