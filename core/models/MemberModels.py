@@ -297,13 +297,17 @@ class Staffer(models.Model):
         return self.member.get_full_name()
 
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=40, blank=True, null=True)
+    favorite_trips = models.TextField(blank=True, null=True, help_text="List of your favorite trips, one per line")
     exc_email = models.EmailField(
         verbose_name="Official ExC Email", max_length=255, unique=True
     )
-    title = models.CharField(
-        verbose_name="Position Title", default="Excursion Staff!", max_length=30
-    )
-    autobiography = models.TextField(
-        verbose_name="Self Description of the staffer",
-        default="I am too lazy and lame to upload a bio!",
-    )
+    title = models.CharField(verbose_name="Position Title",
+                             default="Excursion Staff!", 
+                             max_length=30)
+    autobiography = models.TextField(verbose_name="Self Description of the staffer",
+                                     default="I am too lazy and lame to upload a bio!")
+
+    def fav_trip_list(self):
+        trips = self.favorite_trips.split("\n")
+        return trips
