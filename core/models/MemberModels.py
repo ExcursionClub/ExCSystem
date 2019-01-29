@@ -293,6 +293,14 @@ class Staffer(models.Model):
     autobiography = models.TextField(verbose_name="Self Description of the staffer",
                                      default="I am too lazy and lame to upload a bio!")
 
+    @property
     def fav_trip_list(self):
-        trips = self.favorite_trips.split("\n")
+        if self.favorite_trips:
+            trips = self.favorite_trips.split("\n")
+        else:
+            trips = ["I'm stoked on all types of things!", ]
         return trips
+
+    @property
+    def edit_profile_url(self):
+        return reverse("admin:core_staffer_change", kwargs={"object_id": self.pk})
