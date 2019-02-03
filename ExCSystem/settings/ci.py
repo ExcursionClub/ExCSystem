@@ -9,6 +9,19 @@ MEDIA_URL = 'media/'
 
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'travis_ci_test',
+        'USER': 'foo',
+        'PASSWORD': 'bar',
+        'HOST': 'localhost',
+        'PORT': 5432,
+        'TEST': {
+            'NAME': 'travis_ci_test',
+        },
+    }
+}
 
 # Email host settings
 EMAIL_HOST = 'localhost'
