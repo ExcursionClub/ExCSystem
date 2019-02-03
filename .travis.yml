@@ -16,5 +16,5 @@ before_script:
 script:
   - python manage.py makemigrations
   - python manage.py migrate
-  - python helper_scripts/build_basic_data.py
+  - python helper_scripts/build_permissions.py
   - python manage.py test --keepdb
