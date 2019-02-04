@@ -20,7 +20,7 @@ STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.excursionclub.info']
 
 DATABASES = {
     'default': {
