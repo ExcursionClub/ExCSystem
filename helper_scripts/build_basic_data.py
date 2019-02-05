@@ -1,4 +1,5 @@
 """Populate the database with the universal information: permissions, departments, certifications, etc"""
+from helper_scripts import setup_django
 
 import os
 import random

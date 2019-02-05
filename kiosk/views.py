@@ -141,7 +141,7 @@ class GearView(View):
         return render(request, self.template_name, args)
 
     @staticmethod
-    def post_member_or_gear_rfid(request, rfid: str):
+    def post(request, rfid: str):
         """Check in item or check it out to a member"""
         form = HomeForm(request.POST)
         if form.is_valid():
