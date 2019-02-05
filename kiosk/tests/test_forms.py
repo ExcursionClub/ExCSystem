@@ -18,3 +18,8 @@ class FormTest(TestCase):
         data = {'rfid': '01234567890'}
         form = HomeForm(data=data)
         self.assertFalse(form.is_valid())
+
+    def test_starting_zero_home_form(self):
+        data = {'rfid': '0123456789'}
+        form = HomeForm(data=data)
+        self.assertTrue(form.is_valid())

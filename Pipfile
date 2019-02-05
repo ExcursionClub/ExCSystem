@@ -17,6 +17,7 @@ boto3 = "*"
 django-storages = "*"
 sentry-sdk = "*"
 sqlparse = "*"
+phonenumbers = "*"
 
 [dev-packages]
 django-minio-storage = "*"

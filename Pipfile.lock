@@ -90,6 +90,14 @@
             "index": "pypi",
             "version": "==0.3.0"
         },
+        "phonenumbers": {
+            "hashes": [
+                "sha256:127706b1743d2c0cf575be025262c9e45e687dfebd4b114ca231c9df1e713874",
+                "sha256:60a93df03db5170ae589a734f68a95c0646aa98fdf4c1591cb7c15c9da758e05"
+            ],
+            "index": "pypi",
+            "version": "==8.10.4"
+        },
         "pillow": {
             "hashes": [
                 "sha256:051de330a06c99d6f84bcf582960487835bcae3fc99365185dc2d4f65a390c0e",
