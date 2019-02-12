@@ -21,7 +21,7 @@ phonenumbers = "*"
 
 [dev-packages]
 django-minio-storage = "*"
-flake8 = "==3.7.4"
+flake8 = "==3.7.5"
 isort = "==4.3.4"
 mypy = "==0.660"
 selenium = "==3.141.0"
