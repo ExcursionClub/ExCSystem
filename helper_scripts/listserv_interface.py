@@ -1,4 +1,4 @@
-import setupDjango
+from helper_scripts import setup_django
 import ExCSystem.settings as settings
 import time
 import ssl
@@ -22,6 +22,12 @@ def write_emails(email_list):
     filename = "listserv_emails.txt"
     with open(filename, 'w') as email_file:
         email_file.writelines(email_list)
+    return filename
+
+
+def get_email_file():
+    emails = get_active_emails()
+    filename = write_emails(emails)
     return filename
 
 

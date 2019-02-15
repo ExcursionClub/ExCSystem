@@ -2,8 +2,7 @@ from sys import argv
 
 from django.utils.timezone import datetime, timedelta
 
-from core.models.MemberModels import Member
-from listserv_interface import *
+from helper_scripts.listserv_interface import *
 
 
 def test_task():
@@ -11,7 +10,7 @@ def test_task():
 
 
 def update_listserv():
-    import listserv_interface
+    from helper_scripts import listserv_interface
     listserv_interface.run_update()
 
 
