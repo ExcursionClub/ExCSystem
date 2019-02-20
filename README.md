@@ -368,6 +368,9 @@ All the below variables must be set with the appropriate values (from the above 
 values should ever be shared publicly as they would give anyone access to the server internals. If you need to know 
 these values, please look on slack or ask one of the admins.
 ```bash
+# Tell the server whether to run in 'production' or 'development'
+export ENV_CONFIG=production
+
 # Login data to the database
 export POSTGRES_USER=ex
 export POSTGRES_PASSWORD=
@@ -378,13 +381,12 @@ export POSTGRES_DB_NAME=
 export MEMBERSHIP_EMAIL_HOST_USER=
 export MEMBERSHIP_EMAIL_HOST_PASSWORD=
 
-# Tell the server whether to run in 'production' or 'development'
-export ENV_CONFIG=production
-
 # Tell the storage backend how to  connect to Amazon S3
 export AWS_ACCESS_KEY_ID= 
 export AWS_SECRET_ACCESS_KEY=
 export AWS_STORAGE_BUCKET_NAME =
+
+export NGINX_HOST_IP=
 ```
 To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 

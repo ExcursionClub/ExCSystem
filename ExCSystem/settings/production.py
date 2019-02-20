@@ -22,7 +22,7 @@ STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 ALLOWED_HOSTS = [
     '.excursionclub.info',
-    '13.57.191.244'
+    os.environ.get('NGINX_HOST_IP')
 ]
 
 DATABASES = {
