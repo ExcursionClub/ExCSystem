@@ -3,6 +3,7 @@ from helper_scripts import setup_django
 from core.tasks import expire_members, update_listserv
 from helper_scripts.build_permissions import build_all as build_all_perms
 from helper_scripts.listserv_interface import get_email_file
+from helper_scripts.fix_member_group import fix_all_group_names
 
 
 def populate_database():
@@ -20,6 +21,7 @@ tasks = {
     'build_permissions': build_all_perms,
     'populate_database': populate_database,
     'reset_database': reset_database,
+    'fix_group': fix_all_group_names
 
 }
 
