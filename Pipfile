@@ -22,7 +22,7 @@ phonenumbers = "*"
 [dev-packages]
 django-minio-storage = "*"
 flake8 = "==3.7.6"
-isort = "==4.3.4"
+isort = "==4.3.5"
 mypy = "==0.670"
 selenium = "==3.141.0"
 yapf = "==0.26.0"
