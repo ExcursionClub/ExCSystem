@@ -92,11 +92,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:127706b1743d2c0cf575be025262c9e45e687dfebd4b114ca231c9df1e713874",
-                "sha256:60a93df03db5170ae589a734f68a95c0646aa98fdf4c1591cb7c15c9da758e05"
+                "sha256:1a598963b8152bc6281a7716000fead92b03f632c4f2cae2fe68d3f2123b2837",
+                "sha256:2fe47dbf947cc74643ef1a49411466483d1165ced2b62578a14b513dd09642a9"
             ],
             "index": "pypi",
-            "version": "==8.10.4"
+            "version": "==8.10.6"
         },
         "pillow": {
             "hashes": [
