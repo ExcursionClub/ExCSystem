@@ -128,8 +128,8 @@ using the ResetDatabase.py file.
 To restart the database:
 
 ```bash
-$ python3.7 RestartDatabase.py
-$ python3.7 PopulateDatabase.py
+$ python3.7 task.py reset_database
+$ python3.7 task.py populate_database
 ```
 
 This will wipe everything that exists in the database, and generate random data for the new database.
