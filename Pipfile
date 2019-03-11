@@ -18,6 +18,7 @@ django-storages = "*"
 sentry-sdk = "*"
 sqlparse = "*"
 phonenumbers = "*"
+black = "==18.9b0"
 
 [dev-packages]
 django-minio-storage = "*"
