@@ -11,13 +11,15 @@ class ViewList(ChangeList):
 
     def __init__(self, *args, **kwargs):
         super(ViewList, self).__init__(*args, **kwargs)
-        self.title = f'Select the {self.opts.verbose_name} to view'
+        self.title = f"Select the {self.opts.verbose_name} to view"
 
     def url_for_result(self, result):
         pk = getattr(result, self.pk_attname)
-        return reverse('admin:{}_{}_detail'.format(self.opts.app_label, self.opts.model_name),
-                       args=(quote(pk),),
-                       current_app=self.model_admin.admin_site.name)
+        return reverse(
+            "admin:{}_{}_detail".format(self.opts.app_label, self.opts.model_name),
+            args=(quote(pk),),
+            current_app=self.model_admin.admin_site.name,
+        )
 
 
 class RestrictedViewList(UserPassesTestMixin, ViewList):

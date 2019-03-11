@@ -6,19 +6,29 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('core', '0002_auto_kiosk-overhaul_merge'),
-    ]
+    dependencies = [("core", "0002_auto_kiosk-overhaul_merge")]
 
     operations = [
         migrations.AlterField(
-            model_name='member',
-            name='image',
-            field=models.ImageField(blank=True, default='shaka.png', upload_to=core.models.MemberModels.get_profile_pic_upload_location, verbose_name='Profile Picture'),
+            model_name="member",
+            name="image",
+            field=models.ImageField(
+                blank=True,
+                default="shaka.png",
+                upload_to=core.models.MemberModels.get_profile_pic_upload_location,
+                verbose_name="Profile Picture",
+            ),
         ),
         migrations.AlterField(
-            model_name='member',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
+            model_name="member",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Specific permissions for this user.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Permission",
+                verbose_name="user permissions",
+            ),
         ),
     ]

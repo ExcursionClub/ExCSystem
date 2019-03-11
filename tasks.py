@@ -15,14 +15,13 @@ def reset_database():
 
 
 tasks = {
-    'expire_member': expire_members,
-    'update_listserv': update_listserv,
-    'get_email_file': get_email_file,
-    'build_permissions': build_all_perms,
-    'populate_database': populate_database,
-    'reset_database': reset_database,
-    'fix_group': fix_all_group_names
-
+    "expire_member": expire_members,
+    "update_listserv": update_listserv,
+    "get_email_file": get_email_file,
+    "build_permissions": build_all_perms,
+    "populate_database": populate_database,
+    "reset_database": reset_database,
+    "fix_group": fix_all_group_names,
 }
 
 

@@ -7,7 +7,7 @@ from django.contrib.admin import register
 
 class MemberRFIDLogAdmin(ViewableModelAdmin):
 
-    list_display = ('timestamp', 'rfid_checked', 'message', 'was_valid',)
+    list_display = ("timestamp", "rfid_checked", "message", "was_valid")
     list_view = RFIDCheckLogViewList
     detail_view_class = RFIDCheckLogDetailView
 

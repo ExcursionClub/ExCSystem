@@ -6,6 +6,7 @@ class RFIDField(forms.CharField):
     """
     Wrapper around CharField changing the default widget and adding validation
     """
+
     # widget = RFIDWidget
 
     def __init__(self, max_length=10, min_length=10, **kwargs):

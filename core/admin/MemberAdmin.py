@@ -3,7 +3,10 @@ from functools import update_wrapper
 from core.admin.ViewableAdmin import ViewableModelAdmin
 from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
 from core.views.MemberViews import (
-    MemberDetailView, MemberFinishView, MemberListView, StafferDetailView
+    MemberDetailView,
+    MemberFinishView,
+    MemberListView,
+    StafferDetailView,
 )
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import PermissionDenied
@@ -20,41 +23,45 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
     # The fields to be used in displaying the Member model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ('get_full_name', 'email', 'phone_number', 'date_joined', 'date_expires', 'group')
-    list_filter = ('group',)
+    list_display = (
+        "get_full_name",
+        "email",
+        "phone_number",
+        "date_joined",
+        "date_expires",
+        "group",
+    )
+    list_filter = ("group",)
 
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2'),
-        }),
-        ('Staff Use Only', {
-            'classes': ('wide',),
-            'fields': ('membership', 'rfid'),
-        }),
+        (
+            None,
+            {"classes": ("wide",), "fields": ("username", "password1", "password2")},
+        ),
+        ("Staff Use Only", {"classes": ("wide",), "fields": ("membership", "rfid")}),
     )
     fieldsets = (
-        ('Contact Info', {
-            'classes': ('wide',),
-            'fields': ('email', 'phone_number',),
-        }),
-        ('Personal Info', {
-            'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'image')
-        }),
-        ('Club  Info', {
-            'classes': ('wide',),
-            'fields': ('rfid', 'groups', 'certifications')
-        })
+        ("Contact Info", {"classes": ("wide",), "fields": ("email", "phone_number")}),
+        (
+            "Personal Info",
+            {"classes": ("wide",), "fields": ("first_name", "last_name", "image")},
+        ),
+        (
+            "Club  Info",
+            {"classes": ("wide",), "fields": ("rfid", "groups", "certifications")},
+        ),
     )
     editable_profile_fieldsets = (
-        ('Profile Info', {
-            'classes': ('wide',),
-            'fields': ('email', 'phone_number', 'first_name', 'last_name')
-        }),
+        (
+            "Profile Info",
+            {
+                "classes": ("wide",),
+                "fields": ("email", "phone_number", "first_name", "last_name"),
+            },
+        ),
     )
-    search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'rfid')
-    ordering = ('first_name',)
+    search_fields = ("email", "phone_number", "first_name", "last_name", "rfid")
+    ordering = ("first_name",)
     filter_horizontal = ()
     list_view = MemberListView
     detail_view_class = MemberDetailView
@@ -67,7 +74,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
         # Setup all the additional member finish url
         my_urls = [
-            path('<int:pk>/finish/', self.wrap(MemberFinishView.as_view()), name='core_member_finish')
+            path(
+                "<int:pk>/finish/",
+                self.wrap(MemberFinishView.as_view()),
+                name="core_member_finish",
+            )
         ]
 
         # Return all of our newly created urls along with all of the defaults
@@ -83,10 +94,14 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         """Redirect to the detail page after saving the new member, unless we're adding another"""
-        if '_addanother' not in request.POST and '_continue' not in request.POST:
-            return HttpResponseRedirect(reverse("admin:core_member_detail", kwargs={'pk': obj.pk}))
+        if "_addanother" not in request.POST and "_continue" not in request.POST:
+            return HttpResponseRedirect(
+                reverse("admin:core_member_detail", kwargs={"pk": obj.pk})
+            )
         else:
-            return super(MemberAdmin, self).response_add(request, obj, post_url_continue)
+            return super(MemberAdmin, self).response_add(
+                request, obj, post_url_continue
+            )
 
     @staticmethod
     def can_edit_profile(request, member=None):
@@ -97,28 +112,32 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             current_user = request.user
             is_self = current_user.primary_key == member.primary_key
             return is_self or current_user.has_permission("core.change_member")
-    
+
     @staticmethod
     def can_edit_all_data(request):
         return request.user.has_permission("core.change_member")
 
     def has_view_or_change_permission(self, request, obj=None):
-        return self.has_change_permission(request, obj=obj) or self.has_view_permission(request, obj=obj)
+        return self.has_change_permission(request, obj=obj) or self.has_view_permission(
+            request, obj=obj
+        )
 
     def has_change_permission(self, request, obj=None):
-        if obj and obj._meta.model_name == 'member':
+        if obj and obj._meta.model_name == "member":
             return self.can_edit_profile(request, obj)
         else:
             return super(MemberAdmin, self).has_change_permission(request, obj=obj)
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
+    def change_view(self, request, object_id, form_url="", extra_context=None):
         """Determine which profile edit page should be seen by the current user"""
-        if request.method == 'POST' and not self.can_edit_all_data(request):
+        if request.method == "POST" and not self.can_edit_all_data(request):
             # TODO: make sure you can't pass any fields that you don't have permission to access
             # I think this gets handled by the form itself: it will ignore any data it did not generate form fields for
             pass
-        
-        return super(MemberAdmin, self).change_view(request, object_id, form_url=form_url, extra_context=extra_context)
+
+        return super(MemberAdmin, self).change_view(
+            request, object_id, form_url=form_url, extra_context=extra_context
+        )
 
     def get_fieldsets(self, request, obj=None):
         """Modify the changeform if the current user should only be able to edit profile data"""

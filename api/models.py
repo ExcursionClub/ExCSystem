@@ -5,7 +5,6 @@ from django.db import models
 
 
 class RfidCheckManager(models.Manager):
-
     @staticmethod
     def create(rfid=None):
 
@@ -26,7 +25,9 @@ class RfidCheckManager(models.Manager):
             else:
                 is_valid = False
 
-        check_entry = MemberRFIDCheck(rfid_checked=rfid, was_valid=is_valid, message=message)
+        check_entry = MemberRFIDCheck(
+            rfid_checked=rfid, was_valid=is_valid, message=message
+        )
         check_entry.save()
         return is_valid
 

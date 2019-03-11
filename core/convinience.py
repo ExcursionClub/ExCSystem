@@ -14,17 +14,15 @@ def get_all_rfids():
     return all_rfids
 
 
-
-def notify_admin(title='No Title Provided', message='No message provided'):
+def notify_admin(title="No Title Provided", message="No message provided"):
     """Send a email notification to the system admins"""
-    from_email = 'system-noreply@excursionclubucsb.org'
-    to_email = 'admin@excursionclubucsb.org'
+    from_email = "system-noreply@excursionclubucsb.org"
+    to_email = "admin@excursionclubucsb.org"
     send_mail(title, message, from_email, to_email)
 
 
-def notify_info(title='No Title Provided', message='No message provided'):
+def notify_info(title="No Title Provided", message="No message provided"):
     """Send a email notification to the board 'info' email"""
-    from_email = 'system-noreply@excursionclubucsb.org'
-    to_email = 'info@excursionclubucsb.org'
+    from_email = "system-noreply@excursionclubucsb.org"
+    to_email = "info@excursionclubucsb.org"
     send_mail(title, message, from_email, to_email)
-

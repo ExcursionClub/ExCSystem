@@ -8,7 +8,7 @@ from django.utils.timezone import timedelta
 
 class MemberRFIDCheckTest(TestCase):
 
-    base_url = '/api/memberRFIDcheck'
+    base_url = "/api/memberRFIDcheck"
     used_rfids = []
 
     @classmethod
@@ -20,10 +20,7 @@ class MemberRFIDCheckTest(TestCase):
 
     def make_test_member(self, rfid, group_name):
         member = Member.objects.create_member(
-            'test@email.lol',
-            rfid,
-            timedelta(days=7),
-            password='admin'
+            "test@email.lol", rfid, timedelta(days=7), password="admin"
         )
 
         member.move_to_group(group_name)
@@ -31,7 +28,7 @@ class MemberRFIDCheckTest(TestCase):
 
     def gen_rfid(self):
         """get a unique random RFID"""
-        rfid = randint(11111111, 99999999)
+        rfid = randint(11_111_111, 99_999_999)
         if rfid in self.used_rfids:
             rfid = self.gen_rfid()
         else:
@@ -49,7 +46,10 @@ class MemberRFIDCheckTest(TestCase):
 
     def test_random_rfid_not_valid(self):
         was_validated = self.is_valid_member_rfid(self.gen_rfid())
-        self.assertFalse(was_validated, "A unregistered RFID should not be considered a valid member!")
+        self.assertFalse(
+            was_validated,
+            "A unregistered RFID should not be considered a valid member!",
+        )
 
     def test_new_member_not_valid(self):
         rfid = self.gen_rfid()

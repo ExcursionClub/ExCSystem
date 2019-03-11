@@ -15,4 +15,3 @@ for gear in Gear.objects.filter(DEFAULT_IMAGE_PK):
 
     gear.image = shaka_img
     gear.save()
-

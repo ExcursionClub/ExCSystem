@@ -2,15 +2,15 @@ from ExCSystem.settings.base import *
 
 DEBUG = True
 
-INSTALLED_APPS.append('minio_storage')
+INSTALLED_APPS.append("minio_storage")
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
-MINIO_STORAGE_ACCESS_KEY = os.environ.get('MINIO_ACCESS_KEY')
-MINIO_STORAGE_SECRET_KEY = os.environ.get('MINIO_SECRET_KEY')
-MINIO_STORAGE_ENDPOINT = os.environ.get('MINIO_STORAGE_ENDPOINT', "localhost:9000")
+MINIO_STORAGE_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY")
+MINIO_STORAGE_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY")
+MINIO_STORAGE_ENDPOINT = os.environ.get("MINIO_STORAGE_ENDPOINT", "localhost:9000")
 MINIO_STORAGE_USE_HTTPS = False
 MINIO_STORAGE_MEDIA_BUCKET_NAME = "media"
 MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
@@ -20,22 +20,22 @@ MINIO_STORAGE_STATIC_USE_PRESIGNED = True
 MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
 
 
-STATIC_URL = 'static/'
-MEDIA_URL = 'media/'
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
 # Email host settings
-EMAIL_HOST = 'localhost'
+EMAIL_HOST = "localhost"
 EMAIL_PORT = 1024
-MEMBERSHIP_EMAIL_HOST_USER = 'membership@ExCDev.org'
-MEMBERSHIP_EMAIL_HOST_PASSWORD = ''
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+MEMBERSHIP_EMAIL_HOST_USER = "membership@ExCDev.org"
+MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Base address of where the page is available
 WEB_BASE = "http://localhost:8000"
@@ -43,46 +43,38 @@ WEB_BASE = "http://localhost:8000"
 SITE_DOMAIN = "localhost:8000"
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse',
-        },
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+        "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
     },
-    'formatters': {
-        'standard': {
-            '()': 'django.utils.log.ServerFormatter',
-            'format': '%(levelname)s %(asctime)s [%(name)s] %(message)s',
+    "formatters": {
+        "standard": {
+            "()": "django.utils.log.ServerFormatter",
+            "format": "%(levelname)s %(asctime)s [%(name)s] %(message)s",
         }
     },
-    'handlers': {
-        'default': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/default.log',
-            'formatter': 'standard',
+    "handlers": {
+        "default": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "logs/default.log",
+            "formatter": "standard",
         },
-        'request_handler': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'logs/requests.log',
-            'formatter': 'standard',
+        "request_handler": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "logs/requests.log",
+            "formatter": "standard",
         },
     },
-    'loggers': {
-        '': {
-            'handlers': ['default'],
-            'level': 'DEBUG',
-            'propagate': True,
+    "loggers": {
+        "": {"handlers": ["default"], "level": "DEBUG", "propagate": True},
+        "django.request": {
+            "handlers": ["request_handler"],
+            "level": "DEBUG",
+            "propagate": False,
         },
-        'django.request': {
-            'handlers': ['request_handler'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-    }
+    },
 }

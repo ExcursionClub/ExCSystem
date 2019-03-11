@@ -8,7 +8,7 @@ member_email = sys.argv[1]
 
 def wrap_str(start_str, length=20):
     if len(start_str) < length:
-        return str(start_str) + (' ' * (length - len(start_str)))
+        return str(start_str) + (" " * (length - len(start_str)))
     else:
         return str(start_str)
 
@@ -21,10 +21,14 @@ members = Member.objects.filter(email=member_email)
 print("Found the following member(s):")
 print("---------------------------------------------------------")
 for member in members:
-    print(f"  {wrap_str(member.get_full_name())}  |  {wrap_str(member.email)}  |  {wrap_str(member.group, 12)} ")
+    print(
+        f"  {wrap_str(member.get_full_name())}  |  {wrap_str(member.email)}  |  {wrap_str(member.group, 12)} "
+    )
     print("---------------------------------------------------------")
 
-print("WARNING: This will permanently remove all the members listed above from the database!")
+print(
+    "WARNING: This will permanently remove all the members listed above from the database!"
+)
 print("Are you SURE you want to continue? (yes-fuck-em/no)")
 response = input("> ")
 
@@ -37,4 +41,3 @@ print("Deleting members...")
 sleep(2)
 members.delete()
 print("Done.")
-

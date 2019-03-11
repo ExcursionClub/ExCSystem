@@ -4,13 +4,10 @@ from django.db import models
 from django.utils.html import format_html
 
 
-
 def get_upload_path(instance, filename):
     img_type = instance.image_type.capitalize()
     file_format = filename.split(".")[-1]
-    name = instance.name.\
-        replace(' ', '_').\
-        replace('\\', '')
+    name = instance.name.replace(" ", "_").replace("\\", "")
     file_path = path.join(f"{img_type}Pics", f"{name}.{file_format}")
     return file_path
 
@@ -18,10 +15,7 @@ def get_upload_path(instance, filename):
 class AlreadyUploadedImage(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
-    picture = models.ImageField(
-        upload_to=get_upload_path,
-        default="shaka.webp"
-    )
+    picture = models.ImageField(upload_to=get_upload_path, default="shaka.webp")
     upload_date = models.DateTimeField(auto_now_add=True)
 
     image_type = models.CharField(
@@ -29,13 +23,13 @@ class AlreadyUploadedImage(models.Model):
         choices=(
             ("member", "Member Profile Picture"),
             ("gear", "Gear Image"),
-            ("other", "Other Image")
-        )
+            ("other", "Other Image"),
+        ),
     )
     sub_type = models.CharField(
         max_length=20,
         default="Unknown",
-        help_text="Specific image category: i.e. Skis, Tent, Sleeping Bag etc."
+        help_text="Specific image category: i.e. Skis, Tent, Sleeping Bag etc.",
     )
 
     @property
@@ -46,7 +40,7 @@ class AlreadyUploadedImage(models.Model):
         return self.name
 
     def image_tag(self):
-        return format_html(u'<img src="{}" height=100px/>', self.url)
+        return format_html('<img src="{}" height=100px/>', self.url)
+
     image_tag.short_description = "Image"
     image_tag.allow_tags = True
-

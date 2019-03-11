@@ -4,9 +4,14 @@ from core.views.TransactionViews import TransactionDetailView, TransactionListVi
 
 class TransactionAdmin(ViewableModelAdmin):
     list_display = ("type", "timestamp", "gear", "member", "authorizer", "comments")
-    list_filter = ("type", )
-    search_fields = ("gear__name", "member__first_name", "member__last_name",
-                     "authorizer__first_name", "authorizer__last_name")
+    list_filter = ("type",)
+    search_fields = (
+        "gear__name",
+        "member__first_name",
+        "member__last_name",
+        "authorizer__first_name",
+        "authorizer__last_name",
+    )
     list_view = TransactionListView
     detail_view_class = TransactionDetailView
 

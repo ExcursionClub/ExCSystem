@@ -48,11 +48,13 @@ def build_just_joined():
     add_permission(
         codename="view_staffer",
         name="Can see staffer information",
-        content_type=staffer_type)
+        content_type=staffer_type,
+    )
     add_permission(
         codename="check_availability_gear",
         name="Check to see if the club has gear available",
-        content_type=gear_type)
+        content_type=gear_type,
+    )
     add_group("Just Joined", all_permissions)
 
 
@@ -66,27 +68,30 @@ def build_member():
     add_permission(
         codename="is_active_member",
         name="Is an active member",
-        content_type=member_type)
+        content_type=member_type,
+    )
     add_permission(
-        codename="rent_gear",
-        name="Allowed to rent gear",
-        content_type=gear_type)
+        codename="rent_gear", name="Allowed to rent gear", content_type=gear_type
+    )
     add_permission(
         codename="view_gear",
         name="Has access to at least one item on the gear list",
-        content_type=gear_type)
+        content_type=gear_type,
+    )
     add_permission(
         codename="view_department",
         name="Can see department information",
-        content_type=department_type)
+        content_type=department_type,
+    )
     add_permission(
         codename="view_certification",
         name="Can see certification information",
-        content_type=certification_type)
+        content_type=certification_type,
+    )
     add_permission(
-        codename='view_transaction',
+        codename="view_transaction",
         name="Can view transactions",
-        content_type=transaction_type
+        content_type=transaction_type,
     )
     add_group("Member", all_permissions)
 
@@ -94,55 +99,60 @@ def build_member():
 def build_staffer():
     """Create permissions for regular staffers"""
     add_permission(
-        codename="add_gear",
-        name="Can add a piece of gear",
-        content_type=gear_type)
+        codename="add_gear", name="Can add a piece of gear", content_type=gear_type
+    )
     add_permission(
         codename="change_gear",
         name="Can change the info on gear",
-        content_type=gear_type)
+        content_type=gear_type,
+    )
     add_permission(
         codename="view_general_gear",
         name="Can see and search the gear list",
-        content_type=gear_type)
+        content_type=gear_type,
+    )
     add_permission(
         codename="authorize_transactions",
         name="Can authorize transactions",
-        content_type=transaction_type)
+        content_type=transaction_type,
+    )
     add_permission(
         codename="view_member",
         name="Can view all member info",
-        content_type=member_type)
+        content_type=member_type,
+    )
     add_permission(
         codename="view_all_members",
         name="Can view all member info",
-        content_type=member_type)
+        content_type=member_type,
+    )
     add_permission(
         codename="view_all_transactions",
         name="Can see all the gear transactions ever created",
-        content_type=transaction_type)
+        content_type=transaction_type,
+    )
     add_permission(
-        codename="add_member",
-        name="Can add new members",
-        content_type=member_type)
+        codename="add_member", name="Can add new members", content_type=member_type
+    )
     add_permission(
         codename="change_member",
         name="Can do arbitrary changes to members",
-        content_type=member_type)
+        content_type=member_type,
+    )
     add_permission(
         codename="view_gear_type",
         name="Can view gear types",
-        content_type=gear_type_type
+        content_type=gear_type_type,
     )
     add_permission(
         codename="add_alreadyuploadedimage",
         name="Can add and Already Uploaded Image",
-        content_type=image_type
+        content_type=image_type,
     )
     add_permission(
         codename="view_memberrfidcheck",
         name="View member RFID check log",
-        content_type=rfid_check_type
+        content_type=rfid_check_type,
     )
     add_group("Staff", all_permissions)
 
@@ -152,72 +162,77 @@ def build_board():
     add_permission(
         codename="view_all_gear",
         name="Can view gear with any status",
-        content_type=gear_type)
+        content_type=gear_type,
+    )
     add_permission(
         codename="remove_gear",
         name="Can set gear to removed status",
-        content_type=gear_type
+        content_type=gear_type,
     )
     add_permission(
         codename="add_gear_type",
         name="Can change gear types",
-        content_type=gear_type_type
+        content_type=gear_type_type,
     )
     add_permission(
         codename="delete_gear_type",
         name="Can delete gear types",
-        content_type=gear_type_type
+        content_type=gear_type_type,
     )
     add_permission(
         codename="add_customdatafield",
         name="Can add custom data fields",
-        content_type=custom_field_type
+        content_type=custom_field_type,
     )
     add_permission(
         codename="change_customdatafield",
         name="Can change custom data fields",
-        content_type=custom_field_type
+        content_type=custom_field_type,
     )
     add_permission(
         codename="delete_customdatafield",
         name="Can delete custom data fields",
-        content_type=custom_field_type
+        content_type=custom_field_type,
     )
     add_permission(
         codename="add_staffer",
         name="Can promote members to staffers",
-        content_type=staffer_type)
+        content_type=staffer_type,
+    )
     add_permission(
         codename="change_staffer",
         name="Can change staffer data",
-        content_type=staffer_type
+        content_type=staffer_type,
     )
     add_permission(
         codename="add_department",
         name="Can add departments to the club",
-        content_type=department_type)
+        content_type=department_type,
+    )
     add_permission(
         codename="change_department",
         name="Can change departments at the club",
-        content_type=department_type)
+        content_type=department_type,
+    )
     add_permission(
         codename="delete_department",
         name="Can delete departments from the club",
-        content_type=department_type)
+        content_type=department_type,
+    )
     add_permission(
-        codename='add_certification',
+        codename="add_certification",
         name="Can add gear checkout certifications",
-        content_type=certification_type
+        content_type=certification_type,
     )
     add_permission(
-        codename='change_certification',
+        codename="change_certification",
         name="Can change gear checkout certifications",
-        content_type=certification_type
+        content_type=certification_type,
     )
     add_permission(
-        codename='delete_certification',
+        codename="delete_certification",
         name="Can delete gear checkout certifications",
-        content_type=certification_type
+        content_type=certification_type,
     )
     add_group("Board", all_permissions)
 
@@ -225,74 +240,68 @@ def build_board():
 def build_admin():
     """Create the admin group, which has all possible permissions"""
     add_permission(
-        codename="add_group",
-        name="Can add permission groups",
-        content_type=group_type
+        codename="add_group", name="Can add permission groups", content_type=group_type
     )
     add_permission(
         codename="change_group",
         name="Can change permission groups",
-        content_type=group_type
+        content_type=group_type,
     )
     add_permission(
         codename="delete_group",
         name="Can delete permission groups",
-        content_type=group_type
+        content_type=group_type,
     )
     add_permission(
         codename="delete_gear",
         name="Can permanently delete gear from the database (DANGER)",
-        content_type=gear_type
+        content_type=gear_type,
     )
     add_permission(
-        codename="delete_staffer",
-        name="Can delete staffers",
-        content_type=staffer_type
+        codename="delete_staffer", name="Can delete staffers", content_type=staffer_type
     )
     add_permission(
         codename="add_question",
         name="Can add quiz questions",
-        content_type=question_type
+        content_type=question_type,
     )
     add_permission(
         codename="change_question",
         name="Can change quiz questions",
-        content_type=question_type
+        content_type=question_type,
     )
     add_permission(
         codename="delete_question",
         name="Can delete quiz questions",
-        content_type=question_type
+        content_type=question_type,
     )
     add_permission(
-        codename="add_answer",
-        name="Can add quiz answers",
-        content_type=answer_type
+        codename="add_answer", name="Can add quiz answers", content_type=answer_type
     )
     add_permission(
         codename="change_answer",
         name="Can change quiz answers",
-        content_type=answer_type
+        content_type=answer_type,
     )
     add_permission(
         codename="delete_answer",
         name="Can delete quiz answers",
-        content_type=answer_type
+        content_type=answer_type,
     )
     add_permission(
         codename="delete_alreadyuploadedimage",
         name="Can delete and Already Uploaded Image",
-        content_type=image_type
+        content_type=image_type,
     )
     add_permission(
         codename="change_alreadyuploadedimage",
         name="Can change and Already Uploaded Image",
-        content_type=image_type
+        content_type=image_type,
     )
     add_permission(
         codename="delete_member",
         name="Can delete existing members",
-        content_type=member_type
+        content_type=member_type,
     )
     add_group("Admin", all_permissions)
 
@@ -309,15 +318,17 @@ def add_group(name, permissions):
     group.save()
     return group
 
-    
+
 def add_permission(codename=None, name=None, content_type=None):
     """Add the permission, only creating if it does not already exist"""
     try:
         with transaction.atomic():  # Resolves a quirk with how django handles the test database
-            permission = Permission.objects.create(codename=codename, name=name, content_type=content_type)
+            permission = Permission.objects.create(
+                codename=codename, name=name, content_type=content_type
+            )
     except IntegrityError:
         permission = Permission.objects.get(codename=codename)
-    
+
     all_permissions.append(permission)
     return permission
 
