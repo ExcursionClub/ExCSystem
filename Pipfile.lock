@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "114aa2f89306540bdb6ca6213572f215b11e0ebae458876a35c9961c1e3d9c0b"
+            "sha256": "76551c640bb097156646767d3890a55f382555f14e7f92c30e6cb459229c1cbf"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -33,10 +33,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:6af473c52d5e3e7ff82de5334e9fee96b2d5ec2df5d78bc00cd9937e2573a7a8",
-                "sha256:9f5123c7be704b17aeacae99b5842ab17bda1f799dd29134de8c70e0a50a45d7"
+                "sha256:7c8ec120bc5bcc4076aebd7dac3a679777ff3a3ce3263c64d7342ea7982b578c",
+                "sha256:f4607f8800f87fd8eacd450699666f92d7fbc48fbb757903ad56825ce08e072a"
             ],
-            "version": "==1.12.111"
+            "version": "==1.12.115"
         },
         "certifi": {
             "hashes": [
@@ -136,11 +136,11 @@
         },
         "progressbar2": {
             "hashes": [
-                "sha256:570b59a5c60fff31a923ba4eeb10872d6428dd5b084bb1cb7fba786748a096f6",
-                "sha256:6eb5135b987caca4212d2c7abc2923d4ad5ba18bb34ccbe7044b3628f52efc2c"
+                "sha256:1ea89e2aaa1da85450aabbd2af62cefa04f1ee1c567f3a11ee0d8ded14fd1fea",
+                "sha256:8e5b5419e04193bb7c3fea71579937bbbcd64c26472b929718c2fe7ec420fe39"
             ],
             "index": "pypi",
-            "version": "==3.39.2"
+            "version": "==3.39.3"
         },
         "psycopg2": {
             "hashes": [
@@ -332,10 +332,10 @@
         },
         "minio": {
             "hashes": [
-                "sha256:5b50861d7f129a50b0bcaa9bbc716c2c797eb6b41eb4577c73fd072722009ffd",
-                "sha256:96f6fb2b9ecb40656ae0c8095c4745fa5068f3e51a9a5ca542aea3db8649b456"
+                "sha256:3235b8e149eae1e20c26c214373ba7fd21adbddde70d81a6a56687bbc43b0dd6",
+                "sha256:35eda84af51f303ae5856ef3eb852d4cc8b63e00d91e6194aef74bda73bc2bf6"
             ],
-            "version": "==4.0.11"
+            "version": "==4.0.12"
         },
         "mypy": {
             "hashes": [
