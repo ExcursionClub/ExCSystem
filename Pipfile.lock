@@ -33,10 +33,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:6af473c52d5e3e7ff82de5334e9fee96b2d5ec2df5d78bc00cd9937e2573a7a8",
-                "sha256:9f5123c7be704b17aeacae99b5842ab17bda1f799dd29134de8c70e0a50a45d7"
+                "sha256:7c8ec120bc5bcc4076aebd7dac3a679777ff3a3ce3263c64d7342ea7982b578c",
+                "sha256:f4607f8800f87fd8eacd450699666f92d7fbc48fbb757903ad56825ce08e072a"
             ],
-            "version": "==1.12.111"
+            "version": "==1.12.115"
         },
         "certifi": {
             "hashes": [
@@ -224,11 +224,11 @@
         },
         "sqlparse": {
             "hashes": [
-                "sha256:ce028444cfab83be538752a2ffdb56bc417b7784ff35bb9a3062413717807dec",
-                "sha256:d9cf190f51cbb26da0412247dfe4fb5f4098edb73db84e02f9fc21fdca31fed4"
+                "sha256:40afe6b8d4b1117e7dff5504d7a8ce07d9a1b15aeeade8a2d10f130a834f8177",
+                "sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"
             ],
             "index": "pypi",
-            "version": "==0.2.4"
+            "version": "==0.3.0"
         },
         "urllib3": {
             "hashes": [
@@ -332,10 +332,10 @@
         },
         "minio": {
             "hashes": [
-                "sha256:5b50861d7f129a50b0bcaa9bbc716c2c797eb6b41eb4577c73fd072722009ffd",
-                "sha256:96f6fb2b9ecb40656ae0c8095c4745fa5068f3e51a9a5ca542aea3db8649b456"
+                "sha256:3235b8e149eae1e20c26c214373ba7fd21adbddde70d81a6a56687bbc43b0dd6",
+                "sha256:35eda84af51f303ae5856ef3eb852d4cc8b63e00d91e6194aef74bda73bc2bf6"
             ],
-            "version": "==4.0.11"
+            "version": "==4.0.12"
         },
         "mypy": {
             "hashes": [
