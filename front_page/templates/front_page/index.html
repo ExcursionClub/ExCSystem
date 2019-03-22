@@ -7,8 +7,6 @@
 {% block title %}The Excursion Club UCSB{% endblock %}
 
 {% block content %}
-    <!DOCTYPE html>
-<html>
 <head>
    <style>
    .vimeo-wrapper {
@@ -32,26 +30,41 @@
       transform: translate(-50%, -50%);
    }
    .content {
-   position: fixed;
-   color: #fff;
-   width: 100%;
-   padding: 20px;
+       color: #fff;
+       width: 100%;
+       margin-top: 50px;
    }
+    .header img {
+        float: left;
+    }
+
+    .header h1 {
+        position: relative;
+        left: 10px;
+    }
+    .description p {
+        width: 40%;
+        margin-left: 80px;
+    }
    </style>
 </head>
-
-<div class="vimeo-wrapper">
-   <iframe
-      src="https://player.vimeo.com/video/325907352?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
-      frameborder="0"
-      webkitallowfullscreen
-      mozallowfullscreen
-      allowfullscreen>
-   </iframe>
-</div>
    <div class="content">
-       <h1>The Excursion Club UCSB</h1>
-       <p>We do it outdoors</p>
+       <div class="header">
+           <img src="{% static "img/shaka.webp" %}" width="70px" alt="shaka">
+           <h1>The Excursion Club UCSB</h1>
+       </div>
+       <div class="description">
+           <p>The Excursion Club at UCSB is an entirely student run, volunteer organization that is committed to getting people stoked on the outdoors</p>
+       </div>
    </div>
-</html>
+
+    <div class="vimeo-wrapper">
+       <iframe
+          src="https://player.vimeo.com/video/325907352?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
+          frameborder="0"
+          webkitallowfullscreen
+          mozallowfullscreen
+          allowfullscreen>
+       </iframe>
+    </div>
 {% endblock %}
