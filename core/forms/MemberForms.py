@@ -26,41 +26,43 @@ class MemberCreationForm(forms.ModelForm):
 
     # TODO: Make these either editable in the admin or be sourced externally
     membership_choices = (
-        ("year_new",        "$60 - Full Year New"),
-        ("year_return",     "$40 - Full Year Returning"),
-        ("quarter_new",     "$30 - One Quarter New"),
-        ("quarter_return",  "$20 - One Quarter Returning")
+        ("year_new", "$60 - Full Year New"),
+        ("year_return", "$40 - Full Year Returning"),
+        ("quarter_new", "$30 - One Quarter New"),
+        ("quarter_return", "$20 - One Quarter Returning"),
     )
 
-    username = forms.EmailField(label='Email')
+    username = forms.EmailField(label="Email")
     rfid = RFIDField(
-        label='RFID',
-        help_text='If you\'re renewing, this will replace your current rfid tag',
-        required=False
+        label="RFID",
+        help_text="If you're renewing, this will replace your current rfid tag",
+        required=False,
     )
     password1 = forms.CharField(
-        label='Password',
+        label="Password",
         widget=forms.PasswordInput,
         help_text="You can skip this if you're renewing",
-        required=False
+        required=False,
     )
     password2 = forms.CharField(
-        label='Confirm Password',
+        label="Confirm Password",
         widget=forms.PasswordInput,
         help_text="You can skip this if you're renewing",
-        required=False
+        required=False,
     )
-    membership = forms.ChoiceField(label="Membership Payment", choices=membership_choices)
+    membership = forms.ChoiceField(
+        label="Membership Payment", choices=membership_choices
+    )
 
     membership_duration = 0
     referenced_member = None
 
     class Meta:
         model = Member
-        fields = ('username', 'password1', 'password2', 'membership', 'rfid')
+        fields = ("username", "password1", "password2", "membership", "rfid")
 
     def clean_username(self):
-        email = self.cleaned_data['username']
+        email = self.cleaned_data["username"]
 
         # If a member exists with this email, we will be extendign their membership, so save them for future reference
         current = Member.objects.filter(email=email)
@@ -70,7 +72,7 @@ class MemberCreationForm(forms.ModelForm):
         return email
 
     def clean_rfid(self):
-        rfid = self.cleaned_data['rfid']
+        rfid = self.cleaned_data["rfid"]
 
         if rfid in get_all_rfids():
             raise forms.ValidationError("This RFID is already in use!")
@@ -87,7 +89,7 @@ class MemberCreationForm(forms.ModelForm):
 
     def clean_password1(self):
         """Passwords are required if the member is new"""
-        password = self.cleaned_data['password1']
+        password = self.cleaned_data["password1"]
         if not self.referenced_member and not password:
             raise forms.ValidationError("Password is required when you're signing up")
         return password
@@ -104,7 +106,7 @@ class MemberCreationForm(forms.ModelForm):
         """
         Convert the membership selection into a timedelta, and verify it is valid for the members current status
         """
-        selection = self.cleaned_data['membership']
+        selection = self.cleaned_data["membership"]
 
         # Convert the membership selection into a timedelta
         if "year" in selection:
@@ -116,7 +118,8 @@ class MemberCreationForm(forms.ModelForm):
 
         if self.is_new_membership(selection) and self.referenced_member:
             raise forms.ValidationError(
-                "A member with this email already exists! Make sure you selected the right membership!")
+                "A member with this email already exists! Make sure you selected the right membership!"
+            )
         elif not self.is_new_membership(selection) and not self.referenced_member:
             raise forms.ValidationError(
                 "Could not find the member! Please make sure you typed the email correctly!"
@@ -136,9 +139,9 @@ class MemberCreationForm(forms.ModelForm):
         # We will always commit the save, so make sure m2m fields are always saved
         self.save_m2m = self._save_m2m
 
-        email = self.cleaned_data['username']
-        rfid = self.cleaned_data['rfid']
-        password = self.cleaned_data['password1']
+        email = self.cleaned_data["username"]
+        rfid = self.cleaned_data["rfid"]
+        password = self.cleaned_data["password1"]
         duration = self.membership_duration
 
         # Depending on if this member exists or not, either create a new member, or just extend the membership
@@ -148,7 +151,9 @@ class MemberCreationForm(forms.ModelForm):
         else:
             member = Member.objects.create_member(email, rfid, duration, password)
 
-        finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={'pk': member.pk})
+        finish_url = WEB_BASE + reverse(
+            "admin:core_member_finish", kwargs={"pk": member.pk}
+        )
         member.send_intro_email(finish_url)
         member.save()
         return member
@@ -166,7 +171,7 @@ class MemberFinishForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    member_field_names = ['first_name', 'last_name', 'phone_number', 'image']
+    member_field_names = ["first_name", "last_name", "phone_number", "image"]
 
     # Instantiate the non-default member data fields
     phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
@@ -177,7 +182,7 @@ class MemberFinishForm(forms.ModelForm):
     # Limit the size of the uploaded image, currently set to 20MB
     # TODO: Move to utils
     max_image_MB = 20
-    max_image_bytes = max_image_MB * 1048576
+    max_image_bytes = max_image_MB * 1_048_576
 
     def __init__(self, *args, **kwargs):
         super(MemberFinishForm, self).__init__(*args, **kwargs)
@@ -186,16 +191,22 @@ class MemberFinishForm(forms.ModelForm):
         for question in self.questions:
 
             # Dynamically insert a choice field for each of the questions
-            self.fields[question.name] = forms.ChoiceField(label=question.question_text, choices=question.get_choices())
+            self.fields[question.name] = forms.ChoiceField(
+                label=question.question_text, choices=question.get_choices()
+            )
             self.quiz_field_names.append(question.name)
 
             # Dynamically insert a function for django to call to validate the answer for each of these fields
-            setattr(self, "clean_{}".format(question.name), self.get_question_cleaner(question.name))
+            setattr(
+                self,
+                "clean_{}".format(question.name),
+                self.get_question_cleaner(question.name),
+            )
 
     # This meta class allows the django backend to link this for to the model
     class Meta:
         model = Member
-        fields = ('first_name', 'last_name', 'phone_number', 'image')
+        fields = ("first_name", "last_name", "phone_number", "image")
 
     def as_table_member(self):
         """Make it possible to get the HTML of just the member information section of this form"""
@@ -208,16 +219,16 @@ class MemberFinishForm(forms.ModelForm):
     def as_table_subset(self, subset_field_names):
         """Run the forms html generator, temporarily substituting a subset of the fields for all fields"""
         original_fields = self.fields
-        html = ''
+        html = ""
 
         try:
             self.fields = self.get_fields_subset(subset_field_names)
             html = self._html_output(
-                normal_row='<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>',
+                normal_row="<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>",
                 error_row='<tr><td colspan="2"><font color="red">%s</font></td></tr>',
-                row_ender='</td></tr>',
+                row_ender="</td></tr>",
                 help_text_html='<br /><span class="helptext">%s</span>',
-                errors_on_separate_row=False
+                errors_on_separate_row=False,
             )
         finally:
             self.fields = original_fields
@@ -245,12 +256,14 @@ class MemberFinishForm(forms.ModelForm):
     def clean_image(self):
         # TODO: Move to utils
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
-        image = self.cleaned_data['image']
+        image = self.cleaned_data["image"]
 
-        if not hasattr(image, 'size'):
+        if not hasattr(image, "size"):
             raise forms.ValidationError("Please upload a profile picture!")
         if image.size > self.max_image_bytes:
-            raise forms.ValidationError(f"Selected image is too large! Max {self.max_image_MB}MB")
+            raise forms.ValidationError(
+                f"Selected image is too large! Max {self.max_image_MB}MB"
+            )
 
         return image
 
@@ -259,10 +272,10 @@ class MemberFinishForm(forms.ModelForm):
         self.save_m2m = self._save_m2m
 
         member = self.instance
-        member.first_name = self.cleaned_data['first_name']
-        member.last_name = self.cleaned_data['last_name']
-        member.phone_number = self.cleaned_data['phone_number']
-        member.image = self.cleaned_data['image']
+        member.first_name = self.cleaned_data["first_name"]
+        member.last_name = self.cleaned_data["last_name"]
+        member.phone_number = self.cleaned_data["phone_number"]
+        member.image = self.cleaned_data["image"]
         member.promote_to_active()
 
         member.save()
@@ -282,7 +295,7 @@ class MemberChangeRFIDForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('rfid', )
+        fields = ("rfid",)
 
 
 class MemberChangeCertsForm(forms.ModelForm):
@@ -296,7 +309,7 @@ class MemberChangeCertsForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('certifications', )
+        fields = ("certifications",)
 
 
 class MemberUpdateContactForm(forms.ModelForm):
@@ -310,7 +323,7 @@ class MemberUpdateContactForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('email', 'phone_number')
+        fields = ("email", "phone_number")
 
 
 class MemberChangeGroupsForm(forms.ModelForm):
@@ -328,7 +341,7 @@ class MemberChangeGroupsForm(forms.ModelForm):
 
     class Meta:
         model = Member
-        fields = ('groups',)
+        fields = ("groups",)
 
 
 class StafferDataForm(forms.ModelForm):
@@ -346,19 +359,19 @@ class StafferDataForm(forms.ModelForm):
     exc_email = forms.CharField(
         label="Staffer Nickname",
         max_length=20,
-        help_text="The name of the staffer: to be used as the beginning of the email address"
+        help_text="The name of the staffer: to be used as the beginning of the email address",
     )
 
     class Meta:
         model = Staffer
         # Member should already be known when this form is accessed, so having it as a field is excessive
-        fields = ('exc_email', 'autobiography')
+        fields = ("exc_email", "autobiography")
 
     def clean_exc_email(self):
         """
         Although the field is named exc_email, the input should only be the staff name, so append rest of email here
         """
-        staff_name = self.cleaned_data['exc_email']
+        staff_name = self.cleaned_data["exc_email"]
         return staff_name + "@excursionclubucsb.org"
 
 
@@ -373,25 +386,28 @@ class MemberChangeForm(forms.ModelForm):
     the related HTML. Therefore, what is contained here simply overrides some default functionality, and explicit views
     and templates may not be present.
     """
+
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = Member
-        fields = ('email',
-                  'first_name',
-                  'last_name',
-                  'phone_number',
-                  'rfid',
-                  'groups',
-                  'image')
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "rfid",
+            "groups",
+            "image",
+        )
 
     def clean_groups(self):
-        groups = self.cleaned_data['groups']
+        groups = self.cleaned_data["groups"]
         if len(groups) != 1:
-            raise forms.ValidationError('Each member must be in exactly one group!')
-        self.cleaned_data['group'] = str(groups[0])
+            raise forms.ValidationError("Each member must be in exactly one group!")
+        self.cleaned_data["group"] = str(groups[0])
         return groups
 
     def save(self, commit=True):
-        self.instance.move_to_group(self.cleaned_data['group'])
+        self.instance.move_to_group(self.cleaned_data["group"])
         return super(MemberChangeForm, self).save(commit=commit)

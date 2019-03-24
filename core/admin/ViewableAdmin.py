@@ -30,6 +30,7 @@ class ViewableModelAdmin(ModelAdmin):
         def wrap(view):
             def wrapper(*args, **kwargs):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
+
             wrapper.model_admin = self
             return update_wrapper(wrapper, view)
 
@@ -40,8 +41,8 @@ class ViewableModelAdmin(ModelAdmin):
 
     def has_view_permission(self, request, obj=None):
         opts = self.opts
-        codename = get_permission_codename('view', opts)
-        return request.user.has_perm(f'{opts.app_label}.{codename}')
+        codename = get_permission_codename("view", opts)
+        return request.user.has_perm(f"{opts.app_label}.{codename}")
 
     def get_model_perms(self, request):
         """
@@ -50,10 +51,10 @@ class ViewableModelAdmin(ModelAdmin):
         of those actions.
         """
         return {
-            'add': self.has_add_permission(request),
-            'change': self.has_change_permission(request),
-            'delete': self.has_delete_permission(request),
-            'view': self.has_view_permission(request)
+            "add": self.has_add_permission(request),
+            "change": self.has_change_permission(request),
+            "delete": self.has_delete_permission(request),
+            "view": self.has_view_permission(request),
         }
 
     def get_changelist(self, request, **kwargs):
@@ -82,26 +83,24 @@ class ViewableModelAdmin(ModelAdmin):
             # something is screwed up with the database, so display an error
             # page.
             if ERROR_FLAG in request.GET:
-                return SimpleTemplateResponse('admin/invalid_setup.html', {
-                    'title': _('Database error'),
-                })
-            return HttpResponseRedirect(f'{request.path}?ERROR_FLAG=1')
+                return SimpleTemplateResponse(
+                    "admin/invalid_setup.html", {"title": _("Database error")}
+                )
+            return HttpResponseRedirect(f"{request.path}?ERROR_FLAG=1")
 
         # This is used in the backend, do not remove
         FormSet = self.get_changelist_formset(request)
         formset = cl.formset = FormSet(queryset=cl.result_list)
 
         selection_note_all = ngettext(
-            '%(total_count)s selected',
-            'All %(total_count)s selected',
-            cl.result_count
+            "%(total_count)s selected", "All %(total_count)s selected", cl.result_count
         )
 
         context = dict(
             self.admin_site.each_context(request),
             module_name=str(opts.verbose_name_plural),
-            selection_note=_(f'0 of {len(cl.result_list)} selected'),
-            selection_note_all=selection_note_all % {'total_count': cl.result_count},
+            selection_note=_(f"0 of {len(cl.result_list)} selected"),
+            selection_note_all=selection_note_all % {"total_count": cl.result_count},
             title=cl.title,
             is_popup=cl.is_popup,
             to_field=cl.to_field,
@@ -116,11 +115,16 @@ class ViewableModelAdmin(ModelAdmin):
 
         request.current_app = self.admin_site.name
 
-        return TemplateResponse(request, self.change_list_template or [
-            f'admin/{app_label}/{opts.model_name}/change_list.html',
-            f'admin/{app_label}/change_list.html',
-            'admin/change_list.html'
-        ], context)
+        return TemplateResponse(
+            request,
+            self.change_list_template
+            or [
+                f"admin/{app_label}/{opts.model_name}/change_list.html",
+                f"admin/{app_label}/change_list.html",
+                "admin/change_list.html",
+            ],
+            context,
+        )
 
     @csrf_protect_m
     def changelist_view(self, request, extra_context=None):
@@ -128,7 +132,9 @@ class ViewableModelAdmin(ModelAdmin):
         The 'change list' admin view for this model.
         """
         if self.has_change_permission(request):
-            return super(ViewableModelAdmin, self).changelist_view(request, extra_context=extra_context)
+            return super(ViewableModelAdmin, self).changelist_view(
+                request, extra_context=extra_context
+            )
         else:
             return self.viewlist_view(request)
 
@@ -140,7 +146,9 @@ class ViewableModelAdmin(ModelAdmin):
 
         # Register the url that will show the detail page for this model
         view_url = [
-            path('<int:pk>/detail/', self.get_detail_view(), name=f'{app}_{model}_detail'),
+            path(
+                "<int:pk>/detail/", self.get_detail_view(), name=f"{app}_{model}_detail"
+            )
         ]
 
         # view_url has to be at the front of the list, because url patterns contains a <pk>/ url pattern which will

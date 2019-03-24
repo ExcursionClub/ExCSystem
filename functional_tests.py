@@ -11,9 +11,9 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.quit()
 
     def test_get_browser_title(self):
-        self.browser.get('http://localhost:8000/kiosk')
-        self.assertIn('Kiosk', self.browser.title)
+        self.browser.get("http://localhost:8000/kiosk")
+        self.assertIn("Kiosk", self.browser.title)
 
 
-if __name__ == '__main__':
-    unittest.main(warnings='ignore')
+if __name__ == "__main__":
+    unittest.main(warnings="ignore")

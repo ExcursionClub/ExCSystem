@@ -21,4 +21,6 @@ class Certification(models.Model):
         return "{} Certification".format(self.title)
 
     def get_page_url(self):
-        return WEB_BASE + reverse("admin:core_certification_detail", kwargs={'pk': self.pk})
+        return WEB_BASE + reverse(
+            "admin:core_certification_detail", kwargs={"pk": self.pk}
+        )

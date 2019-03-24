@@ -23,4 +23,4 @@ class AlreadyUploadedImageAdmin(ModelAdmin):
 
     list_display = ("image_tag", "name", "image_type", "sub_type", "upload_date")
     list_filter = ("image_type", "sub_type")
-    readonly_fields = ("image_tag", )
+    readonly_fields = ("image_tag",)

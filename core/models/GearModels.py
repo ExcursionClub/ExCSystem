@@ -5,7 +5,13 @@ from core.forms.widgets import ExistingImageWidget
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
 from core.models.FileModels import AlreadyUploadedImage
 from django.db import models
-from django.forms.fields import BooleanField, CharField, ChoiceField, FloatField, IntegerField
+from django.forms.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    FloatField,
+    IntegerField,
+)
 from django.forms.widgets import CheckboxInput, NumberInput, Select, Textarea, TextInput
 from django.urls import reverse
 
@@ -52,58 +58,47 @@ class CustomDataField(models.Model):
 
     choices = models.TextField(
         max_length=1000,
-        default='None; No choices provided\nNope; Also not a choice',
+        default="None; No choices provided\nNope; Also not a choice",
         help_text="Must use this format to define choices!\n"
-                  "Each choice must be on it's own line, and consist of a short name (used internally), and a "
-                  "description (seen by the user). Name description pairs must be separated by a semicolon, and no "
-                  "semicolons are allowed in either the name or the description",
-        blank=True
+        "Each choice must be on it's own line, and consist of a short name (used internally), and a "
+        "description (seen by the user). Name description pairs must be separated by a semicolon, and no "
+        "semicolons are allowed in either the name or the description",
+        blank=True,
     )
 
     def __str__(self):
         name = self.name
-        return name.replace('_', ' ').title()
+        return name.replace("_", " ").title()
 
     def serialize_rfid(self, rfid, **kwargs):
-        return {
-            "initial": rfid,
-        }
+        return {"initial": rfid}
 
     def serialize_text(self, text, max_length=300, min_length=0, strip=True, **kwargs):
         return {
             "initial": text,
             "max_length": max_length,
             "min_length": min_length,
-            "strip": strip
+            "strip": strip,
         }
 
-    def serialize_string(self, string, max_length=50, min_length=0, strip=True, **kwargs):
+    def serialize_string(
+        self, string, max_length=50, min_length=0, strip=True, **kwargs
+    ):
         return {
             "initial": string,
             "max_length": max_length,
             "min_length": min_length,
-            "strip": strip
+            "strip": strip,
         }
 
     def serialize_boolean(self, boolean, required=False, **kwargs):
-        return {
-            "initial": boolean,
-            "required": required
-        }
+        return {"initial": boolean, "required": required}
 
     def serialize_int(self, value, min_value=-100, max_value=100, **kwargs):
-        return {
-            "initial": value,
-            "min_value": min_value,
-            "max_value": max_value
-        }
+        return {"initial": value, "min_value": min_value, "max_value": max_value}
 
     def serialize_float(self, value, min_value=-1000, max_value=1000, **kwargs):
-        return {
-            "initial": value,
-            "min_value": min_value,
-            "max_value": max_value
-        }
+        return {"initial": value, "min_value": min_value, "max_value": max_value}
 
     def serialize_choice(self, value, choices=None, **kwargs):
         # If a set of choices is not given, then try to parse out the choices from the choice field
@@ -114,12 +109,11 @@ class CustomDataField(models.Model):
                 choice = choice_pair.split(";")
                 choices.append((choice[0].strip(), choice[1].strip()))
 
-        return {
-            "initial": value,
-            "choices": tuple(choices)
-        }
+        return {"initial": value, "choices": tuple(choices)}
 
-    def serialize(self, required=None, label=None, initial=None, help_text=None, **kwargs):
+    def serialize(
+        self, required=None, label=None, initial=None, help_text=None, **kwargs
+    ):
         """Execute the serialize function appropriate for the current data type"""
         serialize_function = getattr(self, f"serialize_{self.data_type}")
         serialized = serialize_function(initial, **kwargs)
@@ -139,11 +133,13 @@ class CustomDataField(models.Model):
         value = self.get_value(data_dict)
 
         # The string of choice should be the human readable version, not the actual value
-        if value and self.data_type == 'choice':
+        if value and self.data_type == "choice":
             for choice in data_dict["choices"]:
                 if choice[0] == value:
                     return choice[1]
-            raise KeyError(f"Selected choice ({value}) not found for {self.name} field!")
+            raise KeyError(
+                f"Selected choice ({value}) not found for {self.name} field!"
+            )
 
         # If we got a value, connect it with the suffix to get the string representation
         elif value:
@@ -156,14 +152,14 @@ class CustomDataField(models.Model):
 
         # If a current field value is passed, set it as the initial value for the returned form field
         if current is not None:
-            init_data['initial'] = current
+            init_data["initial"] = current
 
         # Remove data that is used for reference in JSON format, but would interfere with form field instantiation
-        init_data.pop('name')
-        init_data.pop('data_type')
+        init_data.pop("name")
+        init_data.pop("data_type")
 
         # Make sure that the default widget for this data type is used
-        init_data['widget'] = self.widgets[self.data_type]
+        init_data["widget"] = self.widgets[self.data_type]
 
         field = self.fields[self.data_type](**init_data)
 
@@ -210,7 +206,6 @@ class GearType(models.Model):
 
 
 class GearManager(models.Manager):
-
     def _create(self, rfid, geartype, image, **gear_data):
         """
         Create a piece of gear that contains the basic data, and all additional data specified by the geartype
@@ -219,12 +214,7 @@ class GearManager(models.Manager):
         """
 
         # Create a simple piece of gear without any extra gear data
-        gear = Gear(
-            rfid=rfid,
-            status=0,
-            geartype=geartype,
-            image=image
-        )
+        gear = Gear(rfid=rfid, status=0, geartype=geartype, image=image)
 
         # Filter out any passed data that is not referenced by the gear type
         extra_fields = CustomDataField.objects.filter(geartype=geartype)
@@ -262,18 +252,32 @@ class Gear(models.Model):
     rfid = models.CharField(max_length=10, unique=True)
     image = models.ForeignKey(AlreadyUploadedImage, on_delete=models.CASCADE)
     status_choices = [
-        (0, "In Stock"),        # Ready and available in the gear sheds, waiting to be used
-        (1, "Checked Out"),     # Somebody has it right now, but it should soon be available again
-        (2, "Broken"),          # It is broken to the point it should not be checked out, waiting for repair
-        (3, "Missing"),         # Has been checked out for a while, time to yell at a member to give it back
-        (4, "Dormant"),         # Missing for very long time: assume it has been lost until found
-        (5, "Removed"),         # It is gone, dead and never coming back. Always set manually
+        (0, "In Stock"),  # Ready and available in the gear sheds, waiting to be used
+        (
+            1,
+            "Checked Out",
+        ),  # Somebody has it right now, but it should soon be available again
+        (
+            2,
+            "Broken",
+        ),  # It is broken to the point it should not be checked out, waiting for repair
+        (
+            3,
+            "Missing",
+        ),  # Has been checked out for a while, time to yell at a member to give it back
+        (
+            4,
+            "Dormant",
+        ),  # Missing for very long time: assume it has been lost until found
+        (5, "Removed"),  # It is gone, dead and never coming back. Always set manually
     ]
     #: The status determines what transactions the gear can participate in and where it is visible
     status = models.IntegerField(choices=status_choices)
 
     #: Who currently has this piece of gear. If null, then the gear is not checked out
-    checked_out_to = models.ForeignKey(Member, blank=True, null=True, on_delete=models.SET_NULL)
+    checked_out_to = models.ForeignKey(
+        Member, blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     #: The date at which this gear is due to be returned, null if not checked out
     due_date = models.DateField(blank=True, null=True, default=None)
@@ -290,16 +294,16 @@ class Gear(models.Model):
         Allows the values of CustomDataFields stored in GearType to be accessed as if they were attributes of Gear
         """
 
-        gear_data = json.loads(self.__getattribute__('gear_data'))
+        gear_data = json.loads(self.__getattribute__("gear_data"))
 
         if item is None:
             return self
         elif item in gear_data.keys():
-            geartype = self.__getattribute__('geartype')
+            geartype = self.__getattribute__("geartype")
             field = geartype.data_fields.get(name=item)
             return field.get_value(gear_data[item])
         else:
-            raise AttributeError(f'No attribute {item} for {repr(self)}!')
+            raise AttributeError(f"No attribute {item} for {repr(self)}!")
 
     def get_display_gear_data(self):
         """Return the gear data as a simple dict of field_name, field_value"""
@@ -314,13 +318,11 @@ class Gear(models.Model):
     def edit_gear_url(self):
         return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
 
-    def get_extra_fieldset(self, name="Additional Data", classes=('wide',)):
+    def get_extra_fieldset(self, name="Additional Data", classes=("wide",)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (
-            name, {
-                'classes': classes,
-                'fields': self.geartype.get_field_names()
-            }
+            name,
+            {"classes": classes, "fields": self.geartype.get_field_names()},
         )
         return fieldset
 
@@ -329,7 +331,7 @@ class Gear(models.Model):
 
     @property
     def image_url(self):
-        if self.image and hasattr(self.image, 'url'):
+        if self.image and hasattr(self.image, "url"):
             return self.image.url
 
     @property
@@ -341,7 +343,7 @@ class Gear(models.Model):
         """
 
         # Get all custom data fields for this data_type, except those that contain a rfid
-        attr_fields = self.geartype.data_fields.exclude(data_type='rfid')
+        attr_fields = self.geartype.data_fields.exclude(data_type="rfid")
         attributes = []
         gear_data = json.loads(self.gear_data)
         for field in attr_fields:
@@ -351,7 +353,7 @@ class Gear(models.Model):
 
         if attributes:
             attr_string = ", ".join(attributes)
-            name = f'{self.geartype.name} - {attr_string}'
+            name = f"{self.geartype.name} - {attr_string}"
         else:
             name = self.geartype.name
 
@@ -359,6 +361,7 @@ class Gear(models.Model):
 
     def get_department(self):
         return self.geartype.department
+
     get_department.short_description = "Department"
 
     def is_available(self):

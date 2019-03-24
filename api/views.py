@@ -8,7 +8,6 @@ from django.views.generic.base import View
 
 
 class CheckIfActiveMemberView(View):
-
     def get(self, request, rfid, *args, **kwargs):
 
         valid_member = MemberRFIDCheck.objects.create(rfid=rfid)
@@ -22,7 +21,6 @@ class CheckIfActiveMemberView(View):
 
 
 class RFIDCheckLogViewList(RestrictedViewList):
-
     def test_func(self):
         return self.request.user.has_permission("core.view_rfid_check_log")
 

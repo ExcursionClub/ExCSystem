@@ -20,40 +20,41 @@ class HomeView(LoginRequiredMixin, generic.TemplateView):
     If a member tag is entered the CheckoutView is opened and
     gear can be checked out to that member.
     """
-    template_name = 'kiosk/home.html'
-    login_url = 'kiosk:login'
-    redirect_field_name = ''
+
+    template_name = "kiosk/home.html"
+    login_url = "kiosk:login"
+    redirect_field_name = ""
 
     def get(self, request):
         form = HomeForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     @staticmethod
     def post(request):
         form = HomeForm(request.POST)
         if form.is_valid():
-            rfid = form.cleaned_data['rfid']
+            rfid = form.cleaned_data["rfid"]
 
             try:
                 Gear.objects.get(rfid=rfid)
-                return redirect('kiosk:gear', rfid)
+                return redirect("kiosk:gear", rfid)
             except Gear.DoesNotExist:
                 pass
 
             try:
                 Member.objects.get(rfid=rfid)
-                return redirect('kiosk:check_out', rfid)
+                return redirect("kiosk:check_out", rfid)
             except Member.DoesNotExist:
                 pass
 
             if rfid.isdigit() and len(rfid) == 10:
-                alert_message = f'The RFID {rfid} is not registered'
+                alert_message = f"The RFID {rfid} is not registered"
                 messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = f'{rfid} is not a valid RFID'
+                alert_message = f"{rfid} is not a valid RFID"
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('kiosk:home')
+            return redirect("kiosk:home")
 
 
 class CheckOutView(View):
@@ -62,7 +63,8 @@ class CheckOutView(View):
     Contains a list of gear that's rented out by the member
     Check out gear by scanning and RFID tag or typing the RFID number
     """
-    template_name = 'kiosk/check_out.html'
+
+    template_name = "kiosk/check_out.html"
 
     def get(self, request, rfid: str):
         form = HomeForm()
@@ -70,24 +72,20 @@ class CheckOutView(View):
         try:
             name = get_name(rfid)
         except ValidationError:
-            alert_message = 'The member has not yet completed the registration'
+            alert_message = "The member has not yet completed the registration"
             messages.add_message(request, messages.WARNING, alert_message)
-            return redirect('kiosk:home')
+            return redirect("kiosk:home")
 
         checked_out_gear = get_checked_out_gear(rfid)
 
-        args = {
-            'form': form,
-            'name': name,
-            'checked_out_gear': checked_out_gear
-        }
+        args = {"form": form, "name": name, "checked_out_gear": checked_out_gear}
         return render(request, self.template_name, args)
 
     @staticmethod
     def post(request, rfid):
         form = HomeForm(request.POST)
         if form.is_valid():
-            gear_rfid = form.cleaned_data['rfid']
+            gear_rfid = form.cleaned_data["rfid"]
             staffer_rfid = request.user.rfid
             member_rfid = rfid
 
@@ -99,33 +97,30 @@ class CheckOutView(View):
             if gear:
                 if gear.is_available():
                     do_checkout(staffer_rfid, member_rfid, gear_rfid)
-                    alert_message = f'{gear.name} was checked out successfully'
+                    alert_message = f"{gear.name} was checked out successfully"
                     messages.add_message(request, messages.INFO, alert_message)
                 else:
                     do_checkin(staffer_rfid, gear_rfid)
-                    alert_message = f'{gear.name} was checked in successfully'
+                    alert_message = f"{gear.name} was checked in successfully"
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = 'The RFID tag is not registered to a piece of gear'
+                alert_message = "The RFID tag is not registered to a piece of gear"
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('kiosk:check_out', member_rfid)
+            return redirect("kiosk:check_out", member_rfid)
 
 
 class RetagGearView(View):
-    template_name = 'kiosk/retag_gear.html'
+    template_name = "kiosk/retag_gear.html"
 
     def get(self, request, rfid: str):
-        form = RetagGearForm(initial={'rfid': rfid})
-        args = {
-            'form': form,
-            'rfid': rfid
-        }
+        form = RetagGearForm(initial={"rfid": rfid})
+        args = {"form": form, "rfid": rfid}
         return render(request, self.template_name, args)
 
 
 class GearView(View):
-    template_name = 'kiosk/gear.html'
+    template_name = "kiosk/gear.html"
 
     def get(self, request, rfid: str):
         try:
@@ -133,10 +128,7 @@ class GearView(View):
         except Gear.DoesNotExist:
             raise Http404()
 
-        args = {
-            'form': HomeForm(),
-            'gear': gear,
-        }
+        args = {"form": HomeForm(), "gear": gear}
 
         return render(request, self.template_name, args)
 
@@ -145,7 +137,7 @@ class GearView(View):
         """Check in item or check it out to a member"""
         form = HomeForm(request.POST)
         if form.is_valid():
-            form_rfid = form.cleaned_data['rfid']
+            form_rfid = form.cleaned_data["rfid"]
             staffer_rfid = request.user.rfid
 
             try:
@@ -174,25 +166,25 @@ class GearView(View):
                 if gear_rfid == form_rfid:
                     if gear.is_rented_out():
                         do_checkin(staffer_rfid, gear.rfid)
-                        alert_message = f'{gear.name} was checked in successfully'
+                        alert_message = f"{gear.name} was checked in successfully"
                         messages.add_message(request, messages.INFO, alert_message)
                     else:
-                        alert_message = 'Gear is already checked in'
+                        alert_message = "Gear is already checked in"
                         messages.add_message(request, messages.WARNING, alert_message)
                 elif member and member_rfid == form_rfid:
                     if gear.is_rented_out():
                         do_checkin(staffer_rfid, gear_rfid)
                     do_checkout(staffer_rfid, member_rfid, gear_rfid)
-                    alert_message = 'Gear checked out!'
+                    alert_message = "Gear checked out!"
                     messages.add_message(request, messages.WARNING, alert_message)
                 else:
-                    alert_message = 'The RFID is not registered to any gear'
+                    alert_message = "The RFID is not registered to any gear"
                     messages.add_message(request, messages.WARNING, alert_message)
             else:
-                alert_message = 'The RFID is not registered to any gear'
+                alert_message = "The RFID is not registered to any gear"
                 messages.add_message(request, messages.WARNING, alert_message)
 
-            return redirect('kiosk:gear', gear_rfid)
+            return redirect("kiosk:gear", gear_rfid)
 
 
 def get_name(member_rfid: str) -> str:
@@ -200,7 +192,7 @@ def get_name(member_rfid: str) -> str:
         name = Member.objects.get(rfid=member_rfid).get_full_name()
         return name
     except Member.DoesNotExist:
-        raise ValidationError('This is not associated with a member')
+        raise ValidationError("This is not associated with a member")
 
 
 def get_checked_out_gear(member_rfid: str) -> List[object]:
@@ -209,4 +201,4 @@ def get_checked_out_gear(member_rfid: str) -> List[object]:
         checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
         return checked_out_gear
     except Member.DoesNotExist:
-        raise ValidationError(f'There is no member with {member_rfid}')
+        raise ValidationError(f"There is no member with {member_rfid}")

@@ -7,18 +7,25 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='MemberRFIDCheck',
+            name="MemberRFIDCheck",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rfid_checked', models.CharField(max_length=12)),
-                ('was_valid', models.BooleanField()),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
-                ('message', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rfid_checked", models.CharField(max_length=12)),
+                ("was_valid", models.BooleanField()),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
+                ("message", models.CharField(max_length=100)),
             ],
-        ),
+        )
     ]

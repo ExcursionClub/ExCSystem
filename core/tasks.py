@@ -11,6 +11,7 @@ def test_task():
 
 def update_listserv():
     from helper_scripts import listserv_interface
+
     listserv_interface.run_update()
 
 
@@ -43,5 +44,3 @@ if __name__ == "__main__":
         expire_members()
     else:
         print(f"Invalid task name: '{task_name}'!")
-
-

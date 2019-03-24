@@ -16,19 +16,21 @@ def validate_auth(authorizer):
     """Make sure that the person who authorized the transaction is in fact authorized to do so."""
 
     # If the member is not a staffer, then they are not allowed to authorize a transaction like this
-    required_perm = 'core.authorize_transactions'
+    required_perm = "core.authorize_transactions"
     if not authorizer.has_permission(required_perm):
-        msg = f'{authorizer.get_full_name()} is not allowed to authorize transactions'
+        msg = f"{authorizer.get_full_name()} is not allowed to authorize transactions"
         logger.info(msg)
         raise ValidationError(msg)
 
 
 def validate_can_rent(member):
     """Ensure that the member is authorized to check out gear (is at least an active member)"""
-    required_perm = 'core.rent_gear'
+    required_perm = "core.rent_gear"
     if not member.has_permission(required_perm):
-        msg = f'{member.get_full_name()} is not allowed to check out gear, ' \
-              f'because they do not have the {required_perm} permission'
+        msg = (
+            f"{member.get_full_name()} is not allowed to check out gear, "
+            f"because they do not have the {required_perm} permission"
+        )
         logger.info(msg)
         raise ValidationError(msg)
 
@@ -36,7 +38,7 @@ def validate_can_rent(member):
 def validate_available(gear):
     """Ensure that the piece of gear is in fact available for checkout (is in stock)."""
     if not gear.is_available():
-        msg = f'The {gear.name} with [{gear.rfid}] is not available for checkout because it is {gear.status}'
+        msg = f"The {gear.name} with [{gear.rfid}] is not available for checkout because it is {gear.status}"
         logger.info(msg)
         raise ValidationError(msg)
 
@@ -44,7 +46,7 @@ def validate_available(gear):
 def validate_rfid(rfid):
     """Ensure that the given rfid is unique across all tables containing rfids."""
     if rfid in get_all_rfids():
-        msg = 'This rfid is already in use!'
+        msg = "This rfid is already in use!"
         logger.info(msg)
         raise ValidationError(msg)
 
@@ -57,7 +59,7 @@ def validate_required_certs(member, gear):
             missing_certs.append(cert_required)
     if missing_certs:
         cert_names = [cert.title for cert in missing_certs]
-        msg = f'{member.get_full_name()} is missing the following certifications: {cert_names}'
+        msg = f"{member.get_full_name()} is missing the following certifications: {cert_names}"
         logger.info(msg)
         raise ValidationError(msg)
 
@@ -90,11 +92,13 @@ class TransactionManager(models.Manager):
             gear=gear,
             member=member,
             authorizer=authorizer,
-            comments=comments
+            comments=comments,
         )
         transaction.save(using=self._db)
 
-        logger.info(f'{gear.name} was {type} by {member} authorized by {authorizer} {comments}')
+        logger.info(
+            f"{gear.name} was {type} by {member} authorized by {authorizer} {comments}"
+        )
 
         return transaction
 
@@ -123,7 +127,9 @@ class TransactionManager(models.Manager):
 
         # If everything validated, we can try to make the transaction
         comment = "Return date = {}".format(return_date)
-        transaction = self.__make_transaction(authorizer_rfid, "CheckOut", gear, member=member, comments=comment)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "CheckOut", gear, member=member, comments=comment
+        )
 
         # If the transaction was validated, then we can actually change the gear status
         gear.status = 1
@@ -133,7 +139,16 @@ class TransactionManager(models.Manager):
 
         return transaction, gear
 
-    def add_gear(self, authorizer_rfid, gear_rfid, geartype, gear_image, *required_certs, is_new=True, **init_data):
+    def add_gear(
+        self,
+        authorizer_rfid,
+        gear_rfid,
+        geartype,
+        gear_image,
+        *required_certs,
+        is_new=True,
+        **init_data,
+    ):
         """
         Create a new piece of gear and create a transaction logging the addition.
 
@@ -166,12 +181,14 @@ class TransactionManager(models.Manager):
 
         # Make the transaction. This will also run all the necessary validations
         try:
-            transaction = self.__make_transaction(authorizer_rfid, "Create", gear, comments=comment)
-            logger.info('Gear was created')
+            transaction = self.__make_transaction(
+                authorizer_rfid, "Create", gear, comments=comment
+            )
+            logger.info("Gear was created")
         # If any validation failed, we need to undo the gear creation before aborting
         except ValidationError:
             gear.delete()
-            msg = 'This was not a valid gear creation. No gear was created'
+            msg = "This was not a valid gear creation. No gear was created"
             logger.info(msg)
             print(msg)
             raise
@@ -221,7 +238,9 @@ class TransactionManager(models.Manager):
 
         # Create a transaction to ensure everything is authorized
         details = "Changed RFID from {} to {}".format(old_rfid, new_rfid)
-        transaction = self.__make_transaction(authorizer_rfid, "ReTag", gear, comments=details)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "ReTag", gear, comments=details
+        )
 
         # If the transaction went through, we can go ahead and remove the gear
         gear.rfid = new_rfid
@@ -229,7 +248,9 @@ class TransactionManager(models.Manager):
 
         return transaction, gear
 
-    def fix_gear(self, authorizer_rfid, gear_rfid, repairs_description, person_repairing):
+    def fix_gear(
+        self, authorizer_rfid, gear_rfid, repairs_description, person_repairing
+    ):
         """
         Note that a broken piece of gear was fixed and has been placed back in circulation
 
@@ -247,7 +268,9 @@ class TransactionManager(models.Manager):
         comment = "{} {}".format(person_repairing, repairs_description)
 
         # Create a transaction to ensure everything is authorized
-        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=comment)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Fix", gear, comments=comment
+        )
 
         gear.set_status = 0
         gear.save()
@@ -269,7 +292,9 @@ class TransactionManager(models.Manager):
         gear = Gear.objects.get(rfid=gear_rfid)
 
         # Create a transaction to ensure everything is authorized
-        transaction = self.__make_transaction(authorizer_rfid, "Break", gear, comments=damage_description)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Break", gear, comments=damage_description
+        )
 
         gear.set_status = 2
         gear.save()
@@ -292,7 +317,9 @@ class TransactionManager(models.Manager):
         details = "Last known owner: {}".format(last_owner)
 
         # Create a transaction to ensure everything is authorized
-        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=details)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Fix", gear, comments=details
+        )
 
         gear.set_status = 3
         gear.save()
@@ -315,7 +342,9 @@ class TransactionManager(models.Manager):
         details = "Last known owner: {}".format(last_owner)
 
         # Create a transaction to ensure everything is authorized
-        transaction = self.__make_transaction(authorizer_rfid, "Fix", gear, comments=details)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Fix", gear, comments=details
+        )
 
         gear.set_status = 4
         gear.save()
@@ -336,7 +365,9 @@ class TransactionManager(models.Manager):
         gear = Gear.objects.get(rfid=gear_rfid)
 
         # Create a transaction to ensure everything is authorized
-        transaction = self.__make_transaction(authorizer_rfid, "Delete", gear, comments=reason)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Delete", gear, comments=reason
+        )
 
         # If the transaction went through, we can go ahead and remove the gear
         gear.status = 5
@@ -364,7 +395,7 @@ class TransactionManager(models.Manager):
         gear = Gear.objects.get(rfid=gear_rfid)
 
         member = Member.objects.get(rfid=authorizer_rfid)
-        if not member.has_permission('core.change_gear'):
+        if not member.has_permission("core.change_gear"):
             raise ValidationError("You don't have the permission to change gear!")
 
         # All the changes made will be described here
@@ -398,7 +429,9 @@ class TransactionManager(models.Manager):
                     action += f"  Changed {kwarg} from {old_value} to {new_value};"
 
         # Save the changes made in a transaction
-        transaction = self.__make_transaction(authorizer_rfid, "Override", gear, comments=action)
+        transaction = self.__make_transaction(
+            authorizer_rfid, "Override", gear, comments=action
+        )
         return transaction, gear
 
 
@@ -416,26 +449,26 @@ class Transaction(models.Model):
     objects = TransactionManager()
 
     transaction_types = [
-        ("Rental", (
-            ("CheckOut",  "Check Out"),
-            ("CheckIn",   "Check In"),
-            ("Inventory", "In Stock")
-        )
-         ),
-        ("Admin Actions", (
-            ("Create",   "New Gear"),
-            ("Delete",   "Remove Gear"),
-            ("ReTag",    "Change Tag"),
-            ("Break",    "Set Broken"),
-            ("Fix",      "Set Fixed"),
-            ("Override", "Admin Change")
-        )
-         ),
-        ("Auto Updates", (
-            ("Missing", "Gear Missing"),
-            ("Expire",  "Gear Expiration"),
-            )
-         )
+        (
+            "Rental",
+            (
+                ("CheckOut", "Check Out"),
+                ("CheckIn", "Check In"),
+                ("Inventory", "In Stock"),
+            ),
+        ),
+        (
+            "Admin Actions",
+            (
+                ("Create", "New Gear"),
+                ("Delete", "Remove Gear"),
+                ("ReTag", "Change Tag"),
+                ("Break", "Set Broken"),
+                ("Fix", "Set Fixed"),
+                ("Override", "Admin Change"),
+            ),
+        ),
+        ("Auto Updates", (("Missing", "Gear Missing"), ("Expire", "Gear Expiration"))),
     ]
 
     primary_key = PrimaryKeyField()
@@ -447,15 +480,25 @@ class Transaction(models.Model):
     type = models.CharField(max_length=20, choices=transaction_types)
 
     #: The piece of gear this transaction relates to: MUST EXIST
-    gear = models.ForeignKey(Gear, null=False, on_delete=models.PROTECT, related_name="has_checked_out",
-                             validators=[validate_available])
+    gear = models.ForeignKey(
+        Gear,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="has_checked_out",
+        validators=[validate_available],
+    )
 
     #: If this transaction relates to a member, that member should be referenced here
     member = models.ForeignKey(Member, null=True, on_delete=models.PROTECT)
 
     #: Either SYSTEM or a String of the rfid of the person who authorized the transaction
-    authorizer = models.ForeignKey(Member, null=False, on_delete=models.PROTECT,
-                                   related_name="has_authorized", validators=[validate_auth])
+    authorizer = models.ForeignKey(
+        Member,
+        null=False,
+        on_delete=models.PROTECT,
+        related_name="has_authorized",
+        validators=[validate_auth],
+    )
 
     #: Any additional notes to be saved about this transaction
     comments = models.TextField(default="")

@@ -15,20 +15,23 @@ class GearAdmin(ViewableModelAdmin):
     list_display = ("name", "status", "get_department", "checked_out_to", "due_date")
 
     # Choose which fields appear on the side as filters
-    list_filter = ('status', "geartype__department", "geartype")
+    list_filter = ("status", "geartype__department", "geartype")
 
     # Choose which fields can be searched for
-    search_fields = ('geartype__name', 'gear_data', 'rfid', 'checked_out_to__first_name', 'checked_out_to__last_name')
+    search_fields = (
+        "geartype__name",
+        "gear_data",
+        "rfid",
+        "checked_out_to__first_name",
+        "checked_out_to__last_name",
+    )
 
     fieldsets = [
-        ('Gear Info', {
-            'classes': ('wide',),
-            'fields': ("rfid", "geartype", "image"),
-        }),
-        ('Checkout Info', {
-            'classes': ('wide',),
-            'fields': ("status", "checked_out_to", "due_date")
-        }),
+        ("Gear Info", {"classes": ("wide",), "fields": ("rfid", "geartype", "image")}),
+        (
+            "Checkout Info",
+            {"classes": ("wide",), "fields": ("status", "checked_out_to", "due_date")},
+        ),
     ]
 
     form = GearChangeForm
@@ -43,10 +46,12 @@ class GearAdmin(ViewableModelAdmin):
 
         # Only get the extra fieldsets if we already have an object created
         if obj:
-            fieldsets = fieldsets + [obj.get_extra_fieldset()]  # Using append gives multiple copies of the extra fields
+            fieldsets = fieldsets + [
+                obj.get_extra_fieldset()
+            ]  # Using append gives multiple copies of the extra fields
 
         return tuple(fieldsets)
-    
+
     def get_form(self, request, obj=None, **kwargs):
         """Manually insert the form fields for our dynamic fields into the admin form so the data can be edited"""
 
@@ -66,7 +71,9 @@ class GearAdmin(ViewableModelAdmin):
                 field_data = gear_data[field.name]
                 form_field = field.get_field(**field_data)
                 extended_form.declared_fields.update({field.name: form_field})
-            return super(GearAdmin, self).get_form(request, obj=obj, form=extended_form, **kwargs)
+            return super(GearAdmin, self).get_form(
+                request, obj=obj, form=extended_form, **kwargs
+            )
 
         # If no obj was passed, assume we are creating a new object, so we split creation into two parts. The first part
         # is just the default creation page with the default fields, the second page (based on gear type) is handled in
@@ -76,14 +83,17 @@ class GearAdmin(ViewableModelAdmin):
             new_attrs = OrderedDict()
             add_form = type(self.add_form.__name__, (self.add_form,), new_attrs)
             add_form.authorizer_rfid = request.user.rfid
-            return super(GearAdmin, self).get_form(request, obj=None, form=add_form, **kwargs)
+            return super(GearAdmin, self).get_form(
+                request, obj=None, form=add_form, **kwargs
+            )
 
     def response_add(self, request, obj, post_url_continue=None):
         """After adding a new piece of gear, always go to the 'change' page to finish filling out gear data"""
         change_url = reverse(
-            f'admin:{obj._meta.app_label}_{obj._meta.model_name}_change',
+            f"admin:{obj._meta.app_label}_{obj._meta.model_name}_change",
             args=(quote(obj.pk),),
-            current_app=self.admin_site.name,)
+            current_app=self.admin_site.name,
+        )
         return HttpResponseRedirect(change_url)
 
 
@@ -95,6 +105,7 @@ class GearTypeAdmin(ViewableModelAdmin):
     referenced in transaction), no-one will be able to delete that gear type, since deleting Transactions is explicitly
     forbidden for all users, including admin
     """
+
     detail_view_class = GearTypeDetailView
 
     def has_change_permission(self, request, obj=None):

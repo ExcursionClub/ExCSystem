@@ -48,12 +48,13 @@ class Department(models.Model):
 
         department_email = "{}@excursionclubucsb.org".format(self.name)
         stl_emails = [staffer.exc_email for staffer in self.stls.all()]
-        email_body = \
-            "Hi {} STL! \n" \
-            "\n" \
-            "This is an automated message to let you know that:\n" \
-            "{}" \
+        email_body = (
+            "Hi {} STL! \n"
+            "\n"
+            "This is an automated message to let you know that:\n"
+            "{}"
             "\n".format(self.name, message)
+        )
         for gear in related_gear:
             email_body += "    {}\n".format(gear)
 
@@ -63,8 +64,9 @@ class Department(models.Model):
 
     def notify_gear_removed(self, gear):
         """Sends an email to the STL that the piece of gear has been removed"""
-        message = "The following piece of gear has been permanently removed from circulation!"
+        message = (
+            "The following piece of gear has been permanently removed from circulation!"
+        )
         self.notify_STL("Gear Removal", message, gear)
-
 
     # TODO: Add convenience email functions (that call notify_STL, but require fewer args) for: low supply, broken gear, gear gone missing

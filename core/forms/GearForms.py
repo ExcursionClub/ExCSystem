@@ -8,10 +8,9 @@ from django.forms import ModelChoiceField, ModelForm, ValidationError
 
 
 class GearChangeForm(ModelForm):
-
     class Meta:
         model = Gear
-        fields = '__all__'
+        fields = "__all__"
 
     authorizer_rfid = None
     existing_images = AlreadyUploadedImage.objects.filter(image_type="gear")
@@ -44,13 +43,11 @@ class GearChangeForm(ModelForm):
         # Django really wants to call this function, even though it does nothing for gear
         self.save_m2m = self._save_m2m
 
-        self.cleaned_data['gear_data'] = self.clean_gear_data()
-        gear_rfid = self.cleaned_data.pop('rfid')
+        self.cleaned_data["gear_data"] = self.clean_gear_data()
+        gear_rfid = self.cleaned_data.pop("rfid")
         change_data = self.cleaned_data
         transaction, gear = Transaction.objects.override(
-            self.authorizer_rfid,
-            gear_rfid,
-            **change_data
+            self.authorizer_rfid, gear_rfid, **change_data
         )
         return gear
 
@@ -60,7 +57,7 @@ class GearAddForm(ModelForm):
 
     class Meta:
         model = Gear
-        fields = '__all__'
+        fields = "__all__"
 
     authorizer_rfid = None
     # TODO: Get all images as objects from S3
@@ -78,10 +75,10 @@ class GearAddForm(ModelForm):
         return geartype.build_empty_data()
 
     def clean_rfid(self):
-        cleaned_rfid = self.cleaned_data.get('rfid')
+        cleaned_rfid = self.cleaned_data.get("rfid")
 
         if len(cleaned_rfid) != 10:
-            raise ValidationError('The rfid has to be 10 digits')
+            raise ValidationError("The rfid has to be 10 digits")
         try:
             int(cleaned_rfid)
         except ValueError:
@@ -97,9 +94,9 @@ class GearAddForm(ModelForm):
 
         transaction, gear = Transaction.objects.add_gear(
             self.authorizer_rfid,
-            self.cleaned_data['rfid'],
-            self.cleaned_data['geartype'],
-            self.cleaned_data['image'],
+            self.cleaned_data["rfid"],
+            self.cleaned_data["geartype"],
+            self.cleaned_data["image"],
             **self.build_gear_data(),
         )
         return gear

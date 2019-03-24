@@ -13,6 +13,7 @@ def expire_members():
         if right_now > member.date_expires:
             member.expire()
 
+
 # TODO: Once trip logs are implemented, add staffer expiration
 
 

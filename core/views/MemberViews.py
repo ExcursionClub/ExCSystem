@@ -1,6 +1,10 @@
 from core.forms.MemberForms import (
-    MemberChangeCertsForm, MemberChangeGroupsForm, MemberChangeRFIDForm, MemberFinishForm,
-    MemberUpdateContactForm, StafferDataForm
+    MemberChangeCertsForm,
+    MemberChangeGroupsForm,
+    MemberChangeRFIDForm,
+    MemberFinishForm,
+    MemberUpdateContactForm,
+    StafferDataForm,
 )
 from core.models.MemberModels import Member, Staffer
 from core.views.common import ModelDetailView, get_default_context
@@ -12,7 +16,6 @@ from ExCSystem.settings import WEB_BASE
 
 
 class MemberListView(RestrictedViewList):
-
     def can_view_all(self):
         """Only staffers should be a"""
         return self.request.user.has_permission("core.view_all_members")
@@ -29,13 +32,15 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
     template_name = "admin/core/member/member_detail.html"
 
     raise_exception = True
-    permission_denied_message = "You are not allowed to view another member's personal details!"
+    permission_denied_message = (
+        "You are not allowed to view another member's personal details!"
+    )
 
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
         member_to_view = self.get_object()
         is_self = self.request.user.rfid == member_to_view.rfid
-        view_others = self.request.user.has_permission('core.view_member')
+        view_others = self.request.user.has_permission("core.view_member")
         return view_others or is_self
 
     def post(self, request, *args, **kwargs):
@@ -43,9 +48,9 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **context):
-        context['main_admin_url'] = WEB_BASE + "/admin"
-        context['departments_url'] = WEB_BASE + "/admin/core/department"
-        context['staffers_url'] = WEB_BASE + "/admin/core/staffer"
+        context["main_admin_url"] = WEB_BASE + "/admin"
+        context["departments_url"] = WEB_BASE + "/admin/core/department"
+        context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
         return super(MemberDetailView, self).get_context_data(**context)
 
 
@@ -56,7 +61,9 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
     template_name_suffix = "_finish"
 
     raise_exception = True
-    permission_denied_message = "You are not allowed complete the sign up process for anyone but yourself!"
+    permission_denied_message = (
+        "You are not allowed complete the sign up process for anyone but yourself!"
+    )
 
     def test_func(self):
         """Only the member themselves is allowed to see the member finish page"""
@@ -69,7 +76,9 @@ class MemberFinishView(UserPassesTestMixin, UpdateView):
         return context
 
     def get_success_url(self):
-        return WEB_BASE + reverse("admin:core_member_detail", kwargs={'pk': self.object.pk})
+        return WEB_BASE + reverse(
+            "admin:core_member_detail", kwargs={"pk": self.object.pk}
+        )
 
 
 class StafferDetailView(UserPassesTestMixin, ModelDetailView):
@@ -81,4 +90,4 @@ class StafferDetailView(UserPassesTestMixin, ModelDetailView):
 
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
-        return self.request.user.has_permission('core.view_staffer')
+        return self.request.user.has_permission("core.view_staffer")
