@@ -16,7 +16,7 @@ basepath = os.getcwd()
 migrations_path = os.path.join(basepath, "core", "migrations")
 
 # Prepares python to be able to run django commands
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ExCSystem.settings.development")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.development")
 django.setup()
 
 # Removes all the migration files and the entire database

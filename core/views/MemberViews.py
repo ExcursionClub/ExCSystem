@@ -12,7 +12,7 @@ from core.views.ViewList import RestrictedViewList
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
 from django.views.generic.edit import UpdateView
-from ExCSystem.settings import WEB_BASE
+from excsystem.settings import WEB_BASE
 
 
 class MemberListView(RestrictedViewList):

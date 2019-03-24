@@ -9,7 +9,7 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.urls import reverse
 from django.utils.timezone import timedelta
-from ExCSystem.settings import WEB_BASE
+from excsystem.settings import WEB_BASE
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 

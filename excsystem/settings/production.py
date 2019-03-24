@@ -1,5 +1,5 @@
 import sentry_sdk
-from ExCSystem.settings.base import *
+from excsystem.settings.base import *
 
 sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 

@@ -9,7 +9,7 @@ from django.urls import include, path
 
 urlpatterns = (
     [
-        path("", include("front_page.urls", namespace="front-page")),
+        path("", include("frontpage.urls", namespace="front-page")),
         path(
             "admin/password_reset/",
             ExcPasswordResetView.as_view(),
