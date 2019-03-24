@@ -1,18 +1,27 @@
-import django_heroku
-import sentry_sdk
-from ExCSystem.settings.base import *
+from excsystem.settings.base import *
 
-django_heroku.settings(locals())
+DEBUG = True
 
-sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
+INSTALLED_APPS.append("minio_storage")
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
+DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
+STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
+MINIO_STORAGE_ACCESS_KEY = os.environ.get("MINIO_ACCESS_KEY")
+MINIO_STORAGE_SECRET_KEY = os.environ.get("MINIO_SECRET_KEY")
+MINIO_STORAGE_ENDPOINT = os.environ.get("MINIO_STORAGE_ENDPOINT", "localhost:9000")
+MINIO_STORAGE_USE_HTTPS = False
+MINIO_STORAGE_MEDIA_BUCKET_NAME = "media"
+MINIO_STORAGE_AUTO_CREATE_MEDIA_BUCKET = True
+MINIO_STORAGE_STATIC_BUCKET_NAME = "static"
+MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
+MINIO_STORAGE_STATIC_USE_PRESIGNED = True
+MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
+
 
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
-
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
-ALLOWED_HOSTS = ["excsystem.herokuapp.com"]
 
 DATABASES = {
     "default": {
@@ -29,8 +38,9 @@ MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Base address of where the page is available
-WEB_BASE = "https://www.excsystem.herokuapp.com"
-SITE_DOMAIN = "www.excsystem.herokuapp.com"
+WEB_BASE = "http://localhost:8000"
+
+SITE_DOMAIN = "localhost:8000"
 
 LOGGING = {
     "version": 1,
@@ -40,7 +50,7 @@ LOGGING = {
         "require_debug_true": {"()": "django.utils.log.RequireDebugTrue"},
     },
     "formatters": {
-        "django.server": {
+        "standard": {
             "()": "django.utils.log.ServerFormatter",
             "format": "%(levelname)s %(asctime)s [%(name)s] %(message)s",
         }
@@ -49,42 +59,21 @@ LOGGING = {
         "default": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
-            "filename": "logs/debug.log",
-            "formatter": "django.server",
+            "filename": "logs/default.log",
+            "formatter": "standard",
         },
         "request_handler": {
             "level": "DEBUG",
             "class": "logging.FileHandler",
             "filename": "logs/requests.log",
-            "formatter": "django.server",
-        },
-        "console": {
-            "level": "INFO",
-            "filters": ["require_debug_true"],
-            "class": "logging.StreamHandler",
-        },
-        "console_debug_false": {
-            "level": "ERROR",
-            "filters": ["require_debug_false"],
-            "class": "logging.StreamHandler",
-        },
-        "django.server": {
-            "level": "INFO",
-            "class": "logging.StreamHandler",
-            "formatter": "django.server",
+            "formatter": "standard",
         },
     },
     "loggers": {
         "": {"handlers": ["default"], "level": "DEBUG", "propagate": True},
-        "django": {"handlers": ["console", "console_debug_false"], "level": "INFO"},
         "django.request": {
             "handlers": ["request_handler"],
             "level": "DEBUG",
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": ["django.server"],
-            "level": "INFO",
             "propagate": False,
         },
     },

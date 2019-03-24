@@ -12,7 +12,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
-from ExCSystem import settings
+from excsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .CertificationModels import Certification

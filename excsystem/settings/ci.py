@@ -1,4 +1,4 @@
-from ExCSystem.settings.base import *
+from excsystem.settings.base import *
 
 DEBUG = True
 

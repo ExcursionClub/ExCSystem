@@ -9,7 +9,7 @@ from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.QuizModels import Answer, Question
 from django.contrib.sites.models import Site
-from ExCSystem import settings
+from excsystem import settings
 
 
 def build_all():

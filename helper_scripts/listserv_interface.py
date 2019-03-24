@@ -1,5 +1,5 @@
 from helper_scripts import setup_django
-import ExCSystem.settings as settings
+import excsystem.settings as settings
 import time
 import ssl
 from selenium import webdriver

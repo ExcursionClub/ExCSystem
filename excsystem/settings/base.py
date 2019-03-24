@@ -20,11 +20,11 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-DEFAULT_FILE_STORAGE = "ExCSystem.settings.storage_backends.MediaStorage"
+DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
 
 INSTALLED_APPS = [
     "core",
-    "front_page",
+    "frontpage",
     "kiosk",
     "api",
     "django.contrib.admin",
@@ -56,7 +56,7 @@ TEMPLATES = [
         "DIRS": [
             os.path.join(BASE_DIR, "templates"),
             os.path.join(BASE_DIR, "core/templates"),
-            os.path.join(BASE_DIR, "front_page/templates"),
+            os.path.join(BASE_DIR, "frontpage/templates"),
             os.path.join(BASE_DIR, "kiosk/templates"),
         ],
         "APP_DIRS": True,
@@ -71,7 +71,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "ExCSystem.wsgi.application"
+WSGI_APPLICATION = "excsystem.wsgi.application"
 
 AUTH_USER_MODEL = "core.Member"
 

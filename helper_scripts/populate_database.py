@@ -101,7 +101,7 @@ system = Member.objects.create_member(
 )
 Staffer.objects.upgrade_to_staffer(
     system,
-    "ExCSystem",
+    "excsystem",
     "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
 )
 
