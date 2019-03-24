@@ -1,4 +1,5 @@
 import django_heroku
+from decouple import config
 import sentry_sdk
 from excsystem.settings.base import *
 
@@ -6,6 +7,10 @@ sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+DATABASES = {"default": dj_database_url.config(default=config("DATABASE_URL"))}
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

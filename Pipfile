@@ -21,6 +21,7 @@ sqlparse = "*"
 phonenumbers = "*"
 gunicorn = "*"
 django-heroku = "*"
+python-decouple = "*"
 
 [dev-packages]
 black = "==18.9b0"
