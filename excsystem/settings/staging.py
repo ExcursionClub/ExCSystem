@@ -8,6 +8,8 @@ sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
 
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
 ALLOWED_HOSTS = ["excsystem.herokuapp.com"]
