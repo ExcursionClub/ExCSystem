@@ -1,6 +1,6 @@
 """Populate the database with a complete set of randomly generated data"""
 import helper_scripts.setup_django
-
+import os
 from random import choice, randint
 from typing import Any, List, Optional
 
@@ -21,7 +21,7 @@ build_basic_data.build_all()
 
 ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
-PASSWORD = "admin"
+PASSWORD = os.environ.get("PASSWORDS")
 
 SHAKA = "shaka.png"
 
