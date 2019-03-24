@@ -22,6 +22,7 @@ phonenumbers = "*"
 gunicorn = "*"
 django-heroku = "*"
 python-decouple = "*"
+dj-database-url = "*"
 
 [dev-packages]
 black = "==18.9b0"
