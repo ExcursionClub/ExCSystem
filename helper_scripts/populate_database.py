@@ -21,7 +21,7 @@ build_basic_data.build_all()
 
 ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
-PASSWORD = os.environ.get("PASSWORDS")
+PASSWORD = os.environ.get("PASSWORD")
 
 SHAKA = "shaka.png"
 
