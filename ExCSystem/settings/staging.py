@@ -1,5 +1,8 @@
+import django_heroku
 import sentry_sdk
 from ExCSystem.settings.base import *
+
+django_heroku.settings(locals())
 
 sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 
