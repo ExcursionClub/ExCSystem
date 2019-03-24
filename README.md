@@ -142,6 +142,14 @@ NOTE: **NEVER** push your dev database or migrations to the repository. The only
 those that are intended to be applied on the production server.
 
 
+## Heroku
+Reset DB
+```bash
+$ heroku pg:reset DATABASE_URL --app APP_NAME
+$ heroku run python manage.py migrate --app APP_NAME
+$ heroku run python tasks.py populate_database --app APP_NAME
+```
+
 
 ## Run in production
 It is often necessary to run updates and basic maintainence on the server. This section explains how this should be done.
