@@ -7,6 +7,8 @@ if os.environ.get("ENV_CONFIG") == "development":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.development")
 elif os.environ.get("ENV_CONFIG") == "ci":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.ci")
+elif os.environ.get("ENV_CONFIG") == "staging":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.staging")
 else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.production")
 
