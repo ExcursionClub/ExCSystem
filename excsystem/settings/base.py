@@ -18,8 +18,6 @@ ALLOWED_HOSTS = ["*"]
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
-
 INSTALLED_APPS = [
     "core",
     "frontpage",

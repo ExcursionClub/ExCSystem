@@ -3,7 +3,6 @@ from excsystem.settings.base import *
 DEBUG = True
 
 INSTALLED_APPS.append("minio_storage")
-
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
