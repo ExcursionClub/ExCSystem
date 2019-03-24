@@ -18,8 +18,6 @@ ALLOWED_HOSTS = ["*"]
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-
 DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
 
 INSTALLED_APPS = [
