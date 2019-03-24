@@ -21,7 +21,6 @@ sqlparse = "*"
 phonenumbers = "*"
 gunicorn = "*"
 django-heroku = "*"
-dj-database-url = "*"
 
 [dev-packages]
 black = "==18.9b0"
