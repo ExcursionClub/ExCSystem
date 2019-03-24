@@ -30,21 +30,6 @@ def build_images():
     img = AlreadyUploadedImage.objects.create(image_type="gear", picture="shaka.webp")
     img.save()
 
-    # Upload all the images in the GearPics folder
-    images_path = "GearPics"
-    for pic_file in os.listdir(os.path.join("media", images_path)):
-        if "git" in pic_file:
-            continue
-        pic_path = os.path.join(images_path, pic_file)
-        pic_name = pic_file.split(".")[0]
-        img = AlreadyUploadedImage.objects.create(
-            image_type="gear",
-            picture=pic_path,
-            name=pic_name,
-            sub_type=random.choice(sub_types),
-        )
-        img.save()
-
 
 def build_site():
     """Re-name the Site in the sites framework to match actual data"""
