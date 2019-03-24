@@ -2,8 +2,11 @@ from excsystem.settings.base import *
 
 DEBUG = True
 
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
+
 INSTALLED_APPS.append("minio_storage")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
 STATICFILES_STORAGE = "minio_storage.storage.MinioStaticStorage"
@@ -18,9 +21,6 @@ MINIO_STORAGE_AUTO_CREATE_STATIC_BUCKET = True
 MINIO_STORAGE_STATIC_USE_PRESIGNED = True
 MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
 
-
-STATIC_URL = "static/"
-MEDIA_URL = "media/"
 
 DATABASES = {
     "default": {
