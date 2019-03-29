@@ -42,6 +42,8 @@ Set environment variables:
 # Tell the server whether to run 'development' mode (all changes are local so you can break anything and not worry)
 export ENV_CONFIG=development
 
+# Create a password for test users
+export PASSWORD=
 
 # Tell the system how to connect to minio
 export MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
