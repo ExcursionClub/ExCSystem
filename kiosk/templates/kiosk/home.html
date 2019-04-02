@@ -7,36 +7,39 @@
 {% block content %}
 <head>
    <style>
-    .description p {
-        width: 40%;
-        margin-left: 100px;
-        margin-top: 50px;
-    }
-   .content {
-       width: 100%;
-       margin-left: 200px;
+   .wrapper {
+       border: solid black;
+       display: grid;
        margin-top: 50px;
+       grid-template-columns: 100px 100px 100px 100px 100px 100px 100px 100px 100px;
+       grid-template-rows: 200px 300px;
    }
-    .content img {
-        float: left;
+    .description {
+        border: solid green;
+        grid-column: 2 / 6;
+        grid-row: 1;
+    }
+    .hat {
+        border: solid blue;
+        grid-column: 3 / 5;
+        grid-row: 2;
     }
 
     .check-out p {
+        border: solid red;
         left: 10px;
     }
     .check-out {
-        width: 40%;
-        margin-top: 100px;
-        margin-left: 300px;
+        border: solid yellow;
+        grid-column: 6 / 9;
+        grid-row: 2;
     }
    </style>
 </head>
     {% if user.is_authenticated %}
-        <div class="description">
-            <p>The Excursion Club has tons of gear and equipment available to our members. All gear and equipment has limited availability, and members are allowed to check them out for a limited time on a first-come, first-serve basis.​</p>
-        </div>
-        <div class="content">
-            <img src="{% static "img/hat.webp" %}" width="170px" alt="hat">
+        <div class="wrapper">
+            <p class="description">The Excursion Club has tons of gear and equipment available to our members. All gear and equipment has limited availability, and members are allowed to check them out for a limited time on a first-come, first-serve basis.</p>
+            <img class="hat" src="{% static "img/hat.webp" %}" width="170px" alt="hat">
             <div class="check-out">
                 <p>Scan a member or gear RFID tag to:</p>
                 <ul>
