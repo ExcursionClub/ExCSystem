@@ -3,10 +3,12 @@ from django import forms
 
 
 class HomeForm(forms.Form):
-    rfid = forms.CharField(max_length=10, widget=forms.TextInput(attrs={'placeholder': '10 digits'}))
+    rfid = forms.CharField(
+        max_length=10, widget=forms.TextInput(attrs={"placeholder": "10 digits"})
+    )
 
 
 class RetagGearForm(forms.ModelForm):
     class Meta:
         model = Gear
-        fields = ['geartype', 'rfid']
+        fields = ["geartype", "rfid"]

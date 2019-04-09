@@ -1,5 +1,5 @@
 from helper_scripts import setup_django
-import ExCSystem.settings as settings
+import excsystem.settings as settings
 import time
 import ssl
 from selenium import webdriver
@@ -20,7 +20,7 @@ def get_active_emails():
 
 def write_emails(email_list):
     filename = "listserv_emails.txt"
-    with open(filename, 'w') as email_file:
+    with open(filename, "w") as email_file:
         email_file.writelines(email_list)
     return filename
 
@@ -37,7 +37,7 @@ def push_to_listserv(emails_file):
     profile.accept_untrusted_certs = True
     profile.assume_untrusted_cert_issuer = True
     capabilities = webdriver.DesiredCapabilities().FIREFOX.copy()
-    capabilities['acceptInsecureCerts'] = True
+    capabilities["acceptInsecureCerts"] = True
     browser = webdriver.Firefox(firefox_profile=profile, capabilities=capabilities)
     try:
         _create_unverified_https_context = ssl._create_unverified_context
@@ -51,9 +51,7 @@ def push_to_listserv(emails_file):
     # Open login page and wait till it loads
     browser.get(settings.LISTSERV_FORM_ADDRESS)
     wait.WebDriverWait(browser, 10).until(
-        expected_conditions.element_to_be_clickable(
-            (By.XPATH, "//form/p/input[1]")
-        )
+        expected_conditions.element_to_be_clickable((By.XPATH, "//form/p/input[1]"))
     )
 
     # Submit login info
@@ -67,8 +65,7 @@ def push_to_listserv(emails_file):
 
     # Wait for login request to complete
     wait.WebDriverWait(browser, 10).until(
-        expected_conditions.element_to_be_clickable(
-            (By.ID, "Input File"))
+        expected_conditions.element_to_be_clickable((By.ID, "Input File"))
     )
 
     # Open the email upload page and submit the form
@@ -87,8 +84,8 @@ def push_to_listserv(emails_file):
     print("Waiting for listserv to process...")
     time.sleep(LOAD_WAIT_SECS)
 
-    print('pause')
-    change_message = browser.find_element_by_class_name('message').text
+    print("pause")
+    change_message = browser.find_element_by_class_name("message").text
 
     return change_message
 

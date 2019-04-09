@@ -5,11 +5,11 @@ from django.utils.text import capfirst
 
 
 class ExcursionAdmin(AdminSite):
-    index_template = 'admin_index.html'
+    index_template = "admin_index.html"
 
-    site_header = 'Excursion Admin'
-    site_title = 'Excursion Admin'
-    index_title = 'Admin Home'
+    site_header = "Excursion Admin"
+    site_title = "Excursion Admin"
+    index_title = "Admin Home"
 
     def _build_app_dict(self, request, label=None):
         """
@@ -49,39 +49,44 @@ class ExcursionAdmin(AdminSite):
                 continue
 
             model_dict = {
-                'name': capfirst(meta_data.verbose_name_plural),
-                'object_name': meta_data.object_name,
-                'perms': perms,
+                "name": capfirst(meta_data.verbose_name_plural),
+                "object_name": meta_data.object_name,
+                "perms": perms,
             }
             # The changelist is hijacked in the viewable model admin to be the ViewList
-            if perms.get('view') or perms.get('change'):
+            if perms.get("view") or perms.get("change"):
                 try:
-                    model_dict['admin_url'] = reverse(f'admin:{app_label}_{model_name}_changelist', current_app=self.name)
+                    model_dict["admin_url"] = reverse(
+                        f"admin:{app_label}_{model_name}_changelist",
+                        current_app=self.name,
+                    )
                 except NoReverseMatch:
                     pass
 
-            if perms.get('add'):
+            if perms.get("add"):
                 try:
-                    model_dict['add_url'] = reverse(f'admin:{app_label}_{model_name}_add', current_app=self.name)
+                    model_dict["add_url"] = reverse(
+                        f"admin:{app_label}_{model_name}_add", current_app=self.name
+                    )
                 except NoReverseMatch:
                     pass
 
             # Append this model's data to the app dict under the appropriate app_label
             if app_label in app_dict:
-                app_dict[app_label]['models'].append(model_dict)
+                app_dict[app_label]["models"].append(model_dict)
 
             # If this is the first model in this app, must add the app data in addition to the model data
             else:
                 app_dict[app_label] = {
-                    'name': apps.get_app_config(app_label).verbose_name,
-                    'app_label': app_label,
-                    'app_url': reverse(
-                        'admin:app_list',
-                        kwargs={'app_label': app_label},
+                    "name": apps.get_app_config(app_label).verbose_name,
+                    "app_label": app_label,
+                    "app_url": reverse(
+                        "admin:app_list",
+                        kwargs={"app_label": app_label},
                         current_app=self.name,
                     ),
-                    'has_module_perms': has_module_perms,
-                    'models': [model_dict],
+                    "has_module_perms": has_module_perms,
+                    "models": [model_dict],
                 }
 
         # If we're only interested in the models for a certain app, only return that subset of the dict

@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from ExCSystem.settings import WEB_BASE
+from excsystem.settings import WEB_BASE
 
 
 class Certification(models.Model):
@@ -21,4 +21,6 @@ class Certification(models.Model):
         return "{} Certification".format(self.title)
 
     def get_page_url(self):
-        return WEB_BASE + reverse("admin:core_certification_detail", kwargs={'pk': self.pk})
+        return WEB_BASE + reverse(
+            "admin:core_certification_detail", kwargs={"pk": self.pk}
+        )

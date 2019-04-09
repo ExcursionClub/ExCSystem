@@ -13,7 +13,7 @@ def make_id():
     Only 1 in 8.3 million chance of getting the same result, even when two  objects are created at the exact same time
     inspired by http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram
     """
-    t = int(time()*1000) - START_TIME
+    t = int(time() * 1000) - START_TIME
     u = secrets.SystemRandom().getrandbits(23)
     new_id = (t << 23) | u
     return new_id
@@ -30,7 +30,7 @@ class PrimaryKeyField(BigIntegerField):
 
     def __init__(self, *args, **kwargs):
 
-        kwargs['primary_key'] = True
-        kwargs['default'] = make_id
+        kwargs["primary_key"] = True
+        kwargs["default"] = make_id
 
         super(PrimaryKeyField, self).__init__(*args, **kwargs)

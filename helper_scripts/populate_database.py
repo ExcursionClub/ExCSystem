@@ -1,6 +1,6 @@
 """Populate the database with a complete set of randomly generated data"""
 import helper_scripts.setup_django
-
+import os
 from random import choice, randint
 from typing import Any, List, Optional
 
@@ -19,23 +19,29 @@ from django.utils.timezone import timedelta
 
 build_basic_data.build_all()
 
-ADMIN_RFID = '0000000000'
-SYSTEM_RFID = '1111111111'
-PASSWORD = 'admin'
+ADMIN_RFID = "0000000000"
+SYSTEM_RFID = "1111111111"
+PASSWORD = os.environ.get("PASSWORD")
 
-SHAKA = 'shaka.png'
+SHAKA = "shaka.png"
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
 
 RFIDS_TO_HAND_OUT = [
-    '1000000000', '2000000000', '3000000000', '4000000000', '5000000000', '6000000000', '7000000000'
+    "1000000000",
+    "2000000000",
+    "3000000000",
+    "4000000000",
+    "5000000000",
+    "6000000000",
+    "7000000000",
 ]
 
 
 def gen_rfid() -> str:
     """generates a random and unique rfid"""
-    rfid = str(randint(1000000000, 9999999999))
+    rfid = str(randint(1_000_000_000, 9_999_999_999))
     if rfid in used_rfids:
         rfid = gen_rfid()
     else:
@@ -45,7 +51,7 @@ def gen_rfid() -> str:
 
 def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
-    phone = '+{}{}'.format(randint(1, 45), randint(1000000000, 9999999999))
+    phone = "+{}{}".format(randint(1, 45), randint(1_000_000_000, 9_999_999_999))
     if phone in used_phones:
         phone = gen_phone_num()
     else:
@@ -91,16 +97,16 @@ admin = Member.objects.create_superuser(
     "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
 )
 system = Member.objects.create_member(
-    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max,
-    password=PASSWORD
+    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max, password=PASSWORD
 )
 Staffer.objects.upgrade_to_staffer(
-    system, "ExCSystem",
-    "I am the Excursion computer system, and I do all the work nobody else can or wants to do"
+    system,
+    "excsystem",
+    "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
 )
 
 # Add dummy members
-print('Making members...')
+print("Making members...")
 total_number_members = 20
 number_new = int(total_number_members / 5)
 number_expired = int(total_number_members / 3)
@@ -119,11 +125,11 @@ for i in bar(range(total_number_members)):
     elif i > (number_new + number_expired):
         member.promote_to_active()
         member.save()
-print('')
-print('Made members')
+print("")
+print("Made members")
 
 # Add some staffers
-print('Making staffers...')
+print("Making staffers...")
 number_staffers = 5
 staffer_rfids = []
 bar = progressbar.ProgressBar()
@@ -138,7 +144,7 @@ for i in bar(range(number_staffers)):
 
 # Add staffer with known rfid
 member = generate_member()
-member.rfid = 1234567890
+member.rfid = 1_234_567_890
 member_rfids.append(member.rfid)
 staffer_rfids.append(member.rfid)
 nickname = member.first_name + "RFIDKnown"
@@ -146,8 +152,8 @@ member.save()
 staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
 staffer.save()
 
-print('')
-print('Made staffers')
+print("")
+print("Made staffers")
 
 # Add custom fields and geartypes
 field_data = {
@@ -158,7 +164,7 @@ field_data = {
         "label": "length",
         "name": "length",
         "required": True,
-        "help_text": "The length of the item"
+        "help_text": "The length of the item",
     },
     "capacity": {
         "data_type": "int",
@@ -169,7 +175,7 @@ field_data = {
         "required": True,
         "help_text": "The number of people that can fit inside",
         "min_value": 0,
-        "max_value": 10
+        "max_value": 10,
     },
     "size": {
         "data_type": "choice",
@@ -182,8 +188,8 @@ field_data = {
             ("", "Please choose a size"),
             ("S", "Small"),
             ("M", "Medium"),
-            ("L", "Large")
-        )
+            ("L", "Large"),
+        ),
     },
     "manufacturer": {
         "data_type": "string",
@@ -193,7 +199,7 @@ field_data = {
         "required": True,
         "help_text": "Manufacturer of the item",
         "min_length": 2,
-        "max_length": 30
+        "max_length": 30,
     },
     "is_special": {
         "data_type": "boolean",
@@ -201,7 +207,7 @@ field_data = {
         "label": "Is special",
         "name": "is_special",
         "required": False,
-        "help_text": "Is this a 'special' item?"
+        "help_text": "Is this a 'special' item?",
     },
     "a_rfid": {
         "data_type": "rfid",
@@ -209,54 +215,51 @@ field_data = {
         "label": "a rfid to something",
         "name": "a_rfid",
         "required": True,
-        "help_text": "Not sure for what, but if you need a rfid"
+        "help_text": "Not sure for what, but if you need a rfid",
     },
 }
 custom_fields = []
 for field_name in field_data.keys():
     field = CustomDataField(
         name=field_name,
-        data_type=field_data[field_name]['data_type'],
-        label=field_data[field_name]['label'],
-        required=field_data[field_name]['required'],
-        help_text=field_data[field_name]['help_text']
+        data_type=field_data[field_name]["data_type"],
+        label=field_data[field_name]["label"],
+        required=field_data[field_name]["required"],
+        help_text=field_data[field_name]["help_text"],
     )
-    if 'suffix' in field_data[field_name].keys():
-        field.suffix = field_data[field_name]['suffix']
+    if "suffix" in field_data[field_name].keys():
+        field.suffix = field_data[field_name]["suffix"]
     field.save()
     custom_fields.append(field)
 
 geartype_names = [
-    'Sleeping Bag',
-    'Sleeping Pad',
-    'Tent',
-    'Backpack',
-    'Climbing Shoes',
-    'Climbing Harness',
-    'Skis',
-    'Snowboard',
-    'Bow',
-    'Rope',
-    'Helmet',
-    'Camping Stove',
-    'Cooler',
-    'Ski Poles',
-    'Ski Boots',
-    'Snowboard Boots',
-    'Lantern',
-    'Water Filter',
-    'Crash Pad',
-    'Wetsuit',
+    "Sleeping Bag",
+    "Sleeping Pad",
+    "Tent",
+    "Backpack",
+    "Climbing Shoes",
+    "Climbing Harness",
+    "Skis",
+    "Snowboard",
+    "Bow",
+    "Rope",
+    "Helmet",
+    "Camping Stove",
+    "Cooler",
+    "Ski Poles",
+    "Ski Boots",
+    "Snowboard Boots",
+    "Lantern",
+    "Water Filter",
+    "Crash Pad",
+    "Wetsuit",
 ]
 departments = Department.objects.all()
 geartypes = []
 print("Making Gear Types")
 bar = progressbar.ProgressBar()
 for name in bar(geartype_names):
-    geartype = GearType(
-        name=name,
-        department=pick_random(departments),
-    )
+    geartype = GearType(name=name, department=pick_random(departments))
     geartype.save()
     # Add between 1 and 4 custom fields
     for i in range(1, randint(2, 5)):
@@ -265,7 +268,7 @@ for name in bar(geartype_names):
     geartypes.append(geartype)
 
 # Add gear
-print('Making Gear...')
+print("Making Gear...")
 number_gear = 60
 
 gear_rfids = []
@@ -282,15 +285,15 @@ for i in bar(range(number_gear)):
         gear_rfid=gear_rfid,
         geartype=geartype,
         gear_image=pick_random(all_gear_images),
-        **field_data
+        **field_data,
     )
     gear_rfids.append(gear_rfid)
 
-print('')
-print('Made gear')
+print("")
+print("Made gear")
 
 # Check out gear to random members
-print('Checking out random gear...')
+print("Checking out random gear...")
 gear_to_checkout = int(number_gear / 2)
 failed_checkouts = 0
 bar = progressbar.ProgressBar()
@@ -303,12 +306,12 @@ for i in bar(range(gear_to_checkout)):
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
         failed_checkouts += 1
-print('')
-print(f'{failed_checkouts} out of {gear_to_checkout} checkouts failed to complete')
+print("")
+print(f"{failed_checkouts} out of {gear_to_checkout} checkouts failed to complete")
 
 # Add gear with know RFID
 for gear_rfid in RFIDS_TO_HAND_OUT:
-    authorizer = '1234567890'
+    authorizer = "1234567890"
     department = pick_random(departments)
     gear_type = pick_random(geartypes)
     transaction, gear = Transaction.objects.add_gear(
@@ -316,19 +319,19 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
         gear_rfid,
         gear_type,
         gear_image=pick_random(all_gear_images),
-        **field_data
+        **field_data,
     )
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID
 for i in range(5):
     gear_rfid = pick_random(gear_rfids)
-    member_rfid = '1234567890'
-    authorizer = '1234567890'
+    member_rfid = "1234567890"
+    authorizer = "1234567890"
     try:
         logic.do_checkout(authorizer, member_rfid, gear_rfid)
     except ValidationError as e:
         pass
 
 
-print('Finished')
+print("Finished")

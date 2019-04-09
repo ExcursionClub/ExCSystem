@@ -1,12 +1,18 @@
 import os
 
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Group, Permission, PermissionsMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    Group,
+    Permission,
+    PermissionsMixin,
+)
 from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
-from ExCSystem import settings
+from excsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
 
 from .CertificationModels import Certification
@@ -15,14 +21,14 @@ from .fields.RFIDField import RFIDField
 
 def get_profile_pic_upload_location(instance, filename):
     """Save profile pictures in object store"""
-    extension = filename.split('.')[-1]
+    extension = filename.split(".")[-1]
 
     # Get the name with all special characters removed
-    name_str = ''.join(e for e in instance.get_full_name() if e.isalnum())
+    name_str = "".join(e for e in instance.get_full_name() if e.isalnum())
     year = datetime.now().year
 
     # Assemble file location and insert date data
-    location = f'ProfilePics/{year}/{name_str}.{extension}'
+    location = f"ProfilePics/{year}/{name_str}.{extension}"
     location = datetime.strftime(datetime.now(), location)
     return location
 
@@ -34,7 +40,7 @@ class MemberManager(BaseUserManager):
         birth and password.
         """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
 
         # Trying to add the max timedelta to now results in an overflow, so handle the superuser case separately
         try:
@@ -43,9 +49,7 @@ class MemberManager(BaseUserManager):
             expiration_date = datetime.max
 
         member = self.model(
-            email=self.normalize_email(email),
-            rfid=rfid,
-            date_expires=expiration_date,
+            email=self.normalize_email(email), rfid=rfid, date_expires=expiration_date
         )
         member.set_password(password)
         member.save(using=self._db)
@@ -60,17 +64,14 @@ class MemberManager(BaseUserManager):
         birth and password.
         """
         superuser = self.create_member(
-            email=email,
-            rfid=rfid,
-            membership_duration=timedelta.max,
-            password=password,
+            email=email, rfid=rfid, membership_duration=timedelta.max, password=password
         )
 
         # Add the rest of the data about the superuser
         superuser.is_admin = True
         superuser.first_name = "Master"
         superuser.last_name = "Admin"
-        superuser.phone_number = '+15555555555'
+        superuser.phone_number = "+15555555555"
         superuser.certifications.set(Certification.objects.all())
         superuser.save(using=self._db)
 
@@ -89,12 +90,14 @@ class StafferManager(models.Manager):
         :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = f'{staff_name}@excursionclubucsb.org'
+        exc_email = f"{staff_name}@excursionclubucsb.org"
         member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
         if autobiography is not None:
-            staffer = self.model(member=member, exc_email=exc_email, autobiography=autobiography)
+            staffer = self.model(
+                member=member, exc_email=exc_email, autobiography=autobiography
+            )
         else:
             staffer = self.model(member=member, exc_email=exc_email)
         staffer.save()
@@ -103,23 +106,20 @@ class StafferManager(models.Manager):
 
 class Member(AbstractBaseUser, PermissionsMixin):
     """This is the base model for all members (this includes staffers)"""
+
     objects = MemberManager()
 
     primary_key = PrimaryKeyField()
 
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
-    email = models.EmailField(
-        verbose_name='email address',
-        max_length=255,
-        unique=True,
-    )
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     rfid = RFIDField(verbose_name="RFID")
     image = models.ImageField(
         verbose_name="Profile Picture",
-        default="shaka.png",
+        default="shaka.webp",
         upload_to=get_profile_pic_upload_location,
-        blank=True
+        blank=True,
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
@@ -130,16 +130,18 @@ class Member(AbstractBaseUser, PermissionsMixin):
     group = models.CharField(default="Unset", max_length=30)
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
-    is_active = models.BooleanField(default=True)  # Use is_active_member to check actual activity
+    is_active = models.BooleanField(
+        default=True
+    )  # Use is_active_member to check actual activity
     certifications = models.ManyToManyField(Certification, blank=True)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['date_expires']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["date_expires"]
 
     @property
     def is_active_member(self):
         """Return true if the member has a valid membership"""
-        return self.has_permission('core.is_active_member')
+        return self.has_permission("core.is_active_member")
 
     @property
     def is_staff(self):
@@ -163,10 +165,11 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         """Return the full name if it is know, or 'New Member' if it is not"""
         if self.has_name():
-            return f'{self.first_name} {self.last_name}'
+            return f"{self.first_name} {self.last_name}"
         else:
-            return 'New Member'
-    get_full_name.short_description = 'Full Name'
+            return "New Member"
+
+    get_full_name.short_description = "Full Name"
 
     def get_short_name(self):
         # The user is identified by their email address
@@ -200,7 +203,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         """Move the member to the group of active members"""
         self.move_to_group("Member")
 
-    def extend_membership(self, duration, rfid='', password=''):
+    def extend_membership(self, duration, rfid="", password=""):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
 
         self.move_to_group("Just Joined")
@@ -220,24 +223,33 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_email(self, title, body, from_email, email_host_password):
         """Sends an email to the member"""
-        send_mail(title, body, from_email, [self.email],
-                  fail_silently=False,
-                  auth_user=from_email, auth_password=email_host_password)
+        send_mail(
+            title,
+            body,
+            from_email,
+            [self.email],
+            fail_silently=False,
+            auth_user=from_email,
+            auth_password=email_host_password,
+        )
 
     def send_membership_email(self, title, body):
         """Send an email to the member from the membership email"""
         self.send_email(
-            title, body,
+            title,
+            body,
             settings.MEMBERSHIP_EMAIL_HOST_USER,
-            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD
+            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD,
         )
 
     def send_intro_email(self, finish_signup_url):
         """Send the introduction email with the link to finish signing up to the member"""
         title = "Finish Signing Up"
         # get the absolute path equivalent of going up one level and then into the templates directory
-        templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
-        template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
+        templates_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.pardir, "templates")
+        )
+        template_file = open(os.path.join(templates_dir, "emails", "intro_email.txt"))
         template = template_file.read()
         body = template.format(finish_signup_url=finish_signup_url)
         self.send_membership_email(title, body)
@@ -245,10 +257,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def send_expire_soon_email(self):
         """Send an email warning the member that their membership will soon expire"""
         title = "Excursion Club Membership Expiring Soon!"
-        templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
-        template_file = open(os.path.join(templates_dir, 'emails', 'intro_email.txt'))
+        templates_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.pardir, "templates")
+        )
+        template_file = open(os.path.join(templates_dir, "emails", "intro_email.txt"))
         template = template_file.read()
-        body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
+        body = template.format(
+            member_name=self.get_full_name(), expiration_date=self.date_expires
+        )
         self.send_membership_email(title, body)
 
     def has_module_perms(self, app_label):
@@ -273,6 +289,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
 class Staffer(models.Model):
     """This model provides the staffer profile (all the extra data that needs to be known about staffers)"""
+
     objects = StafferManager()
 
     def __str__(self):
@@ -281,12 +298,12 @@ class Staffer(models.Model):
 
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
     exc_email = models.EmailField(
-        verbose_name='Official ExC Email',
-        max_length=255,
-        unique=True,
+        verbose_name="Official ExC Email", max_length=255, unique=True
     )
-    title = models.CharField(verbose_name="Position Title",
-                             default="Excursion Staff!", 
-                             max_length=30)
-    autobiography = models.TextField(verbose_name="Self Description of the staffer",
-                                     default="I am too lazy and lame to upload a bio!")
+    title = models.CharField(
+        verbose_name="Position Title", default="Excursion Staff!", max_length=30
+    )
+    autobiography = models.TextField(
+        verbose_name="Self Description of the staffer",
+        default="I am too lazy and lame to upload a bio!",
+    )

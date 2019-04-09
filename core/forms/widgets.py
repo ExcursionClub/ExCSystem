@@ -19,13 +19,13 @@ class RFIDWidget(widgets.TextInput):
     def get_context(self, name, value, attrs):
         context = super(RFIDWidget, self).get_context(name, value, attrs)
 
-        widget = context['widget']
-        widget['change_button_text'] = self.change_button_text
-        widget['allow_revert'] = self.allow_revert
-        widget['revert_button_text'] = self.revert_button_text
-        widget['scan_rfid_button_text'] = self.scan_rfid_button_text
+        widget = context["widget"]
+        widget["change_button_text"] = self.change_button_text
+        widget["allow_revert"] = self.allow_revert
+        widget["revert_button_text"] = self.revert_button_text
+        widget["scan_rfid_button_text"] = self.scan_rfid_button_text
 
-        context['widget'] = widget
+        context["widget"] = widget
         return context
 
 
@@ -44,7 +44,11 @@ class ExistingImageWidget(widgets.ChoiceWidget):
         For every sub_type, the dictionary will contain a list of images of that type
         """
         # To simplify, get the images already sorted by type
-        images = list(AlreadyUploadedImage.objects.filter(image_type=self.image_type).order_by("sub_type"))
+        images = list(
+            AlreadyUploadedImage.objects.filter(image_type=self.image_type).order_by(
+                "sub_type"
+            )
+        )
 
         image_options = {}
         current_type = ""

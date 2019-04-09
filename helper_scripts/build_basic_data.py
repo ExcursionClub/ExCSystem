@@ -9,7 +9,7 @@ from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.QuizModels import Answer, Question
 from django.contrib.sites.models import Site
-from ExCSystem import settings
+from excsystem import settings
 
 
 def build_all():
@@ -27,26 +27,8 @@ def build_images():
     sub_types = ["Fake SubType", "SubType I made up", "More Type", "Something"]
 
     # Build the default common shaka image
-    img = AlreadyUploadedImage.objects.create(
-        image_type="gear",
-        picture="shaka.webp"
-    )
+    img = AlreadyUploadedImage.objects.create(image_type="gear", picture="shaka.webp")
     img.save()
-
-    # Upload all the images in the GearPics folder
-    images_path = "GearPics"
-    for pic_file in os.listdir(os.path.join("media", images_path)):
-        if "git" in pic_file:
-            continue
-        pic_path = os.path.join(images_path, pic_file)
-        pic_name = pic_file.split(".")[0]
-        img = AlreadyUploadedImage.objects.create(
-            image_type="gear",
-            picture=pic_path,
-            name=pic_name,
-            sub_type=random.choice(sub_types)
-        )
-        img.save()
 
 
 def build_site():
@@ -60,11 +42,17 @@ def build_site():
 def build_permissions():
     """Run the script to build the group and permission structure"""
     from helper_scripts import build_permissions
+
     build_permissions.build_all()
 
 
-def save_question(question_name=None, question_text=None, choices=None, correct_answer_index=0,
-                  error_message="You're Wrong!"):
+def save_question(
+    question_name=None,
+    question_text=None,
+    choices=None,
+    correct_answer_index=0,
+    error_message="You're Wrong!",
+):
     # Make and save all of the answers
     answers = []
     for answer in choices:
@@ -78,7 +66,7 @@ def save_question(question_name=None, question_text=None, choices=None, correct_
         name=question_name,
         question_text=question_text,
         correct_answer=answers[correct_answer_index],
-        error_message=error_message
+        error_message=error_message,
     )
     question.answers.add(*answers)
     question.save()
@@ -93,10 +81,10 @@ def build_quiz_questions():
             ("wallow", "Wallow in you own incompetence"),
             ("arrest", "We have you arrested"),
             ("membership", "Forfeit your membership"),
-            ("lashes", "10 lashes before the mast")
+            ("lashes", "10 lashes before the mast"),
         ),
         correct_answer_index=2,
-        error_message="If you break a rule you lose your membership!"
+        error_message="If you break a rule you lose your membership!",
     )
     save_question(
         question_name="gear",
@@ -105,11 +93,10 @@ def build_quiz_questions():
             ("None", "Trick question, we don't check out gear"),
             ("1", "One of each type of gear"),
             ("2", "Two of each type of gear"),
-            ("unlimited", "as many as you'd like")
-
+            ("unlimited", "as many as you'd like"),
         ),
         correct_answer_index=1,
-        error_message="You can only check out one of each type of item!"
+        error_message="You can only check out one of each type of item!",
     )
     save_question(
         question_name="certification",
@@ -118,10 +105,10 @@ def build_quiz_questions():
             ("class", "Take a $500 class"),
             ("trip", "Go on a trip with a staffer"),
             ("date", "Bang a bunch of staffers"),
-            ("nudie", "Run naked around the block")
+            ("nudie", "Run naked around the block"),
         ),
         correct_answer_index=1,
-        error_message="To get certified just go on a trip with a staffer."
+        error_message="To get certified just go on a trip with a staffer.",
     )
     save_question(
         question_name="broken",
@@ -130,10 +117,10 @@ def build_quiz_questions():
             ("hide", "Hide it and hope no one notices"),
             ("run", "Run away, Simba! Run away and NEVER return!"),
             ("fine", "Pay a $10 fine for broken gear"),
-            ("tell", "Shit happens. Just let us know so we can fix it")
+            ("tell", "Shit happens. Just let us know so we can fix it"),
         ),
         correct_answer_index=3,
-        error_message="Just tell us it's broken so we can make sure it stays in good shape."
+        error_message="Just tell us it's broken so we can make sure it stays in good shape.",
     )
     save_question(
         question_name="staffers",
@@ -142,48 +129,59 @@ def build_quiz_questions():
             ("volunteers", "Student volunteers who do this for fun"),
             ("pros", "Well-paid professionals"),
             ("blokes", "Random blokes we found on the street"),
-            ("fake", "Fake news. There are no staffers")
+            ("fake", "Fake news. There are no staffers"),
         ),
         correct_answer_index=0,
-        error_message="All our staffers are volunteers!"
+        error_message="All our staffers are volunteers!",
     )
 
 
 def build_certifications():
     kayak_cert = Certification(
-        title='Kayaking',
-        requirements='1) Be able to swim, dammit\n'
-                     '2) Have received the safety talk, know about wind and current dangers\n'
-                     '3) Be able to take the kayak out into the surf safely\n'
-                     '4) Be able to get off of, flip, and get back into a kayak out in deep water\n'
-                     '5) Be able to bring the kayak back in to shore safely\n'
+        title="Kayaking",
+        requirements="1) Be able to swim, dammit\n"
+        "2) Have received the safety talk, know about wind and current dangers\n"
+        "3) Be able to take the kayak out into the surf safely\n"
+        "4) Be able to get off of, flip, and get back into a kayak out in deep water\n"
+        "5) Be able to bring the kayak back in to shore safely\n",
     )
     kayak_cert.save()
 
     sup_cert = Certification(
-        title='Stand Up Paddleboarding',
-        requirements='1) Be able to swim, dammit\n'
-                     '2) Have received the safety talk, know about wind and current dangers\n'
-                     '3) Be able to take the SUP out into the surf safely\n'
-                     '4) Be able to get off of, flip, and get back onto the SUP out in deep water\n'
-                     '5) Be able to bring the SUP back in to shore safely\n'
+        title="Stand Up Paddleboarding",
+        requirements="1) Be able to swim, dammit\n"
+        "2) Have received the safety talk, know about wind and current dangers\n"
+        "3) Be able to take the SUP out into the surf safely\n"
+        "4) Be able to get off of, flip, and get back onto the SUP out in deep water\n"
+        "5) Be able to bring the SUP back in to shore safely\n",
     )
     sup_cert.save()
 
 
 def build_departments():
     departments = [
-        'Camping', 'Backpacking', 'Rock Climbing', 'Skiing/Snowboarding', 'Kayaking', 'Paddleboarding',
-        'Surfing', 'Wetsuits', 'Mountaineering', 'Archery', 'Paintballing', 'Free Diving', 'Off-Road'
+        "Camping",
+        "Backpacking",
+        "Rock Climbing",
+        "Skiing/Snowboarding",
+        "Kayaking",
+        "Paddleboarding",
+        "Surfing",
+        "Wetsuits",
+        "Mountaineering",
+        "Archery",
+        "Paintballing",
+        "Free Diving",
+        "Off-Road",
     ]
 
     for dept in departments:
         name = dept
-        details = 'All the gear related to {}'.format(name)
+        details = "All the gear related to {}".format(name)
         department = Department(name=name, description=details)
         department.save()
-    print('')
-    print('Made departments')
+    print("")
+    print("Made departments")
 
 
 if __name__ == "__main__":

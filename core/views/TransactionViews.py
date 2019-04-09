@@ -5,7 +5,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 class TransactionListView(RestrictedViewList):
-
     def test_func(self):
         return self.request.user.has_permission("core.view_transaction")
 
@@ -29,7 +28,7 @@ class TransactionDetailView(UserPassesTestMixin, ModelDetailView):
             related_to_self = self.request.user.pk == transaction_to_view.member.pk
         except AttributeError:  # Transaction need not have a member
             related_to_self = False
-        is_staffer = self.request.user.has_permission('core.view_all_transactions')
+        is_staffer = self.request.user.has_permission("core.view_all_transactions")
         return is_staffer or related_to_self
 
     def post(self, request, *args, **kwargs):

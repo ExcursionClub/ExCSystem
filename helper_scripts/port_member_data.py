@@ -36,14 +36,16 @@ groups = {
     "member": Group.objects.get(name="Member"),
     "staff": Group.objects.get(name="Staff"),
 }
-kayak_cert = Certification.objects.get(title='Kayaking')
-sup_cert = Certification.objects.get(title='Stand Up Paddleboarding')
+kayak_cert = Certification.objects.get(title="Kayaking")
+sup_cert = Certification.objects.get(title="Stand Up Paddleboarding")
 try:
     bar = progressbar.ProgressBar(redirect_stdout=True)
     for user in bar(all_users):
         old_id = user[0]
         email = user[1]
-        phone = '+1' + user[2]  # Current phone numbers are not international, so assume they're US numbers
+        phone = (
+            "+1" + user[2]
+        )  # Current phone numbers are not international, so assume they're US numbers
 
         cursor.execute(f"SELECT rfid FROM rfid WHERE `table`='user' AND t_id={old_id};")
         try:
@@ -120,7 +122,7 @@ try:
             old_photo_path = os.path.join(OLD_PHOTO_DIR, old_photo_name)
             if os.path.exists(old_photo_path):
                 new_name = get_profile_pic_upload_location(member, old_photo_name)
-                photo = ImageFile(open(old_photo_path, 'rb'))
+                photo = ImageFile(open(old_photo_path, "rb"))
                 member.picture.save(new_name, photo)
         except Exception as ex:
             print(f"Failed to port photo for {email}! {ex}")
@@ -129,7 +131,9 @@ try:
         try:
             staff_name = user[10]
             if staff_name:
-                all_staffers.append(Staffer.objects.upgrade_to_staffer(member, staff_name))
+                all_staffers.append(
+                    Staffer.objects.upgrade_to_staffer(member, staff_name)
+                )
                 staffers_ported += 1
         except Exception as ex:
             print(f"Failed to make {email} into a staffer! {ex}")
@@ -139,6 +143,8 @@ finally:
     print(f"Ported the data for {members_ported}/{len(all_users)} members!")
     print("Skipped the following members!")
     print(skipped_members)
-    print(f"Ported data for {staffers_ported} out of {len(all_staffers)} detected staffers!")
+    print(
+        f"Ported data for {staffers_ported} out of {len(all_staffers)} detected staffers!"
+    )
     print("Skipped the following staffers")
     print(skipped_staffers)

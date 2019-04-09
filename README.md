@@ -42,6 +42,8 @@ Set environment variables:
 # Tell the server whether to run 'development' mode (all changes are local so you can break anything and not worry)
 export ENV_CONFIG=development
 
+# Create a password for test users
+export PASSWORD=
 
 # Tell the system how to connect to minio
 export MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE
@@ -64,20 +66,14 @@ During development however, we currently use the console email backend to print 
 
 ## Development
 ### Linting
-Use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
+This codebase uses the PEP 8 code style. We enforce this with Black.
 ```bash
-$ mypy <file> --ignore-missing-imports
+$ black . --exclude venv
 ```
 
-This codebase uses the PEP 8 code style. We enforce this with isort, yapf & flake8.
-In addition to the standards outlined in PEP 8, we have a few guidelines
-(see `setup.cfg` for more info):
 We use type hints to statically check types. These are optional, but serves as up-to-date documentation and can catch errors in deeply nested objects. Check a file by running
 ```bash
-$ mypy <file> --ignore-missing-imports
-$ flake8 <file>
-$ isort <file>
-$ yapf -i <file>
+$ mypy . --ignore-missing-imports
 ```
 
 ### Unit Tests
@@ -134,8 +130,8 @@ using the ResetDatabase.py file.
 To restart the database:
 
 ```bash
-$ python3.7 RestartDatabase.py
-$ python3.7 PopulateDatabase.py
+$ python3.7 task.py reset_database
+$ python3.7 task.py populate_database
 ```
 
 This will wipe everything that exists in the database, and generate random data for the new database.
@@ -147,6 +143,14 @@ work as it tries to add users with the same RFID and that would violate the uniq
 NOTE: **NEVER** push your dev database or migrations to the repository. The only migrations that should ever be pushed are 
 those that are intended to be applied on the production server.
 
+
+## Heroku
+Reset DB
+```bash
+$ heroku pg:reset DATABASE_URL --app APP_NAME
+$ heroku run python manage.py migrate --app APP_NAME
+$ heroku run python tasks.py populate_database --app APP_NAME
+```
 
 
 ## Run in production
