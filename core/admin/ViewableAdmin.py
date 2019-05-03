@@ -1,5 +1,4 @@
 from functools import update_wrapper
-
 from core.views.common import ModelDetailView
 from core.views.ViewList import RestrictedViewList
 from django.contrib.admin import ModelAdmin
@@ -147,3 +146,17 @@ class ViewableModelAdmin(ModelAdmin):
         # match any member url containing an id
         urlpatterns = super(ViewableModelAdmin, self).get_urls()
         return view_url + urlpatterns
+
+    def response_change(self, request, obj):
+        """
+        Fix linking to detail page in change messages
+
+        This function is called after a model is edited in the admin. The overridden function adds a change message
+        into the template, which includes a link to the change page. This is because the link is set to re-direct back
+        to the page the post request was made to (i.e. the change page). Here we just override that parameter to be a
+        link to the detail page before allowing execution to proceed as normal
+        """
+
+        request.path = request.path.replace("/change/", "/detail/")
+        return super(ViewableModelAdmin, self).response_change(request, obj)
+
