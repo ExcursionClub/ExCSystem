@@ -116,11 +116,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:7e199f16fce58590076641cf54963048ce659cf6154155c1bdd213d16eb72980",
-                "sha256:e27962c65d63a03ebd753e2883c255dedac5699bb42634094abceebaa97547cd"
+                "sha256:dabc8cfcff96446b0787ea337739ea286ec3949ec27a4790a9b4587817da5c5f",
+                "sha256:efac24159582581d8ac467b5fc23fea298b1c101e6947f37c2ab666ec18f6cde"
             ],
             "index": "pypi",
-            "version": "==8.10.8"
+            "version": "==8.10.10"
         },
         "pillow": {
             "hashes": [
