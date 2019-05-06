@@ -442,11 +442,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:385efb73a05f98d528639aa09b5be0c43bb428dd7d1f2e0ed7612e5765bb8c21",
-                "sha256:75ad52dbfbf0396b7753d238b6ff571db5e4355c765ad83723dd371528df63d7"
+                "sha256:2576a2776098f3902ef9540a84696e8e06bf18a337ce43a6a889e7fa5d26c4c5",
+                "sha256:82f2f2d657d7f9280de9f927ae56886d60b9ef7f3714eae92d12713cd9cb9e11"
             ],
             "index": "pypi",
-            "version": "==1.15.0"
+            "version": "==1.15.2"
         },
         "python-dateutil": {
             "hashes": [
