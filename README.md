@@ -173,14 +173,23 @@ Before you run the server it's advisable that you make sure all the following ar
   git pull
   ```
 - You are set to run with production settings (```echo $ENV_CONFIG``` gives ```production```)
-- All your environment variables are set with the newest values (see [Environment Variables](#environment-variables))
+- All your environment variables are set with the newest values ([Environment Variables](#environment-variables))
 - All python packages are installed correctly (run  ```pipenv install```)
+- Migrate the database ([Prepare Database](#prepare-database))
+- Collect static files ([Create folders for static files](#create-folders-for-static-files))
 
 #### Boot and Reboot:
-To run the server on the production machine
+To run the server on the production machine first kill the old python process
+```bash
+$ ps -ef | grep python
+ubuntu    7339  7220  0 07:01 pts/0    00:00:00 python3.7 -m pipenv shell
+$ kill -9 7339
+```
+
+Then remember to activate the virtual environment before starting the server
 ```bash
 pipenv shell
-nohup ENV_CONFIG="production"; python manage.py runserver &
+nohup python manage.py runserver &
 ```
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
