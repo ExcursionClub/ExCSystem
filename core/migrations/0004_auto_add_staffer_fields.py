@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='staffer',
             name='is_active',
-            field=models.BooleanField(null=True, default=False),
+            field=models.BooleanField(default=False, null=True),
         ),
         migrations.AlterField(
             model_name='staffer',
