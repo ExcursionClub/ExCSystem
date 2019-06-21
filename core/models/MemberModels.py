@@ -94,12 +94,11 @@ class StafferManager(models.Manager):
         member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
-        if autobiography is not None:
-            staffer = self.model(
-                member=member, exc_email=exc_email, autobiography=autobiography
-            )
-        else:
-            staffer = self.model(member=member, exc_email=exc_email)
+
+        staffer = self.model(member=member, exc_email=exc_email, nickname=staff_name)
+        staffer.is_active = True
+        if autobiography:
+            staffer.autobiography = None
         staffer.save()
         return staffer
 
@@ -292,21 +291,39 @@ class Staffer(models.Model):
 
     objects = StafferManager()
 
-    def __str__(self):
-        """Gives the staffer a string representation of the staffer name"""
+    member = models.OneToOneField(Member, on_delete=models.CASCADE)
+
+    is_active = models.BooleanField(
+        default=False)
+    nickname = models.CharField(
+        max_length=40,
+        blank=True,
+        null=True)
+    favorite_trips = models.TextField(
+        blank=True,
+        null=True,
+        help_text="List of your favorite trips, one per line")
+    exc_email = models.EmailField(
+        verbose_name='Official ExC Email',
+        max_length=255,
+        unique=True)
+    title = models.CharField(
+        verbose_name="Position Title",
+        default="Excursion Staff!",
+        max_length=30)
+    autobiography = models.TextField(
+        verbose_name="Self Description of the staffer",
+        default="I am too lazy and lame to upload a bio!",
+        null=True)
+
+    @property
+    def full_name(self):
+        """Gets the name of the member associated with this staffer"""
         return self.member.get_full_name()
 
-    member = models.OneToOneField(Member, on_delete=models.CASCADE)
-    nickname = models.CharField(max_length=40, blank=True, null=True)
-    favorite_trips = models.TextField(blank=True, null=True, help_text="List of your favorite trips, one per line")
-    exc_email = models.EmailField(
-        verbose_name="Official ExC Email", max_length=255, unique=True
-    )
-    title = models.CharField(verbose_name="Position Title",
-                             default="Excursion Staff!", 
-                             max_length=30)
-    autobiography = models.TextField(verbose_name="Self Description of the staffer",
-                                     default="I am too lazy and lame to upload a bio!")
+    def __str__(self):
+        """Gives the staffer a string representation of the staffer name"""
+        return str(self.member)
 
     @property
     def fav_trip_list(self):
