@@ -134,6 +134,7 @@ for i in bar(range(number_staffers)):
     nickname = member.first_name + str(i)
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+    staffer.is_active = choice([0, 1])
     staffer.save()
 
 # Add staffer with known rfid

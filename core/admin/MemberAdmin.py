@@ -143,3 +143,8 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
 class StafferAdmin(ViewableModelAdmin):
     detail_view_class = StafferDetailView
+
+    ordering = ('-is_active',)
+    search_fields = ('nickname', 'full_name', 'title', 'exc_email')
+    list_display = ('nickname', 'full_name', 'title', 'exc_email', 'is_active')
+
