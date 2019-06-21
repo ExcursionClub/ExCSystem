@@ -20,4 +20,14 @@ class Migration(migrations.Migration):
             name='nickname',
             field=models.CharField(blank=True, max_length=40, null=True),
         ),
+        migrations.AddField(
+            model_name='staffer',
+            name='is_active',
+            field=models.BooleanField(default=False),
+        ),
+        migrations.AlterField(
+            model_name='staffer',
+            name='autobiography',
+            field=models.TextField(default='I am too lazy and lame to upload a bio!', null=True, verbose_name='Self Description of the staffer'),
+        ),
     ]
