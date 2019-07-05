@@ -71,7 +71,7 @@ class MemberManager(BaseUserManager):
         superuser.is_admin = True
         superuser.first_name = "Master"
         superuser.last_name = "Admin"
-        superuser.phone_number = "+15555555555"
+        superuser.phone_number = "808-555-0125"
         superuser.certifications.set(Certification.objects.all())
         superuser.save(using=self._db)
 
