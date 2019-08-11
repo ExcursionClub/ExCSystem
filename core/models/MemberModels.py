@@ -99,6 +99,7 @@ class StafferManager(models.Manager):
         staffer.is_active = True
         if autobiography:
             staffer.autobiography = None
+
         staffer.save()
         return staffer
 
