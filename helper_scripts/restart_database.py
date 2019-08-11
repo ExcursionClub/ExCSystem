@@ -13,17 +13,10 @@ from django.core.management import call_command
 
 # Prepares the necessary paths
 basepath = os.getcwd()
-migrations_path = os.path.join(basepath, "core", "migrations")
 
 # Prepares python to be able to run django commands
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.development")
 django.setup()
-
-# Removes all the migration files and the entire database
-try:
-    shutil.rmtree(migrations_path)
-except FileNotFoundError:
-    print("migrations file does not exist. Moving on...")
 try:
     os.remove(os.path.join(basepath, "db.sqlite3"))
 except FileNotFoundError:
@@ -31,10 +24,6 @@ except FileNotFoundError:
 
 
 # Re-creates __init__.py in the migrations folder
-os.mkdir(migrations_path)
-open(os.path.join(migrations_path, "__init__.py"), "w")
-
-call_command("makemigrations")
 call_command("migrate")
 
 # To finish setup, run the following from the command line:
