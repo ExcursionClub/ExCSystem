@@ -117,7 +117,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     rfid = RFIDField(verbose_name="RFID")
     image = models.ImageField(
         verbose_name="Profile Picture",
-        default="shaka.webp",
+        default="shaka.png",
         upload_to=get_profile_pic_upload_location,
         blank=True,
     )
@@ -295,7 +295,7 @@ class Staffer(models.Model):
     member = models.OneToOneField(Member, on_delete=models.CASCADE)
 
     is_active = models.BooleanField(
-        default=False)
+        default=False, null=True)
     nickname = models.CharField(
         max_length=40,
         blank=True,
