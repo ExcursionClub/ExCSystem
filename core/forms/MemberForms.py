@@ -9,7 +9,7 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.urls import reverse
 from django.utils.timezone import timedelta
-from excsystem.settings import WEB_BASE
+from excsystem.settings import WEB_BASE, DEFAULT_IMG
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
@@ -258,6 +258,8 @@ class MemberFinishForm(forms.ModelForm):
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
         image = self.cleaned_data["image"]
 
+        if image.name == DEFAULT_IMG:
+            raise forms.ValidationError("Please upload your own profile picture!")
         if not hasattr(image, "size"):
             raise forms.ValidationError("Please upload a profile picture!")
         if image.size > self.max_image_bytes:
