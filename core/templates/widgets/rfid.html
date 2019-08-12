@@ -27,10 +27,9 @@
          $("#rfid").focus();
     }
 
-    $("#rfid").on("input", function(e) {
-        console.debug($("#rfid").value);
-        $("#rfid_disp").value = $("#rfid").value;
-    });
+    function updateValue(input) {
+        document.getElementById("rfid_disp").innerHTML = "New RFID:  " + input.value;
+    }
 
 
 </script>
@@ -41,9 +40,10 @@
     }
 </style>
 
-<div>
+<div style="padding-bottom: 60px;">
     <div class="stacked">
-        <input type="text" id="rfid" maxlength="{{ widget.max_length }}}">
+        <input type="text" id="rfid" maxlength="{{ widget.max_length }}}"
+               onkeyup="updateValue(this);" oninput="updateValue(this);">
     </div>
     <div class="stacked" id="original_display">
         <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
