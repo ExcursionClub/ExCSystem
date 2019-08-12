@@ -39,7 +39,7 @@ def build_images():
 
     # Build the default common shaka image
     try:
-        img = AlreadyUploadedImage.objects.create(image_type="gear", picture="shaka.webp")
+        img = AlreadyUploadedImage.objects.create(image_type="gear", picture=settings.DEFAULT_IMG)
         img.save()
     except IntegrityError:
         print(f'Shaka Image already exists')

@@ -23,8 +23,6 @@ ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
 PASSWORD = os.environ.get("PASSWORD")
 
-SHAKA = "shaka.png"
-
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
 
