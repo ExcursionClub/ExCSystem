@@ -1,30 +1,58 @@
-{% extends "widgets/dynamicTwoState.html" %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    function changeMode() {
+            $("#original_display").hide();
+            $("#changed_display").show();
+    }
 
-{% block script %}
+    function revertMode() {
+        $("#changed_display").hide();
+        $("#original_display").show();
+    }
 
-    window.addEventListener(
-        'keydown', function(e){
+    window.addEventListener('keydown',
+        function(e){
             if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){
                 if(e.target.nodeName=='INPUT'&&e.target.type=='text'){
                     e.preventDefault();
                     return false;
                 }
             }
-        },true);
+        },
+        true
+    );
+
 
     function focusRFID() {
-        $("#rfid").focus();
+         $("#rfid").focus();
     }
 
-{% endblock %}
+    $("#rfid").on("input", function(e) {
+        console.debug($("#rfid").value);
+        $("#rfid_disp").value = $("#rfid").value;
+    });
 
-{% block shared_display %}
-    <input id="rfid">
-{% endblock %}
 
-{% block original_display %}
-    <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
-{% endblock %}
+</script>
+<style>
+    .stacked {
+        position: absolute;
+        background: white;
+    }
+</style>
 
-{% block changed_display %}
-{% endblock %}
+<div>
+    <div class="stacked">
+        <input type="text" id="rfid" maxlength="{{ widget.max_length }}}">
+    </div>
+    <div class="stacked" id="original_display">
+        <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
+        <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
+        <div id="rfid_disp"></div>
+    </div>
+    <div id="changed_display" hidden>
+        {% if widget.allow_revert %}
+            <input id="revert_button" type="button" value="{{ widget.revert_button_text }}" onclick="revertMode()">
+        {% endif %}
+    </div>
+</div>
