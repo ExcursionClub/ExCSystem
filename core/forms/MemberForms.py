@@ -224,11 +224,20 @@ class MemberFinishForm(forms.ModelForm):
         try:
             self.fields = self.get_fields_subset(subset_field_names)
             html = self._html_output(
-                normal_row="<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>",
-                error_row='<tr><td colspan="2"><font color="red">%s</font></td></tr>',
+                normal_row='<tr%(html_class_attr)s>'
+                           '<th>%(label)s</th>'
+                           '<td style"width:20px">&nbsp&nbsp</td>'
+                           '<td>%(field)s%(help_text)s</td>'
+                           '</tr>',
+                error_row='<tr>'
+                          '<td colspan="3" style="height:40px">&nbsp</td>'
+                          '</tr>'
+                          '<tr>'
+                          '<td colspan="3" style="color:red">%s</td>'
+                          '</tr>',
                 row_ender="</td></tr>",
                 help_text_html='<br /><span class="helptext">%s</span>',
-                errors_on_separate_row=False,
+                errors_on_separate_row=True,
             )
         finally:
             self.fields = original_fields
