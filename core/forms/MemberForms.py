@@ -35,7 +35,7 @@ class MemberCreationForm(forms.ModelForm):
     username = forms.EmailField(label="Email")
     rfid = RFIDField(
         label="RFID",
-        help_text="If you're renewing, this will replace your current rfid tag",
+        help_text="&nbsp &nbsp &nbsp If you're renewing, this will replace your current rfid tag",
         required=False,
     )
     password1 = forms.CharField(
