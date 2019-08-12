@@ -1,10 +1,11 @@
 import os
-from core.models.GearModels import Gear
 from django.core.mail import send_mail
-from core.models.MemberModels import Member
 
 
 def get_all_rfids():
+    from core.models.MemberModels import Member
+    from core.models.GearModels import Gear
+
     """Return a list of all the RFIDs currently in use by the system"""
     # TODO: is there a better way to do this? This approach might get slow
     member_rfids = [member.rfid for member in Member.objects.all()]
@@ -17,7 +18,7 @@ def get_all_rfids():
 
 def get_email_template(name):
     """Get the absolute path equivalent of going up one level and then into the templates directory"""
-    templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, 'templates'))
+    templates_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'templates'))
     template_file = open(os.path.join(templates_dir, 'emails', f'{name}.txt'))
     return template_file.read()
 
