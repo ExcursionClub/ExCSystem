@@ -117,7 +117,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     rfid = RFIDField(verbose_name="RFID")
     image = models.ImageField(
         verbose_name="Profile Picture",
-        default="shaka.png",
+        default=settings.DEFAULT_IMG,
         upload_to=get_profile_pic_upload_location,
         blank=True,
     )
