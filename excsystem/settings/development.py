@@ -22,6 +22,9 @@ MINIO_STORAGE_STATIC_USE_PRESIGNED = True
 MINIO_STORAGE_MEDIA_USE_PRESIGNED = True
 
 
+CSRF_COOKIE_SECURE=False
+
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",

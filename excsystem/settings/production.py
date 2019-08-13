@@ -19,6 +19,12 @@ AWS_LOCATION = os.environ.get("AWS_LOCATION")
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
 
+CSRF_COOKIE_SECURE = True
+X_FRAME_OPTIONS = "DENY"
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
 ALLOWED_HOSTS = [".excursionclub.info", os.environ.get("NGINX_HOST_IP")]

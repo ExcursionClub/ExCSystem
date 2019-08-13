@@ -87,7 +87,12 @@ class StafferDetailView(UserPassesTestMixin, ModelDetailView):
 
     raise_exception = True
     permission_denied_message = "You are not allowed to view staffer details!"
+    template_name = "admin/core/member/staffer_detail.html"
 
     def test_func(self):
         """Only allow members to see the detail page if it is for themselves, or they are staffers"""
-        return self.request.user.has_permission("core.view_staffer")
+        return self.request.user.has_permission('core.view_staffer')
+
+    def get_context_data(self, **kwargs):
+        context = super(StafferDetailView, self).get_context_data(**kwargs)
+        return context
