@@ -1,5 +1,3 @@
-import os
-
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -14,6 +12,7 @@ from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
 from excsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
+from core.convinience import get_email_template
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
@@ -245,26 +244,22 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def send_intro_email(self, finish_signup_url):
         """Send the introduction email with the link to finish signing up to the member"""
         title = "Finish Signing Up"
-        # get the absolute path equivalent of going up one level and then into the templates directory
-        templates_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.pardir, "templates")
-        )
-        template_file = open(os.path.join(templates_dir, "emails", "intro_email.txt"))
-        template = template_file.read()
+        template = get_email_template('intro_email')
         body = template.format(finish_signup_url=finish_signup_url)
         self.send_membership_email(title, body)
 
-    def send_expire_soon_email(self):
+    def send_expires_soon_email(self):
         """Send an email warning the member that their membership will soon expire"""
         title = "Excursion Club Membership Expiring Soon!"
-        templates_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.pardir, "templates")
-        )
-        template_file = open(os.path.join(templates_dir, "emails", "intro_email.txt"))
-        template = template_file.read()
-        body = template.format(
-            member_name=self.get_full_name(), expiration_date=self.date_expires
-        )
+        template = get_email_template('expire_soon_email')
+        body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
+        self.send_membership_email(title, body)
+
+    def send_expired_email(self):
+        """Send an email warning the member that their membership will soon expire"""
+        title = "Excursion Club Membership Expired!"
+        template = get_email_template('expired_email')
+        body = template.format(member_name=self.get_full_name(), today=self.date_expires)
         self.send_membership_email(title, body)
 
     def has_module_perms(self, app_label):
