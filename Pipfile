@@ -25,6 +25,6 @@ psycopg2-binary = "==2.8.3"
 [dev-packages]
 black = "==18.9b0"
 django-minio-storage = "*"
-mypy = "==0.711"
+mypy = "==0.720"
 coverage = "*"
 pre-commit = "*"
