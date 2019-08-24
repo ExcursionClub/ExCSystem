@@ -29,7 +29,7 @@
 
 
     function focusRFID() {
-         $("#rfid").focus();
+         $("#id_rfid").focus();
     }
 
     function updateValue(input) {
@@ -53,8 +53,12 @@
 
 <div id='change-parent' class="big-padding">
     <div class="stacked">
-        <input type="text" id="rfid" maxlength="{{ widget.max_length }}}"
-               onkeyup="updateValue(this);" oninput="updateValue(this);">
+        <input type="text" name="{{ widget.name }}" onkeyup="updateValue(this);" oninput="updateValue(this);"
+               {% if widget.value != None %}
+                    value="{{ widget.value|stringformat:'s' }}"
+               {% endif %}
+               {% include "django/forms/widgets/attrs.html" %}
+        >
     </div>
     <div class="stacked" id="original_display">
         <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
