@@ -1,0 +1,91 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block extrahead %}{{ block.super }}
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/profileDetail.css' %}" id="profile-css">
+{% endblock %}
+
+{% block content %}
+
+<div class="container emp-profile">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="profile-img">
+                <img src="{{ object.member.image.url }}" alt="Staffer Profile Picture" height="200px" align="left"/>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="profile-head">
+                <h5> {{ object.member.get_full_name }} </h5>
+                <h6> {{ object.title }} </h6>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <form action="{{ object.edit_profile_url }}">
+                <input type="submit" class="profile-edit-btn" value="Edit">
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <div class="profile-work">
+                <br/>
+                <p>FAVORITE TRIPS</p>
+                {% for trip_type in object.fav_trip_list %}
+                    {{ trip_type }}<br/>
+                {% endfor %}
+                {% if object.has_no_favorites %}
+                    I'm stoked on all kinds of things!<br/>
+                {% endif %}
+                <br/><br/>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="tab-content profile-tab" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel">
+                    <div class="row">
+                        <div class="col-3">
+                            <label>Nickname</label>
+                        </div>
+                        <div class="col-9">
+                            <p>{{ object.nickname}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label>Email</label>
+                        </div>
+                        <div class="col-9">
+                            <p>{{ object.exc_email}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label>Date Joined</label>
+                        </div>
+                        <div class="col-9">
+                            <p>{{ object.member.date_joined }}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label>About Me</label>
+                        </div>
+                        <div class="col-9">
+                            <p>{{ object.autobiography}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+
+{% endblock %}

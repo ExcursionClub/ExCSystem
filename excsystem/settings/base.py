@@ -5,6 +5,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 MEDIA_URL = "/media/"
+DEFAULT_IMG = "shaka.png"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -70,9 +71,6 @@ TEMPLATES = [
 WSGI_APPLICATION = "excsystem.wsgi.application"
 
 AUTH_USER_MODEL = "core.Member"
-
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {

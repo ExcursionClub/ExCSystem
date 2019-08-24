@@ -9,16 +9,27 @@ from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.QuizModels import Answer, Question
 from django.contrib.sites.models import Site
+from django.db.utils import IntegrityError
+
 from excsystem import settings
 
 
 def build_all():
-    build_site()
-    build_permissions()
-    build_quiz_questions()
-    build_certifications()
-    build_departments()
-    build_images()
+
+    build_funcs = [
+        build_site,
+        build_permissions,
+        build_quiz_questions,
+        build_certifications,
+        build_departments,
+        build_images
+    ]
+    for func in build_funcs:
+        try:
+            func()
+        except IntegrityError as ex:
+            print(f'  Skipping Error: {ex}')
+            pass
 
 
 def build_images():
@@ -27,8 +38,11 @@ def build_images():
     sub_types = ["Fake SubType", "SubType I made up", "More Type", "Something"]
 
     # Build the default common shaka image
-    img = AlreadyUploadedImage.objects.create(image_type="gear", picture="shaka.webp")
-    img.save()
+    try:
+        img = AlreadyUploadedImage.objects.create(image_type="gear", picture=settings.DEFAULT_IMG)
+        img.save()
+    except IntegrityError:
+        print(f'Shaka Image already exists')
 
 
 def build_site():
@@ -61,15 +75,19 @@ def save_question(
         answers.append(ans)
 
     # make the question and relate all the answers
-    question = Question.objects.create(
-        usage="membership",
-        name=question_name,
-        question_text=question_text,
-        correct_answer=answers[correct_answer_index],
-        error_message=error_message,
-    )
-    question.answers.add(*answers)
-    question.save()
+    try:
+        question = Question.objects.create(
+            usage="membership",
+            name=question_name,
+            question_text=question_text,
+            correct_answer=answers[correct_answer_index],
+            error_message=error_message,
+        )
+        question.answers.add(*answers)
+        question.save()
+    except IntegrityError as ex:
+        print(f'Question {question_name} already exists. Skipping!')
+        pass
 
 
 def build_quiz_questions():

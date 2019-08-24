@@ -23,8 +23,6 @@ ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
 PASSWORD = os.environ.get("PASSWORD")
 
-SHAKA = "shaka.png"
-
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
 
@@ -93,17 +91,25 @@ def generate_member() -> Member:
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser(
-    "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
-)
-system = Member.objects.create_member(
-    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max, password=PASSWORD
-)
-Staffer.objects.upgrade_to_staffer(
-    system,
-    "excsystem",
-    "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
-)
+try:
+    admin = Member.objects.create_superuser(
+        "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
+    )
+except IntegrityError:
+    pass  # If admin already exists don't try to re-make it
+try:
+    system = Member.objects.create_member(
+        "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max, password=PASSWORD
+    )
+except IntegrityError:
+    pass  # If system already exists don't try to re-make it
+else:
+    Staffer.objects.upgrade_to_staffer(
+        system,
+        "excsystem",
+        "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
+    )
+
 
 # Add dummy members
 print("Making members...")
@@ -140,17 +146,21 @@ for i in bar(range(number_staffers)):
     nickname = member.first_name + str(i)
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+    staffer.is_active = choice([0, 1])
     staffer.save()
 
 # Add staffer with known rfid
-member = generate_member()
-member.rfid = 1_234_567_890
-member_rfids.append(member.rfid)
-staffer_rfids.append(member.rfid)
-nickname = member.first_name + "RFIDKnown"
-member.save()
-staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
-staffer.save()
+try:
+    member = generate_member()
+    member.rfid = 1_234_567_890
+    member_rfids.append(member.rfid)
+    staffer_rfids.append(member.rfid)
+    nickname = member.first_name + "RFIDKnown"
+    member.save()
+    staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+    staffer.save()
+except IntegrityError as ex:
+    print('Member with known RFID already exists! Skipping')
 
 print("")
 print("Made staffers")
@@ -229,7 +239,11 @@ for field_name in field_data.keys():
     )
     if "suffix" in field_data[field_name].keys():
         field.suffix = field_data[field_name]["suffix"]
-    field.save()
+    try:
+        field.save()
+    except IntegrityError as ex:
+        print(f'Custom data field {field_name} already exists!')
+        field = CustomDataField.objects.get(name=field_name)
     custom_fields.append(field)
 
 geartype_names = [
@@ -314,13 +328,16 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = "1234567890"
     department = pick_random(departments)
     gear_type = pick_random(geartypes)
-    transaction, gear = Transaction.objects.add_gear(
-        authorizer,
-        gear_rfid,
-        gear_type,
-        gear_image=pick_random(all_gear_images),
-        **field_data,
-    )
+    try:
+        transaction, gear = Transaction.objects.add_gear(
+            authorizer,
+            gear_rfid,
+            gear_type,
+            gear_image=pick_random(all_gear_images),
+            **field_data,
+        )
+    except (IntegrityError, ValidationError) as ex:
+        pass
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

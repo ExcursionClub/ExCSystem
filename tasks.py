@@ -15,7 +15,7 @@ def reset_database():
 
 
 tasks = {
-    "expire_member": expire_members,
+    "expire_members": expire_members,
     "update_listserv": update_listserv,
     "get_email_file": get_email_file,
     "build_permissions": build_all_perms,
