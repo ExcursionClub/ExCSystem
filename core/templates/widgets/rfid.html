@@ -1,13 +1,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script>
+
     function changeMode() {
             $("#original_display").hide();
             $("#changed_display").show();
+            $("#change-parent").addClass("small-padding");
+            $("#change-parent").removeClass("big-padding");
     }
 
     function revertMode() {
         $("#changed_display").hide();
         $("#original_display").show();
+        $("#change-parent").addClass("big-padding");
+        $("#change-parent").removeClass("small-padding")
     }
 
     window.addEventListener('keydown',
@@ -38,9 +43,15 @@
         position: absolute;
         background: white;
     }
+    .big-padding {
+        padding-bottom: 52px;
+    }
+    .small-padding {
+        padding-bottom: 15px;
+    }
 </style>
 
-<div style="padding-bottom: 60px;">
+<div id='change-parent' class="big-padding">
     <div class="stacked">
         <input type="text" id="rfid" maxlength="{{ widget.max_length }}}"
                onkeyup="updateValue(this);" oninput="updateValue(this);">
