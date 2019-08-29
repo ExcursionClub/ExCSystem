@@ -12,18 +12,28 @@
     }
 
     {% block script %}{% endblock %}
+
+
 </script>
+<style>
+    .stacked {
+        position: absolute;
+        background: white;
+    }
+</style>
 
 <div>
-    {% block shared_display %} {% endblock %}
-</div>
-<div id="original_display">
-        {% block original_display %}{% endblock %}
-        <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
-</div>
-<div id="changed_display" hidden>
-    {% block changed_display %}{% endblock %}
-    {% if widget.allow_revert %}
-        <input id="revert_button" type="button" value="{{ widget.revert_button_text }}" onclick="revertMode()">
-    {% endif %}
+    <div class="stacked" >
+        {% block shared_display %} {% endblock %}
+    </div>
+    <div class="stacked" id="original_display">
+            {% block original_display %}{% endblock %}
+            <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
+    </div>
+    <div class="stacked" id="changed_display" hidden>
+        {% block changed_display %}{% endblock %}
+        {% if widget.allow_revert %}
+            <input id="revert_button" type="button" value="{{ widget.revert_button_text }}" onclick="revertMode()">
+        {% endif %}
+    </div>
 </div>

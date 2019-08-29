@@ -35,7 +35,7 @@ class MemberCreationForm(forms.ModelForm):
     username = forms.EmailField(label="Email")
     rfid = RFIDField(
         label="RFID",
-        help_text="If you're renewing, this will replace your current rfid tag",
+        help_text="&nbsp &nbsp &nbsp If you're renewing, this will replace your current rfid tag",
         required=False,
     )
     password1 = forms.CharField(
@@ -75,7 +75,7 @@ class MemberCreationForm(forms.ModelForm):
         rfid = self.cleaned_data["rfid"]
 
         if rfid in get_all_rfids():
-            raise forms.ValidationError("This RFID is already in use!")
+            raise forms.ValidationError(f"The RFID '{rfid}' is already in use!")
 
         # If a member is renewing, the RFID can either be a new rfid, or empty
         if self.referenced_member and not (len(rfid) == 0 or len(rfid) == 10):
@@ -83,7 +83,7 @@ class MemberCreationForm(forms.ModelForm):
 
         # If a member is not renewing, then rfid must be present
         if not self.referenced_member and len(rfid) != 10:
-            raise forms.ValidationError("This is not a valid 10 digit RFID!")
+            raise forms.ValidationError(f"'{rfid}' is not a valid 10 digit RFID!")
 
         return rfid
 
