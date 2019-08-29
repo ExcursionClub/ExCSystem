@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_auto_fix_member_post_overhaul'),
+        ('core', '0003_auto_20190116_2153'),
     ]
 
     operations = [
