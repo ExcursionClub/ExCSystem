@@ -5,6 +5,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 MEDIA_URL = "/media/"
+DEFAULT_IMG = "shaka.png"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -83,12 +84,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-X_FRAME_OPTIONS = "DENY"
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
 
 PHONENUMBER_DB_FORMAT = "INTERNATIONAL"
 PHONENUMBER_DEFAULT_FORMAT = "INTERNATIONAL"

@@ -8,6 +8,7 @@ from helper_scripts import build_basic_data
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
+from phonenumbers import data, is_valid_number, parse
 from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import CustomDataField, GearType
@@ -22,8 +23,7 @@ build_basic_data.build_all()
 ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
 PASSWORD = os.environ.get("PASSWORD")
-
-SHAKA = "shaka.png"
+PHONE_PREFIXES = list(data._COUNTRY_CODE_TO_REGION_CODE.keys())
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
@@ -51,7 +51,12 @@ def gen_rfid() -> str:
 
 def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
-    phone = "+{}{}".format(randint(1, 45), randint(1_000_000_000, 9_999_999_999))
+    phone = "+1 (909) {local}".format(country=choice(PHONE_PREFIXES), local=randint(100_0000, 999_9999))
+    phone_obj = parse(phone)
+    valid = is_valid_number(phone_obj)
+    if not valid:
+        is_valid_number(phone_obj)
+        phone = gen_phone_num()
     if phone in used_phones:
         phone = gen_phone_num()
     else:
@@ -93,17 +98,25 @@ def generate_member() -> Member:
 
 
 # Add the master admin  and excursion system accounts
-admin = Member.objects.create_superuser(
-    "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
-)
-system = Member.objects.create_member(
-    "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max, password=PASSWORD
-)
-Staffer.objects.upgrade_to_staffer(
-    system,
-    "excsystem",
-    "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
-)
+try:
+    admin = Member.objects.create_superuser(
+        "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
+    )
+except IntegrityError:
+    pass  # If admin already exists don't try to re-make it
+try:
+    system = Member.objects.create_member(
+        "s@e.org", SYSTEM_RFID, membership_duration=timedelta.max, password=PASSWORD
+    )
+except IntegrityError:
+    pass  # If system already exists don't try to re-make it
+else:
+    Staffer.objects.upgrade_to_staffer(
+        system,
+        "excsystem",
+        "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
+    )
+
 
 # Add dummy members
 print("Making members...")
@@ -140,17 +153,21 @@ for i in bar(range(number_staffers)):
     nickname = member.first_name + str(i)
     member.save()
     staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+    staffer.is_active = choice([0, 1])
     staffer.save()
 
 # Add staffer with known rfid
-member = generate_member()
-member.rfid = 1_234_567_890
-member_rfids.append(member.rfid)
-staffer_rfids.append(member.rfid)
-nickname = member.first_name + "RFIDKnown"
-member.save()
-staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
-staffer.save()
+try:
+    member = generate_member()
+    member.rfid = 1_234_567_890
+    member_rfids.append(member.rfid)
+    staffer_rfids.append(member.rfid)
+    nickname = member.first_name + "RFIDKnown"
+    member.save()
+    staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+    staffer.save()
+except IntegrityError as ex:
+    print('Member with known RFID already exists! Skipping')
 
 print("")
 print("Made staffers")
@@ -229,7 +246,11 @@ for field_name in field_data.keys():
     )
     if "suffix" in field_data[field_name].keys():
         field.suffix = field_data[field_name]["suffix"]
-    field.save()
+    try:
+        field.save()
+    except IntegrityError as ex:
+        print(f'Custom data field {field_name} already exists!')
+        field = CustomDataField.objects.get(name=field_name)
     custom_fields.append(field)
 
 geartype_names = [
@@ -314,13 +335,16 @@ for gear_rfid in RFIDS_TO_HAND_OUT:
     authorizer = "1234567890"
     department = pick_random(departments)
     gear_type = pick_random(geartypes)
-    transaction, gear = Transaction.objects.add_gear(
-        authorizer,
-        gear_rfid,
-        gear_type,
-        gear_image=pick_random(all_gear_images),
-        **field_data,
-    )
+    try:
+        transaction, gear = Transaction.objects.add_gear(
+            authorizer,
+            gear_rfid,
+            gear_type,
+            gear_image=pick_random(all_gear_images),
+            **field_data,
+        )
+    except (IntegrityError, ValidationError) as ex:
+        pass
     gear_rfids.append(gear_rfid)
 
 # Check out gear with known RFID

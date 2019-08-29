@@ -11,6 +11,7 @@ class RFIDWidget(widgets.TextInput):
     revert_button_text = "Hide Manual Input"
     scan_rfid_button_text = "Click to Scan RFID"
     template_name = "widgets/rfid.html"
+    max_length = 10
 
     def __init__(self, attrs=None):
         # TODO: Add option to modify default values of class vars here
@@ -24,6 +25,7 @@ class RFIDWidget(widgets.TextInput):
         widget["allow_revert"] = self.allow_revert
         widget["revert_button_text"] = self.revert_button_text
         widget["scan_rfid_button_text"] = self.scan_rfid_button_text
+        widget["max_length"] = self.max_length
 
         context["widget"] = widget
         return context

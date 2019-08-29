@@ -1,8 +1,10 @@
+from helper_scripts import setup_django
+
 from sys import argv
 
 from django.utils.timezone import datetime, timedelta
 
-from helper_scripts.listserv_interface import *
+from core.models.MemberModels import Member
 
 
 def test_task():
@@ -17,20 +19,21 @@ def update_listserv():
 
 def expire_members():
 
-    now = datetime.now()
-    expires_in_week = (now + timedelta(days=6), now + timedelta(days=8))
+    now = datetime.date(datetime.now())
+    expires_in_week = now + timedelta(days=7)
 
     for member in Member.objects.all():
 
         # Only check if the member is expired if the are active.
-        if member.is_active_member:
+        if member.group == 'Member' or member.group == 'Just Joined':
 
             # Expire members
             if member.date_expires < now:
                 member.expire()
+                member.send_expired_email()
 
             # If members will expire soon, send them an email
-            elif expires_in_week[0] < member.date_expires < expires_in_week[1]:
+            elif member.date_expires == expires_in_week:
                 member.send_expires_soon_email()
 
 

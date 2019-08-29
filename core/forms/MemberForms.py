@@ -9,7 +9,7 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.urls import reverse
 from django.utils.timezone import timedelta
-from excsystem.settings import WEB_BASE
+from excsystem.settings import WEB_BASE, DEFAULT_IMG
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
@@ -35,7 +35,7 @@ class MemberCreationForm(forms.ModelForm):
     username = forms.EmailField(label="Email")
     rfid = RFIDField(
         label="RFID",
-        help_text="If you're renewing, this will replace your current rfid tag",
+        help_text="&nbsp &nbsp &nbsp If you're renewing, this will replace your current rfid tag",
         required=False,
     )
     password1 = forms.CharField(
@@ -75,7 +75,7 @@ class MemberCreationForm(forms.ModelForm):
         rfid = self.cleaned_data["rfid"]
 
         if rfid in get_all_rfids():
-            raise forms.ValidationError("This RFID is already in use!")
+            raise forms.ValidationError(f"The RFID '{rfid}' is already in use!")
 
         # If a member is renewing, the RFID can either be a new rfid, or empty
         if self.referenced_member and not (len(rfid) == 0 or len(rfid) == 10):
@@ -83,7 +83,7 @@ class MemberCreationForm(forms.ModelForm):
 
         # If a member is not renewing, then rfid must be present
         if not self.referenced_member and len(rfid) != 10:
-            raise forms.ValidationError("This is not a valid 10 digit RFID!")
+            raise forms.ValidationError(f"'{rfid}' is not a valid 10 digit RFID!")
 
         return rfid
 
@@ -224,11 +224,20 @@ class MemberFinishForm(forms.ModelForm):
         try:
             self.fields = self.get_fields_subset(subset_field_names)
             html = self._html_output(
-                normal_row="<tr%(html_class_attr)s><th>%(label)s</th><td>%(errors)s%(field)s%(help_text)s</td></tr>",
-                error_row='<tr><td colspan="2"><font color="red">%s</font></td></tr>',
+                normal_row='<tr%(html_class_attr)s>'
+                           '<th>%(label)s</th>'
+                           '<td style"width:20px">&nbsp&nbsp</td>'
+                           '<td>%(field)s%(help_text)s</td>'
+                           '</tr>',
+                error_row='<tr>'
+                          '<td colspan="3" style="height:40px">&nbsp</td>'
+                          '</tr>'
+                          '<tr>'
+                          '<td colspan="3" style="color:red">%s</td>'
+                          '</tr>',
                 row_ender="</td></tr>",
                 help_text_html='<br /><span class="helptext">%s</span>',
-                errors_on_separate_row=False,
+                errors_on_separate_row=True,
             )
         finally:
             self.fields = original_fields
@@ -258,6 +267,8 @@ class MemberFinishForm(forms.ModelForm):
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
         image = self.cleaned_data["image"]
 
+        if image.name == DEFAULT_IMG:
+            raise forms.ValidationError("Please upload your own profile picture!")
         if not hasattr(image, "size"):
             raise forms.ValidationError("Please upload a profile picture!")
         if image.size > self.max_image_bytes:

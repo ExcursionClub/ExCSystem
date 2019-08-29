@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ValidationError
+from core.forms.widgets import RFIDWidget
 
 
 class RFIDField(forms.CharField):
@@ -7,7 +8,7 @@ class RFIDField(forms.CharField):
     Wrapper around CharField changing the default widget and adding validation
     """
 
-    # widget = RFIDWidget
+    widget = RFIDWidget
 
     def __init__(self, max_length=10, min_length=10, **kwargs):
         super().__init__(max_length=max_length, min_length=min_length, **kwargs)

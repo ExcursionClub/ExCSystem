@@ -1,5 +1,6 @@
 from os import path
 
+from excsystem.settings import DEFAULT_IMG
 from django.db import models
 from django.utils.html import format_html
 
@@ -15,7 +16,7 @@ def get_upload_path(instance, filename):
 class AlreadyUploadedImage(models.Model):
 
     name = models.CharField(max_length=50, unique=True)
-    picture = models.ImageField(upload_to=get_upload_path, default="shaka.webp")
+    picture = models.ImageField(upload_to=get_upload_path, default=DEFAULT_IMG)
     upload_date = models.DateTimeField(auto_now_add=True)
 
     image_type = models.CharField(
