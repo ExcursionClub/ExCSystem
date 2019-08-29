@@ -8,7 +8,7 @@ from helper_scripts import build_basic_data
 import kiosk.CheckoutLogic as logic
 import names
 import progressbar
-from phonenumbers.data import _COUNTRY_CODE_TO_REGION_CODE
+from phonenumbers import data, is_valid_number, parse
 from core.models.DepartmentModels import Department
 from core.models.FileModels import AlreadyUploadedImage
 from core.models.GearModels import CustomDataField, GearType
@@ -23,7 +23,7 @@ build_basic_data.build_all()
 ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
 PASSWORD = os.environ.get("PASSWORD")
-PHONE_PREFIXES = list(_COUNTRY_CODE_TO_REGION_CODE.keys())
+PHONE_PREFIXES = list(data._COUNTRY_CODE_TO_REGION_CODE.keys())
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
@@ -51,7 +51,12 @@ def gen_rfid() -> str:
 
 def gen_phone_num() -> str:
     """Generates a random and unique phone number"""
-    phone = "+{}{}".format(choice(PHONE_PREFIXES), randint(100_100_0000, 999_999_9999))
+    phone = "+1 (909) {local}".format(country=choice(PHONE_PREFIXES), local=randint(100_0000, 999_9999))
+    phone_obj = parse(phone)
+    valid = is_valid_number(phone_obj)
+    if not valid:
+        is_valid_number(phone_obj)
+        phone = gen_phone_num()
     if phone in used_phones:
         phone = gen_phone_num()
     else:
