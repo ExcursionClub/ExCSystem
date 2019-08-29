@@ -23,7 +23,7 @@ build_basic_data.build_all()
 ADMIN_RFID = "0000000000"
 SYSTEM_RFID = "1111111111"
 PASSWORD = os.environ.get("PASSWORD")
-PHONE_PREFIXES = _COUNTRY_CODE_TO_REGION_CODE.keys()
+PHONE_PREFIXES = list(_COUNTRY_CODE_TO_REGION_CODE.keys())
 
 used_rfids = [ADMIN_RFID, SYSTEM_RFID]
 used_phones: List[Optional[str]] = []
