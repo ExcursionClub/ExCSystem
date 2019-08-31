@@ -1,7 +1,7 @@
 from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
+from core.forms.MemberForms import MemberChangeForm, MemberCreationForm, StafferCreateForm
 from core.views.MemberViews import (
     MemberDetailView,
     MemberFinishView,
@@ -163,7 +163,18 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 class StafferAdmin(ViewableModelAdmin):
     detail_view_class = StafferDetailView
 
+    add_form = StafferCreateForm
+
     ordering = ('-is_active',)
     search_fields = ('nickname', 'member__first_name', 'member__last_name', 'title', 'exc_email')
     list_display = ('nickname', 'full_name', 'title', 'exc_email', 'is_active')
 
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Use special form during user creation
+        """
+        defaults = {}
+        if obj is None:
+            defaults['form'] = self.add_form
+        defaults.update(kwargs)
+        return super().get_form(request, obj, **defaults)

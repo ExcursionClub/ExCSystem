@@ -4,7 +4,7 @@ from core.forms.MemberForms import (
     MemberChangeRFIDForm,
     MemberFinishForm,
     MemberUpdateContactForm,
-    StafferDataForm,
+    StafferCreateForm,
 )
 from core.models.MemberModels import Member, Staffer
 from core.views.common import ModelDetailView, get_default_context

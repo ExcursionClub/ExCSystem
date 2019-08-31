@@ -89,7 +89,7 @@ class StafferManager(models.Manager):
         :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = f"{staff_name}@excursionclubucsb.org"
+        exc_email = f"{staff_name}{settings.EXC_EMAIL}"
         member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
