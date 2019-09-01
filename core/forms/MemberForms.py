@@ -439,3 +439,10 @@ class MemberChangeForm(forms.ModelForm):
     def save(self, commit=True):
         self.instance.move_to_group(self.cleaned_data["group"])
         return super(MemberChangeForm, self).save(commit=commit)
+
+
+class StafferChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = Staffer
+        fields = ('member', 'is_active', 'nickname', 'exc_email', 'title', 'favorite_trips', 'autobiography')
