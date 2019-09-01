@@ -383,9 +383,6 @@ class StafferCreateForm(forms.ModelForm):
         exclude = ("autobiography", 'is_active')
 
     def __init__(self, *args, **kwargs):
-
-        if 'member' in kwargs:
-            self.member.initial = kwargs['member']
         super(StafferCreateForm, self).__init__(*args, **kwargs)
 
     def clean_nickname(self):

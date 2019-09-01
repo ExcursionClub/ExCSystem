@@ -8,6 +8,7 @@ from core.views.MemberViews import (
     MemberListView,
     StafferDetailView,
 )
+from core.models.MemberModels import Member
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect

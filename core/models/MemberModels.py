@@ -158,6 +158,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def view_profile_url(self):
         return reverse("admin:core_member_detail", kwargs={"pk": self.pk})
 
+    @property
+    def make_staff_url(self):
+        return reverse('admin:core_staffer_add', kwargs={'member': self})
+
     def has_name(self):
         """Check whether the name of this member has been set"""
         return self.first_name and self.last_name
