@@ -192,3 +192,7 @@ class StafferAdmin(ViewableModelAdmin):
         can_change = request.user.has_permission('core.change_staffer')
         is_self = obj is not None and request.user.primary_key == obj.member.primary_key
         return is_self or can_change
+
+    def delete_model(self, request, obj):
+        obj.member.promote_to_active()  # Automatically demote to a regular member (this will update perms)
+        super(StafferAdmin, self).delete_model(request, obj)
