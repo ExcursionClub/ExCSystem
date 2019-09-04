@@ -319,6 +319,10 @@ class Gear(models.Model):
     def edit_gear_url(self):
         return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
 
+    @property
+    def view_gear_url(self):
+        return reverse("admin:core_gear_detail", kwargs={"pk": self.pk})
+
     def get_extra_fieldset(self, name="Additional Data", classes=("wide",)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (

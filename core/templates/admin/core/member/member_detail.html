@@ -167,6 +167,42 @@
         </div>
     </div>
 </div>
+    <br/><br/><br/>
+<div class="container transaction-list">
+    <div class="row">
+        <h4>CHECKED OUT GEAR</h4>
+        <div class="col-12">
+            <br/>
+            <div class="row">
+                <div class="col-4">
+                    <strong>Name</strong>
+                </div>
+                <div class="col-4">
+                    <strong>RFID</strong>
+                </div>
+                <div class="col-2">
+                    <strong>Due Date</strong>
+                </div>
+            </div>
+            <br/>
+            {% for gear in checked_out_gear %}
+                <div class="row">
+                    <div class="col-4">
+                        <p><a href="{{ gear.view_gear_url }}">
+                            {{ gear.name }}
+                        </a></p>
+                    </div>
+                    <div class="col-4">
+                        <p>{{ gear.rfid }}</p>
+                    </div>
+                    <div class="col-2">
+                        <p style="color: {% if status > 3 %}red{% else %}green{% endif %}">{{ gear.due_date }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
