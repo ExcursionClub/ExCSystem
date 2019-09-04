@@ -26,7 +26,7 @@ class GearDetailView(UserPassesTestMixin, ModelDetailView):
         gear = self.get_object()
         can_view_any = user.has_permission("core.view_general_gear")
         checked_out_to_user = (
-            gear.checked_out_to is not None and user.rfid == gear.checked_out_to.rfid
+            gear.checked_out_to is not None and user == gear.checked_out_to
         )
         return can_view_any or checked_out_to_user
 
@@ -52,6 +52,7 @@ class GearDetailView(UserPassesTestMixin, ModelDetailView):
             context["checked_out_to_url"] = reverse(
                 "admin:core_member_detail", kwargs={"pk": gear.checked_out_to.pk}
             )
+        context['view_transactions'] = self.request.user.has_permission("core.view_all_transactions")
         return super(GearDetailView, self).get_context_data(**context)
 
 
