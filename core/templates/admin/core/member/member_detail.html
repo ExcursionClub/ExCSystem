@@ -196,7 +196,7 @@
                         <p>{{ gear.rfid }}</p>
                     </div>
                     <div class="col-2">
-                        <p style="color: {% if status > 3 %}red{% else %}green{% endif %}">{{ gear.due_date }}</p>
+                        <p style="color: {% if gear.status >= 3 %}red{% else %}black{% endif %}">{{ gear.due_date }}</p>
                     </div>
                 </div>
             {% endfor %}
