@@ -262,6 +262,21 @@ class Member(AbstractBaseUser, PermissionsMixin):
         body = template.format(member_name=self.get_full_name(), today=self.date_expires)
         self.send_membership_email(title, body)
 
+    def send_missing_gear_email(self, all_gear):
+        """Send an email to member that they have gear to return"""
+        gear_rows = []
+        for gear in all_gear:
+            gear_rows.append(f"<tr><td>{gear.name}</td><td>{gear.due_date.strftime('%a, %b %d, %Y')}</td></tr>")
+        template = get_email_template('missing_gear')
+        body = template.format(first_name=self.first_name, gear_rows="".join(gear_rows))
+        title = 'Gear Overdue'
+        self.send_email(
+            title,
+            body,
+            'info@excursionclubucsb.org',
+            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD,
+        )
+
     def has_module_perms(self, app_label):
         """This is required by django, determine whether the user is allowed to view the app"""
         return True
