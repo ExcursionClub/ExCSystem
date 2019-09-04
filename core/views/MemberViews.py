@@ -7,6 +7,7 @@ from core.forms.MemberForms import (
     StafferDataForm,
 )
 from core.models.MemberModels import Member, Staffer
+from core.models.GearModels import Gear
 from core.views.common import ModelDetailView, get_default_context
 from core.views.ViewList import RestrictedViewList
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -51,6 +52,7 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         context["main_admin_url"] = WEB_BASE + "/admin"
         context["departments_url"] = WEB_BASE + "/admin/core/department"
         context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
+        context["checked_out_gear"] = Gear.objects.filter(checked_out_to=self.get_object())
         return super(MemberDetailView, self).get_context_data(**context)
 
 
