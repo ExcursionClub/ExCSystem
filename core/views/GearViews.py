@@ -73,8 +73,10 @@ class GearViewList(RestrictedViewList):
         return self.request.user.has_permission("core.view_all_gear")
 
     def set_restriction_filters(self):
-        """Staffers should be able to see active gear, members should only see available gear"""
-        if self.request.user.has_permission("core.view_general_gear"):
+        """Board should see all gear, staffers see active gear, members only see gear checked out to them"""
+        if self.request.user.has_permission("core.view_all_gear"):
+            self.restriction_filters = {}
+        elif self.request.user.has_permission("core.view_general_gear"):
             self.restriction_filters["status__lte"] = 3
         else:
             self.restriction_filters[
