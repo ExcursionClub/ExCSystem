@@ -160,6 +160,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 
         return fieldsets
 
+    def get_readonly_fields(self, request, obj=None):
+        """Make it so only those who can make staffers be able to change a member's group"""
+        if not request.user.has_permission('core.add_staffer'):
+            return ('groups', )
+
 
 class StafferAdmin(ViewableModelAdmin):
     detail_view_class = StafferDetailView
