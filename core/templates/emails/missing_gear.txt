@@ -1,4 +1,4 @@
-<p>Hi Kelly,</p>
+<p>Hi {first_name},</p>
 
 <p>According to our records, you have overdue gear. Please return the following gear as soon as possible:</p>
 

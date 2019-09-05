@@ -50,7 +50,7 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
 
     def get_context_data(self, **context):
         member = self.get_object()
-        members_gear = Gear.objects.filter(checked_out_to=member())
+        members_gear = Gear.objects.filter(checked_out_to=member)
         is_self = self.request.user.rfid == member.rfid
         context["main_admin_url"] = WEB_BASE + "/admin"
         context["departments_url"] = WEB_BASE + "/admin/core/department"
