@@ -49,10 +49,12 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **context):
+        members_gear = Gear.objects.filter(checked_out_to=self.get_object())
         context["main_admin_url"] = WEB_BASE + "/admin"
         context["departments_url"] = WEB_BASE + "/admin/core/department"
         context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
-        context["checked_out_gear"] = Gear.objects.filter(checked_out_to=self.get_object())
+        context["has_gear"] = bool(members_gear)
+        context["checked_out_gear"] = members_gear
         return super(MemberDetailView, self).get_context_data(**context)
 
 
