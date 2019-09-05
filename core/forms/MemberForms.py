@@ -3,13 +3,14 @@ import json
 
 from core.convinience import get_all_rfids
 from core.forms.fields.RFIDField import RFIDField
+from core.forms.widgets import ExCEmailWidget
 from core.models import Member, Staffer
 from core.models.QuizModels import Question
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.urls import reverse
 from django.utils.timezone import timedelta
-from excsystem.settings import WEB_BASE, DEFAULT_IMG
+from excsystem.settings import WEB_BASE, DEFAULT_IMG, EXC_EMAIL
 from phonenumber_field.formfields import PhoneNumberField
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
@@ -355,7 +356,7 @@ class MemberChangeGroupsForm(forms.ModelForm):
         fields = ("groups",)
 
 
-class StafferDataForm(forms.ModelForm):
+class StafferCreateForm(forms.ModelForm):
     """
     Form to request the additional information required when becoming a staffer.
 
@@ -367,23 +368,39 @@ class StafferDataForm(forms.ModelForm):
     and templates may not be present.
     """
 
-    exc_email = forms.CharField(
-        label="Staffer Nickname",
+    member = forms.ModelChoiceField(Member.objects.all())
+    nickname = forms.CharField(
+        label="Nickname",
         max_length=20,
         help_text="The name of the staffer: to be used as the beginning of the email address",
+        widget=ExCEmailWidget()
     )
 
     class Meta:
         model = Staffer
         # Member should already be known when this form is accessed, so having it as a field is excessive
-        fields = ("exc_email", "autobiography")
+        fields = ("member", "nickname", "title",)
+        exclude = ("autobiography", 'is_active')
 
-    def clean_exc_email(self):
+    def __init__(self, *args, **kwargs):
+        super(StafferCreateForm, self).__init__(*args, **kwargs)
+
+    def clean_nickname(self):
         """
         Although the field is named exc_email, the input should only be the staff name, so append rest of email here
         """
-        staff_name = self.cleaned_data["exc_email"]
-        return staff_name + "@excursionclubucsb.org"
+        staff_name = self.cleaned_data["nickname"]
+        return staff_name
+
+    def save(self, commit=True):
+        # We will always commit the save, so make sure m2m fields are always saved
+        self.save_m2m = self._save_m2m
+
+        member = self.cleaned_data['member']
+        nickname = self.cleaned_data['nickname']
+
+        staffer = Staffer.objects.upgrade_to_staffer(member, nickname)
+        return staffer
 
 
 class MemberChangeForm(forms.ModelForm):
@@ -422,3 +439,12 @@ class MemberChangeForm(forms.ModelForm):
     def save(self, commit=True):
         self.instance.move_to_group(self.cleaned_data["group"])
         return super(MemberChangeForm, self).save(commit=commit)
+
+
+
+
+class StafferChangeForm(forms.ModelForm):
+
+    class Meta:
+        model = Staffer
+        fields = ('member', 'is_active', 'nickname', 'exc_email', 'title', 'favorite_trips', 'autobiography')

@@ -150,6 +150,11 @@ class Member(AbstractBaseUser, PermissionsMixin):
         return True
 
     @property
+    def is_staffer(self):
+        """Property to check if a member is a excursion staffer or not"""
+        return self.group in ['Staff', 'Board', 'Admin']
+
+    @property
     def edit_profile_url(self):
         return reverse("admin:core_member_change", kwargs={"object_id": self.pk})
 
