@@ -4,7 +4,7 @@ from core.forms.MemberForms import (
     MemberChangeRFIDForm,
     MemberFinishForm,
     MemberUpdateContactForm,
-    StafferDataForm,
+    StafferCreateForm,
 )
 from core.models.MemberModels import Member, Staffer
 from core.models.GearModels import Gear
@@ -12,7 +12,7 @@ from core.views.common import ModelDetailView, get_default_context
 from core.views.ViewList import RestrictedViewList
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, CreateView
 from excsystem.settings import WEB_BASE
 
 
@@ -49,12 +49,17 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **context):
-        members_gear = Gear.objects.filter(checked_out_to=self.get_object())
+        member = self.get_object()
+        members_gear = Gear.objects.filter(checked_out_to=member())
+        is_self = self.request.user.rfid == member.rfid
         context["main_admin_url"] = WEB_BASE + "/admin"
         context["departments_url"] = WEB_BASE + "/admin/core/department"
         context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
         context["has_gear"] = bool(members_gear)
         context["checked_out_gear"] = members_gear
+        context['can_edit'] = is_self or self.request.user.has_permission('core.change_staffer')
+        context['can_promote'] = self.request.user.has_permission('core.add_staffer')
+        context['promote_url'] = f"{reverse('admin:core_staffer_add')}?member={member.pk}"
         return super(MemberDetailView, self).get_context_data(**context)
 
 

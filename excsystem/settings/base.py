@@ -15,6 +15,7 @@ SECRET_KEY = os.environ.get(
 
 SITE_ID = 1
 SITE_NAME = "Excursion System"
+EXC_EMAIL = '@excursionclubucsb.org'
 
 GEAR_EXPIRE_TIME = timedelta(days=90)
 

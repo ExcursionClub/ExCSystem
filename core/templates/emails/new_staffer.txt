@@ -1,0 +1,10 @@
+Congratulations {member_name} on becoming a Excursion Club staffer!
+
+Please log on to the member portal and fill out your staffer profile.
+{finish_url}
+
+You are now one of our staffers, in charge of leading trips and keeping up the stoke. We're glad to have you!
+Your new excursion email is {staffer_email}
+
+Stay Stoked,
+Your friendly Excursion Robot
