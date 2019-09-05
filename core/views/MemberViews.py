@@ -57,8 +57,8 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
         context["has_gear"] = bool(members_gear)
         context["checked_out_gear"] = members_gear
-        context['can_edit'] = is_self or self.request.user.has_permission('core.change_staffer')
-        context['can_promote'] = self.request.user.has_permission('core.add_staffer')
+        context['can_edit'] = is_self or self.request.user.has_permission('core.change_member')
+        context['can_promote'] = self.request.user.has_permission('core.add_staffer') and not member.is_staffer
         context['promote_url'] = f"{reverse('admin:core_staffer_add')}?member={member.pk}"
         return super(MemberDetailView, self).get_context_data(**context)
 
