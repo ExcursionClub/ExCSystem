@@ -1,6 +1,7 @@
 import json
 import logging
 
+from datetime import date
 from core.convinience import get_all_rfids
 from core.models.fields.PrimaryKeyField import PrimaryKeyField
 from core.models.GearModels import Gear
@@ -126,7 +127,7 @@ class TransactionManager(models.Manager):
         validate_required_certs(member, gear)
 
         # If everything validated, we can try to make the transaction
-        comment = "Return date = {}".format(return_date)
+        comment = f"Return date = {return_date.date}"
         transaction = self.__make_transaction(
             authorizer_rfid, "CheckOut", gear, member=member, comments=comment
         )
@@ -313,15 +314,16 @@ class TransactionManager(models.Manager):
         :return: Fix Transaction
         """
         gear = Gear.objects.get(rfid=gear_rfid)
-        last_owner = gear.checked_out_to.get_full_name()
-        details = "Last known owner: {}".format(last_owner)
+        last_owner = gear.checked_out_to
+        time_out = date.today()-gear.due_date
+        details = f"Gear has been checked out for {time_out.days} days"
 
         # Create a transaction to ensure everything is authorized
         transaction = self.__make_transaction(
-            authorizer_rfid, "Fix", gear, comments=details
+            authorizer_rfid, "Missing", gear, member=last_owner, comments=details
         )
 
-        gear.set_status = 3
+        gear.status = 3
         gear.save()
         return transaction, gear
 
@@ -338,15 +340,16 @@ class TransactionManager(models.Manager):
         :return: Fix Transaction
         """
         gear = Gear.objects.get(rfid=gear_rfid)
-        last_owner = gear.checked_out_to.get_full_name()
-        details = "Last known owner: {}".format(last_owner)
+        last_owner = gear.checked_out_to
+        time_out = date.today()-gear.due_date
+        details = f"Gear has been checked out for {time_out.days} days"
 
         # Create a transaction to ensure everything is authorized
         transaction = self.__make_transaction(
-            authorizer_rfid, "Fix", gear, comments=details
+            authorizer_rfid, "Dormant", gear, member=last_owner, comments=details
         )
 
-        gear.set_status = 4
+        gear.status = 4
         gear.save()
         return transaction, gear
 
