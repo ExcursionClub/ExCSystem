@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from excsystem.settings import EXC_EMAIL
 from core.models.FileModels import AlreadyUploadedImage
 from django.forms import widgets
 from django.urls import reverse
@@ -11,6 +12,7 @@ class RFIDWidget(widgets.TextInput):
     revert_button_text = "Hide Manual Input"
     scan_rfid_button_text = "Click to Scan RFID"
     template_name = "widgets/rfid.html"
+    max_length = 10
 
     def __init__(self, attrs=None):
         # TODO: Add option to modify default values of class vars here
@@ -24,6 +26,7 @@ class RFIDWidget(widgets.TextInput):
         widget["allow_revert"] = self.allow_revert
         widget["revert_button_text"] = self.revert_button_text
         widget["scan_rfid_button_text"] = self.scan_rfid_button_text
+        widget["max_length"] = self.max_length
 
         context["widget"] = widget
         return context
@@ -81,3 +84,18 @@ class ExistingImageWidget(widgets.ChoiceWidget):
 class GearImageWidget(ExistingImageWidget):
     def __init__(self, attrs=None):
         super(GearImageWidget, self).__init__("gear", attrs=attrs)
+
+
+class ExCEmailWidget(widgets.TextInput):
+    template_name = "widgets/exc_email.html"
+
+    def __init__(self, *args, **kwargs):
+        self.email_tail = EXC_EMAIL
+        super(ExCEmailWidget, self).__init__(*args, **kwargs)
+
+    def get_context(self, name, value, attrs):
+        context = super(ExCEmailWidget, self).get_context(name, value, attrs)
+        context['email_tail'] = self.email_tail
+        return context
+
+

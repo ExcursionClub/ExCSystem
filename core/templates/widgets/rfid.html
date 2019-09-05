@@ -1,20 +1,73 @@
-{% extends "widgets/dynamicTwoState.html" %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
 
-{% block script %}
-
-    function focusRFID() {
-        $("#rfid").focus();
+    function changeMode() {
+            $("#original_display").hide();
+            $("#changed_display").show();
+            $("#change-parent").addClass("small-padding");
+            $("#change-parent").removeClass("big-padding");
     }
 
-{% endblock %}
+    function revertMode() {
+        $("#changed_display").hide();
+        $("#original_display").show();
+        $("#change-parent").addClass("big-padding");
+        $("#change-parent").removeClass("small-padding")
+    }
 
-{% block shared_display %}
-    <input id="rfid">
-{% endblock %}
+    window.addEventListener('keydown',
+        function(e){
+            if(e.keyIdentifier=='U+000A'||e.keyIdentifier=='Enter'||e.keyCode==13){
+                if(e.target.nodeName=='INPUT'&&e.target.type=='text'){
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        },
+        true
+    );
 
-{% block original_display %}
-    <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
-{% endblock %}
 
-{% block changed_display %}
-{% endblock %}
+    function focusRFID() {
+         $("#id_rfid").focus();
+    }
+
+    function updateValue(input) {
+        document.getElementById("rfid_disp").innerHTML = "New RFID:  " + input.value;
+    }
+
+
+</script>
+<style>
+    .stacked {
+        position: absolute;
+        background: white;
+    }
+    .big-padding {
+        padding-bottom: 52px;
+    }
+    .small-padding {
+        padding-bottom: 15px;
+    }
+</style>
+
+<div id='change-parent' class="big-padding">
+    <div class="stacked">
+        <input type="text" name="{{ widget.name }}" onkeyup="updateValue(this);" oninput="updateValue(this);"
+               {% if widget.value != None %}
+                    value="{{ widget.value|stringformat:'s' }}"
+               {% endif %}
+               {% include "django/forms/widgets/attrs.html" %}
+        >
+    </div>
+    <div class="stacked" id="original_display">
+        <input type="button" id="click_to_scan_button" value="{{ widget.scan_rfid_button_text }}" onclick="focusRFID()">
+        <input id="change_button" type="button" value="{{ widget.change_button_text }}" onclick="changeMode()">
+        <div id="rfid_disp"></div>
+    </div>
+    <div id="changed_display" hidden>
+        {% if widget.allow_revert %}
+            <input id="revert_button" type="button" value="{{ widget.revert_button_text }}" onclick="revertMode()">
+        {% endif %}
+    </div>
+</div>

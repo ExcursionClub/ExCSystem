@@ -89,7 +89,7 @@ class StafferManager(models.Manager):
         :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = f"{staff_name}@excursionclubucsb.org"
+        exc_email = f"{staff_name}{settings.EXC_EMAIL}"
         member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
@@ -98,8 +98,9 @@ class StafferManager(models.Manager):
         staffer.is_active = True
         if autobiography:
             staffer.autobiography = None
-
         staffer.save()
+
+        member.send_new_staff_email(staffer)
         return staffer
 
 
@@ -156,6 +157,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     @property
     def view_profile_url(self):
         return reverse("admin:core_member_detail", kwargs={"pk": self.pk})
+
+    @property
+    def make_staff_url(self):
+        return reverse('admin:core_staffer_add', kwargs={'member': self})
 
     def has_name(self):
         """Check whether the name of this member has been set"""
@@ -260,6 +265,17 @@ class Member(AbstractBaseUser, PermissionsMixin):
         title = "Excursion Club Membership Expired!"
         template = get_email_template('expired_email')
         body = template.format(member_name=self.get_full_name(), today=self.date_expires)
+        self.send_membership_email(title, body)
+
+    def send_new_staff_email(self, staffer):
+        """Sen an email welcoming the member to staff"""
+        title = "Welcome to staff!"
+        template = get_email_template('new_staffer')
+        body = template.format(
+            member_name=self.first_name,
+            finish_url=settings.WEB_BASE+staffer.edit_profile_url,
+            staffer_email=staffer.exc_email
+        )
         self.send_membership_email(title, body)
 
     def has_module_perms(self, app_label):
