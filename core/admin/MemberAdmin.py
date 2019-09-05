@@ -1,13 +1,14 @@
 from functools import update_wrapper
 
 from core.admin.ViewableAdmin import ViewableModelAdmin
-from core.forms.MemberForms import MemberChangeForm, MemberCreationForm
+from core.forms.MemberForms import MemberChangeForm, MemberCreationForm, StafferCreateForm, StafferChangeForm
 from core.views.MemberViews import (
     MemberDetailView,
     MemberFinishView,
     MemberListView,
     StafferDetailView,
 )
+from core.models.MemberModels import Member
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
@@ -163,7 +164,35 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
 class StafferAdmin(ViewableModelAdmin):
     detail_view_class = StafferDetailView
 
+    form = StafferChangeForm
+    add_form = StafferCreateForm
+
     ordering = ('-is_active',)
+    staffer_readonly = ('member', 'nickname', 'exc_email', 'title', 'is_active')
     search_fields = ('nickname', 'member__first_name', 'member__last_name', 'title', 'exc_email')
     list_display = ('nickname', 'full_name', 'title', 'exc_email', 'is_active')
 
+    def get_form(self, request, obj=None, **kwargs):
+        """
+        Use special form during user creation
+        """
+        defaults = {}
+        if obj is None:
+            defaults['form'] = self.add_form
+        defaults.update(kwargs)
+        return super().get_form(request, obj, **defaults)
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.has_permission('core.change_staffer'):
+            return self.staffer_readonly
+        else:
+            return ()
+
+    def has_change_permission(self, request, obj=None):
+        can_change = request.user.has_permission('core.change_staffer')
+        is_self = obj is not None and request.user.primary_key == obj.member.primary_key
+        return is_self or can_change
+
+    def delete_model(self, request, obj):
+        obj.member.promote_to_active()  # Automatically demote to a regular member (this will update perms)
+        super(StafferAdmin, self).delete_model(request, obj)

@@ -441,8 +441,6 @@ class MemberChangeForm(forms.ModelForm):
         return super(MemberChangeForm, self).save(commit=commit)
 
 
-
-
 class StafferChangeForm(forms.ModelForm):
 
     class Meta:
