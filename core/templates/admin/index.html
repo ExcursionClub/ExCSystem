@@ -82,6 +82,7 @@
 {% block sidebar %}
 <div id="content-related">
     <div class="module" id="recent-actions-module">
+        <h2><a href="{{ user.view_profile_url }}">{% trans 'My profile' %}</a></h2>
         <h2>{% trans 'Recent actions' %}</h2>
         <h3>{% trans 'My actions' %}</h3>
             {% load log %}
