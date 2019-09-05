@@ -127,7 +127,7 @@ class TransactionManager(models.Manager):
         validate_required_certs(member, gear)
 
         # If everything validated, we can try to make the transaction
-        comment = "Return date = {}".format(return_date)
+        comment = f"Return date = {return_date.date}"
         transaction = self.__make_transaction(
             authorizer_rfid, "CheckOut", gear, member=member, comments=comment
         )
