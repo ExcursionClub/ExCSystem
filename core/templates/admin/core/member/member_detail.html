@@ -13,22 +13,93 @@
 <div class="container emp-profile">
     <div class="row">
         <div class="col-md-4">
-            <div class="profile-img">
-                <img src="{{ object.image.url }}" alt="Member Profile Picture" width="90%" align="left"/>
+            <div class="row">
+                <div class="profile-img">
+                    <img src="{{ object.image.url }}" alt="Member Profile Picture" width="90%" align="left"/>
+                </div>
+            </div>
+            <br/><br/>
+            <div class="row">
+                <div class="profile-work">
+                    <p>CERTIFICATIONS</p>
+                    {% for cert in object.get_all_certifications %}
+                        <a href="{{cert.get_page_url}}"> {{ cert.title }} </a><br/>
+                    {% endfor %}
+                    {% if object.has_no_certifications %}
+                        Go on trips to earn certifications!<br/>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="profile-head">
-                <h5> {{ object.get_full_name }} </h5>
-                <h6> {{ object.group }} </h6>
-                <ul class="nav nav-tabs" id="tabs" data-tabs="tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#home" role="tab">Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="gear-tab" data-toggle="tab" href="#gear" role="tab">Gear Status</a>
-                    </li>
-                </ul>
+            <div class="row">
+                <div class="profile-head">
+                    <h5> {{ object.get_full_name }} </h5>
+                    <h6> {{ object.group }} </h6>
+                </div>
+            </div>
+            <br><br><br>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>First Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.first_name }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Last Name(s)</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.last_name }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Email</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.email}}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Phone</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.phone_number }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>RFID #</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.rfid }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Date Joined</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.date_joined }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Membership Expiration Date</label>
+                            </div>
+                            <div class="col-md-6">
+                                <p>{{ object.date_expires }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-2">
@@ -37,171 +108,42 @@
             </form>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="profile-work">
-                <br/>
-                <p>CERTIFICATIONS</p>
-                {% for cert in object.get_all_certifications %}
-                    <a href="{{cert.get_page_url}}"> {{ cert.title }} </a><br/>
-                {% endfor %}
-                {% if object.has_no_certifications %}
-                    Go on trips to earn certifications!<br/>
-                {% endif %}
-                <br/><br/>
-                <p>COMING SOON</p>
-                <a href="{{ main_admin_url }}">Admin Home</a><br/>
-                <a href="{{ departments_url }}">Gear Departments</a><br/>
-                <a href="{{ staffers_url }}">Our Staffers</a><br/>
-            </div>
-        </div>
-        <div class="col-md-8">
-            <div class="tab-content profile-tab" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>First Name</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.first_name }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Last Name(s)</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.last_name }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Email</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.email}}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Phone</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.phone_number }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>RFID #</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.rfid }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Date Joined</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.date_joined }}</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Membership Expiration Date</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>{{ object.date_expires }}</p>
-                                </div>
-                            </div>
-                </div>
-                <div class="tab-pane fade" id="gear" role="tabpanel">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Experience</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>Expert</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Hourly Rate</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>10$/hr</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Total Projects</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>230</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>English Level</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>Expert</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label>Availability</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <p>6 months</p>
-                                </div>
-                            </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>Your Bio</label><br/>
-                            <p>Your detail description</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
     <br/><br/><br/>
-<div class="container transaction-list">
-    <div class="row">
-        <h4>CHECKED OUT GEAR</h4>
-        <div class="col-12">
-            <br/>
-            <div class="row">
-                <div class="col-4">
-                    <strong>Name</strong>
-                </div>
-                <div class="col-4">
-                    <strong>RFID</strong>
-                </div>
-                <div class="col-2">
-                    <strong>Due Date</strong>
-                </div>
-            </div>
-            <br/>
-            {% for gear in checked_out_gear %}
+    {% if has_gear %}
+        <div class="row">
+            <h4>CHECKED OUT GEAR</h4>
+            <div class="col-12">
+                <br/>
                 <div class="row">
                     <div class="col-4">
-                        <p><a href="{{ gear.view_gear_url }}">
-                            {{ gear.name }}
-                        </a></p>
+                        <strong>Name</strong>
                     </div>
                     <div class="col-4">
-                        <p>{{ gear.rfid }}</p>
+                        <strong>RFID</strong>
                     </div>
                     <div class="col-2">
-                        <p style="color: {% if gear.status >= 3 %}red{% else %}black{% endif %}">{{ gear.due_date }}</p>
+                        <strong>Due Date</strong>
                     </div>
                 </div>
-            {% endfor %}
+                <br/>
+                {% for gear in checked_out_gear %}
+                    <div class="row">
+                        <div class="col-4">
+                            <p><a href="{{ gear.view_gear_url }}">
+                                {{ gear.name }}
+                            </a></p>
+                        </div>
+                        <div class="col-4">
+                            <p>{{ gear.rfid }}</p>
+                        </div>
+                        <div class="col-2">
+                            <p style="color: {% if gear.status >= 3 %}red{% else %}black{% endif %}">{{ gear.due_date }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 </div>
 
 {% endblock %}
