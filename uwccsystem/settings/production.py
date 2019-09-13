@@ -1,7 +1,10 @@
 import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 from uwccsystem.settings.base import *
 
-sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
+sentry_sdk.init(
+    dsn="https://e9f3e4184b1e4ef09bf56624163e6d83@sentry.io/1726068",
+    integrations=[DjangoIntegration()])
 
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 DEFAULT_FILE_STORAGE = "uwccsystem.settings.storage_backends.MediaStorage"
