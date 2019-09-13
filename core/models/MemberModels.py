@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
-from excsystem import settings
+from uwccsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
 from core.convinience import get_email_template
 

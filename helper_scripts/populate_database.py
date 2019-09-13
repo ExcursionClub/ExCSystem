@@ -113,7 +113,7 @@ except IntegrityError:
 else:
     Staffer.objects.upgrade_to_staffer(
         system,
-        "excsystem",
+        "uwccsystem",
         "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
     )
 

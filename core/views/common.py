@@ -3,7 +3,7 @@ from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import DetailView
-from excsystem.settings import WEB_BASE
+from uwccsystem.settings import WEB_BASE
 
 
 def get_default_context(view, context):

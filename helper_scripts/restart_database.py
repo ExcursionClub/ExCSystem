@@ -15,7 +15,7 @@ from django.core.management import call_command
 basepath = os.getcwd()
 
 # Prepares python to be able to run django commands
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.development")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uwccsystem.settings.development")
 django.setup()
 try:
     os.remove(os.path.join(basepath, "db.sqlite3"))

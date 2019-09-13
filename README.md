@@ -340,9 +340,9 @@ Shall the new role be allowed to create more new roles? (y/n) n
 
 To create the actual database used by the system
 ```bash
-createdb --owner admin excsystem
+createdb --owner admin uwccsystem
 psql
-grant ALL ON database excsystem to admin;
+grant ALL ON database uwccsystem to admin;
 ```
 
 
@@ -399,7 +399,11 @@ export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_STORAGE_BUCKET_NAME =
 
+# Host identifiers for security and address building
 export NGINX_HOST_IP=
+export NGINX_HOST_DNS=
+export HOST_NAMESPACE=
+
 ```
 To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 

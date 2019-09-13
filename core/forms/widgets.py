@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from excsystem.settings import EXC_EMAIL
+from uwccsystem.settings import EXC_EMAIL
 from core.models.FileModels import AlreadyUploadedImage
 from django.forms import widgets
 from django.urls import reverse

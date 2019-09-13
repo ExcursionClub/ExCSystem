@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from excsystem.settings import WEB_BASE
+from uwccsystem.settings import WEB_BASE
 
 
 class Certification(models.Model):

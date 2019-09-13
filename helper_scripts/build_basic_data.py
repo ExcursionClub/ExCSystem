@@ -11,7 +11,7 @@ from core.models.QuizModels import Answer, Question
 from django.contrib.sites.models import Site
 from django.db.utils import IntegrityError
 
-from excsystem import settings
+from uwccsystem import settings
 
 
 def build_all():
