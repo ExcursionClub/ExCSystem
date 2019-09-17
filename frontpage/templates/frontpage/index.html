@@ -1,6 +1,7 @@
 {% extends "base_frontpage.html" %}
 
 {% load static %}
+{% load user_agents %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'img/style.css' %}">
 
@@ -58,13 +59,15 @@
        </div>
    </div>
 
-    <div class="vimeo-wrapper">
-       <iframe
-          src="https://player.vimeo.com/video/325907352?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
-          frameborder="0"
-          webkitallowfullscreen
-          mozallowfullscreen
-          allowfullscreen>
-       </iframe>
-    </div>
+    {% if not request|is_mobile %}
+        <div class="vimeo-wrapper">
+           <iframe
+              src="https://player.vimeo.com/video/325907352?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1"
+              frameborder="0"
+              webkitallowfullscreen
+              mozallowfullscreen
+              allowfullscreen>
+           </iframe>
+        </div>
+    {% endif %}
 {% endblock %}
