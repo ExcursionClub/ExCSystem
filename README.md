@@ -32,7 +32,7 @@ export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 #### Both
 Setup local object storage. The file uploaded here are not persistent and will disappear when the container is closed. 
 ```
-docker run -p 9000:9000 --name minio1 \
+$ docker run -p 9000:9000 --name minio1 \
   -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" \
   -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" \
   minio/minio server /data
@@ -40,14 +40,13 @@ docker run -p 9000:9000 --name minio1 \
 
 Get the latest version of the code from git:
 ```bash
-git clone git@github.com:ExcursionClub/ExCSystem.git 
-cd ExCSystem/
+$ git clone git@github.com:ExcursionClub/ExCSystem.git 
+$ cd ExCSystem/
 ```
 
 Use pipenv to install all dependencies used by the development version:
 ```bash
-pipenv install --dev
-pipenv shell
+$ pipenv install --dev && pipenv shell
 ```
 
 Set environment variables:
@@ -65,8 +64,8 @@ export MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
 You're now ready to run the test server
 ```bash
-python manage.py collectstatic
-ENV_CONFIG="development"; python manage.py runserver
+$ python manage.py collectstatic
+$ ENV_CONFIG="development"; python manage.py runserver
 ```
 
 Tada! You should have gotten a prompt that the server is now running. Just go to http://127.0.0.1:8000 to see!
@@ -201,8 +200,8 @@ $ kill -9 7339
 
 Then remember to activate the virtual environment before starting the server
 ```bash
-pipenv shell
-nohup python manage.py runserver &
+$ pipenv shell
+$ nohup python manage.py runserver &
 ```
 This will run Django in the background, even after you exit your SSH session.
 ('fg' brings process to current shell)
@@ -219,7 +218,7 @@ stores a list of all requests made to the server.
 
 Current server output is redirected via nohup, and can be followed with:
 ```bash
-tail -f nohup.out
+$ tail -f nohup.out
 ```
 Exit by pressing Ctrl+C
 
@@ -232,7 +231,7 @@ scheduling. Tasks should be run through a ```tasks.py``` in each app in the syst
 #### How to change scheduling
 To edit the scheduling, simply ssh into the server and run:
 ```bash
-crontab -e
+$ crontab -e
 ``` 
 This will open the scheduling file in ```vi```. These links give you more information on how to use 
 [vi](https://www.openvim.com/) and [crontab](https://crontab.guru).
@@ -263,10 +262,10 @@ For help on how to do this look [here](https://docs.aws.amazon.com/AWSEC2/latest
 
 #### Upgrade packages and install dependencies
 ```bash
-sudo apt-get update
-sudo apt-get upgrade -y
-sudo apt-get install python3.7 nginx libpq-dev python3.7-dev postgresql postgresql-contrib  -y
-curl https://raw.githubusercontent.com/kennethreitz/pipenv/master/get-pipenv.py | python
+$ sudo apt-get update
+$ sudo apt-get upgrade -y
+$ sudo apt-get install python3.7 nginx libpq-dev python3.7-dev postgresql postgresql-contrib  -y
+$ curl https://raw.githubusercontent.com/kennethreitz/pipenv/master/get-pipenv.py | python
 ```
 
 ### Nginx config
@@ -306,8 +305,8 @@ server {
 
 To now run nginx so that it's ready to handle the django server:
 ```bash
-sudo nginx -t
-sudo service nginx reload
+$ sudo nginx -t
+$ sudo service nginx reload
 ```
 This should cause nginx to run whenever the AWS server is booted, but if you run into trouble always check that nginx is
 up and running.
@@ -316,10 +315,10 @@ up and running.
 #### Add SSL
 Install packages for python/nginx to automatically manage the SSL certificates so that we can use HTTPS
 ```bash
-sudo apt-get install software-properties-common
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get update
-sudo apt-get install python-certbot-nginx 
+$ sudo apt-get install software-properties-common
+$ sudo add-apt-repository ppa:certbot/certbot
+$ sudo apt-get update
+$ sudo apt-get install python-certbot-nginx 
 ```
 
 #### Update AWS security groups to enable HTTP traffic
@@ -337,8 +336,8 @@ You can easily do this by executing the script:
 
 To set up the database to be ready for use by the system:
 ```bash
-sudo -su postgres
-createuser --interactive -P
+$ sudo -su postgres
+$ createuser --interactive -P
 ```
 
 Now fill out the prompts you receive as below
@@ -353,9 +352,9 @@ Shall the new role be allowed to create more new roles? (y/n) n
 
 To create the actual database used by the system
 ```bash
-createdb --owner admin excsystem
-psql
-grant ALL ON database excsystem to admin;
+$ createdb --owner admin excsystem
+$ psql
+<username>=# grant ALL ON database excsystem to admin;
 ```
 
 
@@ -364,30 +363,30 @@ You are now ready to run the server so that all your hard work hereto will be us
 
 Get the latest version of the code from the repository. If you are creating a new instance run:
 ```bash
-git clone https://github.com/ExcursionClub/ExCSystem.git
-cd ExCSystem
+$ git clone https://github.com/ExcursionClub/ExCSystem.git
+$ cd ExCSystem
 ```
 If you already have a git repository with the code, ensure you are on the master branch and pull the newest version of 
 the code:
 ```bash
-git checkout master
-git pull
+$ git checkout master
+$ git pull
 ```
 
 Now ensure that all the packages used in the project are installed and ready:
 ```bash
-pipenv install --deploy --system
+$ pipenv install --deploy --system
 ```
 
 Note: If you ever run into issues where the wrong version of python is trying to run, you can update the symlink:
 ```bash
-sudo rm /usr/bin/python3
-sudo ln -s /usr/bin/python3.7 /usr/bin/python3
+$ sudo rm /usr/bin/python3
+$ sudo ln -s /usr/bin/python3.7 /usr/bin/python3
 ```
 
 ```bash
 # Generate keys:
-python3.7 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
+$ python3.7 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
 ```
 #### Environment Variables
 All the below variables must be set with the appropriate values (from the above configuration process). None of these 
@@ -419,13 +418,13 @@ To make the environment variables persist through sessions, you can put the abov
 #### Prepare Database
 For django to be able to store data, we need to create the database schema. to do this run:
 ```bash
-python3.7 manage.py makemigrations
-python3.7 manage.py migrate
+$ python3.7 manage.py makemigrations
+$ python3.7 manage.py migrate
 ```
 
 To populate the database with start data (groups, permissions, quiz questions etc) run:
 ```bash
-python3.7 buildBasicData.py
+$ python3.7 build_basic_data.py
 ```
 
 #### Create folders for static files
@@ -433,7 +432,7 @@ Static and media files for the production server are stored in an S3 bucket.
 
 To make sure the server is getting access to s3, ensure the above environment variables are set and run:
 ```bash
-ENV_CONFIG=production; python3.7 manage.py collectstatic
+$ ENV_CONFIG=production; python3.7 manage.py collectstatic
 ```
 
 Everything should now be set up correctly. Check out [Run in Production](#run-in-production) for info on how to run the
