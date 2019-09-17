@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from excsystem.settings import EXC_EMAIL
 from core.models.FileModels import AlreadyUploadedImage
 from django.forms import widgets
 from django.urls import reverse
@@ -83,3 +84,18 @@ class ExistingImageWidget(widgets.ChoiceWidget):
 class GearImageWidget(ExistingImageWidget):
     def __init__(self, attrs=None):
         super(GearImageWidget, self).__init__("gear", attrs=attrs)
+
+
+class ExCEmailWidget(widgets.TextInput):
+    template_name = "widgets/exc_email.html"
+
+    def __init__(self, *args, **kwargs):
+        self.email_tail = EXC_EMAIL
+        super(ExCEmailWidget, self).__init__(*args, **kwargs)
+
+    def get_context(self, name, value, attrs):
+        context = super(ExCEmailWidget, self).get_context(name, value, attrs)
+        context['email_tail'] = self.email_tail
+        return context
+
+
