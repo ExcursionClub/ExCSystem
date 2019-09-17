@@ -21,6 +21,10 @@ sqlparse = "*"
 gunicorn = "*"
 django-heroku = "*"
 psycopg2-binary = "==2.8.3"
+pyyaml = "*"
+ua-parser = "*"
+user-agents = "*"
+django-user-agents = "*"
 
 [dev-packages]
 black = "==18.9b0"
