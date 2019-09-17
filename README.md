@@ -17,6 +17,19 @@ Bottom up re-design of the Excursion system
 This project requires [python3.7](https://www.python.org/downloads/release/python-372/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
 
 ### Install
+
+#### macOS
+Install [Postgres.app](https://postgresapp.com/)
+```
+$ brew install postgresql
+```
+
+Add the pg_config to `$PATH`:
+```
+export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
+```
+
+#### Both
 Setup local object storage. The file uploaded here are not persistent and will disappear when the container is closed. 
 ```
 docker run -p 9000:9000 --name minio1 \
