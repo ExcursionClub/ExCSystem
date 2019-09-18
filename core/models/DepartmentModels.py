@@ -46,7 +46,7 @@ class Department(models.Model):
         :return: None
         """
 
-        department_email = "{}@excursionclubucsb.org".format(self.name)
+        department_email = "{}@climbingclubuw.org".format(self.name)
         stl_emails = [staffer.exc_email for staffer in self.stls.all()]
         email_body = (
             "Hi {} STL! \n"

@@ -7,8 +7,8 @@ from django.utils.text import capfirst
 class ExcursionAdmin(AdminSite):
     index_template = "admin_index.html"
 
-    site_header = "Excursion Admin"
-    site_title = "Excursion Admin"
+    site_header = "Climbing Club Admin"
+    site_title = "Climbing Club Admin"
     index_title = "Admin Home"
 
     def _build_app_dict(self, request, label=None):

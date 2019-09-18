@@ -5,7 +5,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 MEDIA_URL = "/media/"
-DEFAULT_IMG = "shaka.png"
+DEFAULT_IMG = "uwcclogo.png"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
@@ -13,8 +13,8 @@ SECRET_KEY = os.environ.get(
 )
 
 SITE_ID = 1
-SITE_NAME = "Excursion System"
-EXC_EMAIL = '@excursionclubucsb.org'
+SITE_NAME = "Climbing Club System"
+EXC_EMAIL = '@climbingclubuw.org'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -46,7 +46,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "excsystem.urls"
+ROOT_URLCONF = "uwccsystem.urls"
 
 TEMPLATES = [
     {
@@ -69,7 +69,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "excsystem.wsgi.application"
+WSGI_APPLICATION = "uwccsystem.wsgi.application"
 
 AUTH_USER_MODEL = "core.Member"
 

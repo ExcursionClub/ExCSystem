@@ -10,7 +10,7 @@ from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
-from excsystem import settings
+from uwccsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
 from core.convinience import get_email_template
 
@@ -255,14 +255,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_expires_soon_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expiring Soon!"
+        title = "Climbing Club Membership Expiring Soon!"
         template = get_email_template('expire_soon_email')
         body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
         self.send_membership_email(title, body)
 
     def send_expired_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expired!"
+        title = "Climbing Club Membership Expired!"
         template = get_email_template('expired_email')
         body = template.format(member_name=self.get_full_name(), today=self.date_expires)
         self.send_membership_email(title, body)
@@ -316,12 +316,12 @@ class Staffer(models.Model):
         null=True,
         help_text="List of your favorite trips, one per line")
     exc_email = models.EmailField(
-        verbose_name='Official ExC Email',
+        verbose_name='Official Club Email',
         max_length=255,
         unique=True)
     title = models.CharField(
         verbose_name="Position Title",
-        default="Excursion Staff!",
+        default="Climbing Club Staff!",
         max_length=30)
     autobiography = models.TextField(
         verbose_name="Self Description of the staffer",

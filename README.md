@@ -1,4 +1,4 @@
-# ExCSystem [![Build Status](https://travis-ci.org/ExcursionClub/ExCSystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/ExCSystem) [![Coverage Status](https://coveralls.io/repos/github/ExcursionClub/ExCSystem/badge.svg?branch=master)](https://coveralls.io/github/ExcursionClub/ExCSystem?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/27d1df00c121f0e32ada/maintainability)](https://codeclimate.com/github/ExcursionClub/ExCSystem/maintainability) 
+# UWCCsystem [![Build Status](https://travis-ci.org/ExcursionClub/UWCCsystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/UWCCsystem) [![Coverage Status](https://coveralls.io/repos/github/ExcursionClub/UWCCsystem/badge.svg?branch=master)](https://coveralls.io/github/ExcursionClub/UWCCsystem?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/27d1df00c121f0e32ada/maintainability)](https://codeclimate.com/github/ExcursionClub/UWCCsystem/maintainability) 
 Bottom up re-design of the Excursion system
 
 #### Table of Contents
@@ -27,8 +27,8 @@ docker run -p 9000:9000 --name minio1 \
 
 Get the latest version of the code from git:
 ```bash
-git clone git@github.com:ExcursionClub/ExCSystem.git 
-cd ExCSystem/
+git clone git@github.com:ExcursionClub/UWCCsystem.git 
+cd UWCCsystem/
 ```
 
 Use pipenv to install all dependencies used by the development version:
@@ -163,9 +163,9 @@ Before you run the server it's advisable that you make sure all the following ar
   sudo apt update
   sudo apt upgrade
   ```
-- You are executing commands from the ExCSystem directory
+- You are executing commands from the UWCCsystem directory
   ```bash
-  cd ~/ExCSystem
+  cd ~/UWCCsystem
   ```
 - You have the newest version of the code
   ```bash
@@ -340,9 +340,9 @@ Shall the new role be allowed to create more new roles? (y/n) n
 
 To create the actual database used by the system
 ```bash
-createdb --owner admin excsystem
+createdb --owner admin uwccsystem
 psql
-grant ALL ON database excsystem to admin;
+grant ALL ON database uwccsystem to admin;
 ```
 
 
@@ -351,8 +351,8 @@ You are now ready to run the server so that all your hard work hereto will be us
 
 Get the latest version of the code from the repository. If you are creating a new instance run:
 ```bash
-git clone https://github.com/ExcursionClub/ExCSystem.git
-cd ExCSystem
+git clone https://github.com/ExcursionClub/UWCCsystem.git
+cd UWCCsystem
 ```
 If you already have a git repository with the code, ensure you are on the master branch and pull the newest version of 
 the code:
@@ -399,7 +399,11 @@ export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
 export AWS_STORAGE_BUCKET_NAME =
 
+# Host identifiers for security and address building
 export NGINX_HOST_IP=
+export NGINX_HOST_DNS=
+export HOST_NAMESPACE=
+
 ```
 To make the environment variables persist through sessions, you can put the above export statements in the file `~/.bash_profile`
 

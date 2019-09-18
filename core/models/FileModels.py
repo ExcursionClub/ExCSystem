@@ -1,6 +1,6 @@
 from os import path
 
-from excsystem.settings import DEFAULT_IMG
+from uwccsystem.settings import DEFAULT_IMG
 from django.db import models
 from django.utils.html import format_html
 
