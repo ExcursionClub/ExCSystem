@@ -255,14 +255,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_expires_soon_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expiring Soon!"
+        title = "Climbing Club Membership Expiring Soon!"
         template = get_email_template('expire_soon_email')
         body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
         self.send_membership_email(title, body)
 
     def send_expired_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expired!"
+        title = "Climbing Club Membership Expired!"
         template = get_email_template('expired_email')
         body = template.format(member_name=self.get_full_name(), today=self.date_expires)
         self.send_membership_email(title, body)
@@ -316,7 +316,7 @@ class Staffer(models.Model):
         null=True,
         help_text="List of your favorite trips, one per line")
     exc_email = models.EmailField(
-        verbose_name='Official ExC Email',
+        verbose_name='Official Club Email',
         max_length=255,
         unique=True)
     title = models.CharField(
