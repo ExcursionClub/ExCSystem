@@ -321,7 +321,7 @@ class Staffer(models.Model):
         unique=True)
     title = models.CharField(
         verbose_name="Position Title",
-        default="Excursion Staff!",
+        default="Climbing Club Staff!",
         max_length=30)
     autobiography = models.TextField(
         verbose_name="Self Description of the staffer",
