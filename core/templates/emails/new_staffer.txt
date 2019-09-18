@@ -1,4 +1,4 @@
-Congratulations {member_name} on becoming a Excursion Club staffer!
+Congratulations {member_name} on becoming a Climbin Club staffer!
 
 Please log on to the member portal and fill out your staffer profile.
 {finish_url}
@@ -7,4 +7,4 @@ You are now one of our staffers, in charge of leading trips and keeping up the s
 Your new excursion email is {staffer_email}
 
 Stay Stoked,
-Your friendly Excursion Robot
+Your friendly Climbing Club Robot
