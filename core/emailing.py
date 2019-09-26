@@ -18,11 +18,10 @@ def send_email(to_emails, title, body,
         recipients = ", ".join([f'{receiver[0]} <{receiver[1]}>' for receiver in zip(receiver_names, to_emails)])
 
     # Prepare the formatted email message ready to be sent
-    email = f"""From: {from_name} <{from_email}>
-    To: {recipients}
-    Subject: {title}
-    {body}
-    """
+    email = f"From: {from_name} <{from_email}> \n" \
+        f"To: {recipients} \n" \
+        f"Subject: {title} \n" \
+        f"{body} \n"
 
     smtp_obj = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
     if settings.EMAIL_USE_TLS:
