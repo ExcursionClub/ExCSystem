@@ -117,18 +117,6 @@ def build_quiz_questions():
         error_message="You can only check out one of each type of item!",
     )
     save_question(
-        question_name="certification",
-        question_text="How do you get certified for kayaks and SUPS?",
-        choices=(
-            ("class", "Take a $500 class"),
-            ("trip", "Go on a trip with a staffer"),
-            ("date", "Bang a bunch of staffers"),
-            ("nudie", "Run naked around the block"),
-        ),
-        correct_answer_index=1,
-        error_message="To get certified just go on a trip with a staffer.",
-    )
-    save_question(
         question_name="broken",
         question_text="What do you do when a piece of gear breaks?",
         choices=(
