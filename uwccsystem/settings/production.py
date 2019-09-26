@@ -48,12 +48,12 @@ MEMBERSHIP_EMAIL_HOST_USER = os.environ.get("MEMBERSHIP_EMAIL_HOST_USER")
 MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get("MEMBERSHIP_EMAIL_HOST_PASSWORD")
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.ionos.com"
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
 # These two are used by the backend as the defaults
-EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 # Tells celery we will use Amazon SQS, interpets rest from env variables
 BROKER_URL = "sqs://"
