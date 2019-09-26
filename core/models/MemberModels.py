@@ -16,6 +16,7 @@ from core.convinience import get_email_template
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
+from core import emailing
 
 
 def get_profile_pic_upload_location(instance, filename):
@@ -227,23 +228,23 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_email(self, title, body, from_email, email_host_password):
         """Sends an email to the member"""
-        send_mail(
+        emailing.send_email(
+            [self.email],
             title,
             body,
-            from_email,
-            [self.email],
-            fail_silently=False,
-            auth_user=from_email,
-            auth_password=email_host_password,
+            from_email=from_email,
+            smtp_password=email_host_password,
+            from_name='Excursion Club',
+            receiver_names=[self.get_full_name()]
         )
 
     def send_membership_email(self, title, body):
         """Send an email to the member from the membership email"""
-        self.send_email(
+        emailing.send_membership_email(
+            [self.email],
             title,
             body,
-            settings.MEMBERSHIP_EMAIL_HOST_USER,
-            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD,
+            receiver_names=[self.get_full_name()]
         )
 
     def send_intro_email(self, finish_signup_url):
