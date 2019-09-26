@@ -25,8 +25,9 @@ def send_email(to_emails, title, body,
     """
 
     smtp_obj = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
-    smtp_obj.starttls()
-    smtp_obj.login(from_email, smtp_password)
+    if settings.EMAIL_USE_TLS:
+        smtp_obj.starttls()
+        smtp_obj.login(from_email, smtp_password)
     smtp_obj.sendmail(from_email, to_emails, email)
     print("Successfully sent email")
 
