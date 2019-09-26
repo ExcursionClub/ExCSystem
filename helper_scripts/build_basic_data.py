@@ -153,32 +153,13 @@ def build_certifications():
     )
     kayak_cert.save()
 
-    sup_cert = Certification(
-        title="Stand Up Paddleboarding",
-        requirements="1) Be able to swim, dammit\n"
-        "2) Have received the safety talk, know about wind and current dangers\n"
-        "3) Be able to take the SUP out into the surf safely\n"
-        "4) Be able to get off of, flip, and get back onto the SUP out in deep water\n"
-        "5) Be able to bring the SUP back in to shore safely\n",
-    )
-    sup_cert.save()
-
 
 def build_departments():
     departments = [
         "Camping",
         "Backpacking",
         "Rock Climbing",
-        "Skiing/Snowboarding",
-        "Kayaking",
-        "Paddleboarding",
-        "Surfing",
-        "Wetsuits",
-        "Mountaineering",
-        "Archery",
-        "Paintballing",
-        "Free Diving",
-        "Off-Road",
+        "Mountaineering"
     ]
 
     for dept in departments:
