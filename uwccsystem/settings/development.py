@@ -35,6 +35,8 @@ DATABASES = {
 # Email host settings
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1024
+EMAIL_USE_TLS = False
+MEMBERSHIP_EMAIL_NAME = "UWCC Membership"
 MEMBERSHIP_EMAIL_HOST_USER = "membership@UWCCDev.org"
 MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
