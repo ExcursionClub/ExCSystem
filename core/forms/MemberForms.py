@@ -27,10 +27,10 @@ class MemberCreationForm(forms.ModelForm):
 
     # TODO: Make these either editable in the admin or be sourced externally
     membership_choices = (
-        ("year_new", "$60 - Full Year New"),
-        ("year_return", "$40 - Full Year Returning"),
-        ("quarter_new", "$30 - One Quarter New"),
-        ("quarter_return", "$20 - One Quarter Returning"),
+        ("year_new", "$40 - Full Year New"),
+        ("year_return", "$30 - Full Year Returning"),
+        ("quarter_new", "$20 - One Quarter New"),
+        ("quarter_return", "$15 - One Quarter Returning"),
     )
 
     username = forms.EmailField(label="Email")
