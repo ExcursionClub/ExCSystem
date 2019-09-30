@@ -437,7 +437,8 @@ class MemberChangeForm(forms.ModelForm):
         return groups
 
     def save(self, commit=True):
-        self.instance.move_to_group(self.cleaned_data["group"])
+        if 'group' in self.cleaned_data:
+            self.instance.move_to_group(self.cleaned_data["group"])
         return super(MemberChangeForm, self).save(commit=commit)
 
 
