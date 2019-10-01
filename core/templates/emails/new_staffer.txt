@@ -1,4 +1,4 @@
-Congratulations {member_name} on becoming a Climbin Club staffer!
+Congratulations {member_name} on becoming a Climbing Club staffer!
 
 Please log on to the member portal and fill out your staffer profile.
 {finish_url}

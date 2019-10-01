@@ -57,7 +57,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             "Profile Info",
             {
                 "classes": ("wide",),
-                "fields": ("email", "phone_number", "first_name", "last_name"),
+                "fields": ("email", "phone_number", "first_name", "last_name", "image"),
             },
         ),
     )
