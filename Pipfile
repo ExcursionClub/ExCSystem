@@ -29,6 +29,6 @@ django-user-agents = "*"
 [dev-packages]
 black = "==18.9b0"
 django-minio-storage = "*"
-mypy = "==0.720"
+mypy = "==0.730"
 coverage = "*"
 pre-commit = "*"
