@@ -1,4 +1,5 @@
 {% load static %}
+{% load user_agents %}
 
 <!DOCTYPE html>
 <html>
@@ -21,8 +22,11 @@
 <body>
 <br>
 <div class="container">
-
+    {% if request|is_mobile %}
+    <nav class="navbar navbar-expand-sm navbar-light">
+    {% else %}
     <nav class="navbar navbar-expand-lg navbar-dark">
+    {% endif %}
         <a class="navbar-brand" href="/">Home</a>
         <button class="navbar-toggler"
                 type="button"
