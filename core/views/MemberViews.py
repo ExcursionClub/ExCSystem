@@ -26,6 +26,45 @@ class MemberListView(RestrictedViewList):
         self.restriction_filters["pk__exact"] = self.request.user.pk
 
 
+class ResendIntroEmailView(UserPassesTestMixin, ModelDetailView):
+
+    model = Member
+    template_name = "admin"
+
+    def __init__(self, *args, **kwargs):
+        self.send_succeeded = None
+        self.message = None
+        super(ResendIntroEmailView, self).__init__(*args, **kwargs)
+
+    def test_func(self):
+        """Only allow members to send the intro email if they are """
+        member_to_view = self.get_object()
+        is_self = self.request.user.rfid == member_to_view.rfid
+        view_others = self.request.user.has_permission("core.view_member")
+        return view_others or is_self
+
+    def get(self, *args, **kwargs):
+        """Do our best to send the membership email before rendering page"""
+        member = self.get_object()
+        try:
+            finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={"pk": member.pk})
+            member.send_intro_email(finish_url)
+        except Exception as e:
+            self.send_succeeded = False
+            self.message = f"Failed to send email! Please send the following information to the system admin: \n{e}"
+        else:
+            self.send_succeeded = True
+            self.message = "Email sent successfully"
+        super(ResendIntroEmailView, self).get(*args, **kwargs)
+
+    def get_context_data(self, **context):
+        member = self.get_object()
+        context['send_status'] = self.send_succeeded
+        context['message'] = self.message
+        context['detail_url'] = f"{reverse('admin:core_member_detail')}?member={member.pk}"
+        return super(ResendIntroEmailView, self).get_context_data(**context)
+
+
 class MemberDetailView(UserPassesTestMixin, ModelDetailView):
     """Simple view that displays the all details of a user and provides access to specific change forms"""
 
