@@ -1,0 +1,17 @@
+<p>Hi {first_name},</p>
+
+<p>According to our records, you have overdue gear. Please return the following gear as soon as possible:</p>
+
+<table style="width: 400px">
+    <tr><th style="text-align: left">Gear Name</th><th style="text-align: left">Due Date</th></tr>
+    {gear_rows}
+</table>
+
+<p>If you do not return your gear in a timely manner, you risk losing your membership. To return gear, simply drop it off
+    in the drop box in the club yard, or visit office hours and talk to one of our staffers.</p>
+
+<p> For up to date information, visit the member portal: www.excursionclubucsb.info/admin/ <br>
+If you believe you're receiving this email in error, please let us know at info@excursionclubucsb.org
+</p>
+<br>
+- Your friendly Excursion Robot

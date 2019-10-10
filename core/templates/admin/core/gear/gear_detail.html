@@ -117,57 +117,59 @@
     </div>
     <br/><br/>
 </div>
-<div class="container transaction-list">
-    <div class="row">
-        <h4>Related Transactions</h4>
-        <div class="col-12">
-            <br/><br/>
-            <div class="row">
-                <div class="col-2">
-                    <strong>Transaction Type</strong>
-                </div>
-                <div class="col-2">
-                    <strong>Time Stamp</strong>
-                </div>
-                <div class="col-2">
-                    <strong>Authorizer</strong>
-                </div>
-                <div class="col-2">
-                    <strong>Related Member</strong>
-                </div>
-                <div class="col-4">
-                    <strong>Comments</strong>
-                </div>
-            </div>
-            <br/>
-            {% for transaction in related_transactions %}
+{% if view_transactions %}
+    <div class="container transaction-list">
+        <div class="row">
+            <h4>Related Transactions</h4>
+            <div class="col-12">
+                <br/><br/>
                 <div class="row">
                     <div class="col-2">
-                        <p><a href="{{ transaction.detail_url }}">
-                            {{ transaction.type }}
-                        </a></p>
+                        <strong>Transaction Type</strong>
                     </div>
                     <div class="col-2">
-                        <p>{{ transaction.timestamp }}</p>
+                        <strong>Time Stamp</strong>
                     </div>
                     <div class="col-2">
-                        <p><a href="{{ transaction.authorizer.view_profile_url }}">
-                            {{ transaction.authorizer.get_full_name }}
-                        </a></p>
+                        <strong>Authorizer</strong>
                     </div>
                     <div class="col-2">
-                        <p><a href="{{ transaction.member.view_profile_url }}">
-                            {{ transaction.member.get_full_name }}
-                        </a></p>
+                        <strong>Related Member</strong>
                     </div>
                     <div class="col-4">
-                        <p>{{ transaction.comments }}</p>
+                        <strong>Comments</strong>
                     </div>
                 </div>
-            {% endfor %}
+                <br/>
+                {% for transaction in related_transactions %}
+                    <div class="row">
+                        <div class="col-2">
+                            <p><a href="{{ transaction.detail_url }}">
+                                {{ transaction.type }}
+                            </a></p>
+                        </div>
+                        <div class="col-2">
+                            <p>{{ transaction.timestamp }}</p>
+                        </div>
+                        <div class="col-2">
+                            <p><a href="{{ transaction.authorizer.view_profile_url }}">
+                                {{ transaction.authorizer.get_full_name }}
+                            </a></p>
+                        </div>
+                        <div class="col-2">
+                            <p><a href="{{ transaction.member.view_profile_url }}">
+                                {{ transaction.member.get_full_name }}
+                            </a></p>
+                        </div>
+                        <div class="col-4">
+                            <p>{{ transaction.comments }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
+{% endif %}
 
 {% endblock %}
 

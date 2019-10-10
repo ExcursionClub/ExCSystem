@@ -5,7 +5,7 @@ python: 3.7
 
 install:
   - pip install pipenv
-  - pipenv install --dev
+  - pipenv install
 services:
   - postgresql
 before_script:

@@ -7,6 +7,7 @@ from core.forms.MemberForms import (
     StafferCreateForm,
 )
 from core.models.MemberModels import Member, Staffer
+from core.models.GearModels import Gear
 from core.views.common import ModelDetailView, get_default_context
 from core.views.ViewList import RestrictedViewList
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -48,14 +49,16 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **context):
+        member = self.get_object()
+        members_gear = Gear.objects.filter(checked_out_to=member).filter(status__lte=4)
+        is_self = self.request.user.rfid == member.rfid
         context["main_admin_url"] = WEB_BASE + "/admin"
         context["departments_url"] = WEB_BASE + "/admin/core/department"
         context["staffers_url"] = WEB_BASE + "/admin/core/staffer"
-
-        member = self.get_object()
-        is_self = self.request.user.rfid == member.rfid
-        context['can_edit'] = is_self or self.request.user.has_permission('core.change_staffer')
-        context['can_promote'] = self.request.user.has_permission('core.add_staffer')
+        context["has_gear"] = bool(members_gear)
+        context["checked_out_gear"] = members_gear
+        context['can_edit'] = is_self or self.request.user.has_permission('core.change_member')
+        context['can_promote'] = self.request.user.has_permission('core.add_staffer') and not member.is_staffer
         context['promote_url'] = f"{reverse('admin:core_staffer_add')}?member={member.pk}"
         return super(MemberDetailView, self).get_context_data(**context)
 
