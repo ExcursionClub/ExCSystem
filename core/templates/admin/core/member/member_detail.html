@@ -105,10 +105,17 @@
         <div class="col-md-2">
             <div class="row-md" style="padding-bottom: 5px">
                 {%  if can_edit %}
-                    <form action="{{ object.edit_profile_url }}">
-                        <input type="submit" class="profile-edit-btn" value="Edit" style="width: 100%">
-                    </form>
+                    <a href="{{ object.edit_profile_url }}">
+                        <input type="submit" class="profile-edit-btn" value="Edit" style="width: 100%"/>
+                    </a>
                 {%  endif %}
+            </div>
+            <div class="row-md" style="padding-bottom: 5px">
+                {% if is_new and can_edit %}
+                    <a href="{{ resend_email_url }}">
+                        <input type="submit" class="profile-edit-btn" value="Email" style="width: 100%"/>
+                    </a>
+                {% endif %}
             </div>
             <div class="row-md" style="padding-top: 5px">
                 {%  if can_promote %}
