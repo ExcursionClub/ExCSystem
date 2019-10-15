@@ -26,6 +26,45 @@ class MemberListView(RestrictedViewList):
         self.restriction_filters["pk__exact"] = self.request.user.pk
 
 
+class ResendIntroEmailView(UserPassesTestMixin, ModelDetailView):
+
+    model = Member
+    template_name = "admin/core/member/member_email.html"
+
+    raise_exception = True
+    permission_denied_message = (
+        "You are not allowed to send emails!"
+    )
+
+    def test_func(self):
+        """Only allow members to send the intro email if it is for themselves, or they are staffers"""
+        member_to_view = self.get_object()
+        is_self = self.request.user.rfid == member_to_view.rfid
+        can_edit = self.request.user.has_permission('core.change_member')
+        return can_edit or is_self
+
+    def get(self, *args, **kwargs):
+        """Do our best to send the membership email before rendering page"""
+        member = self.get_object()
+        try:
+            finish_url = WEB_BASE + reverse("admin:core_member_finish", kwargs={"pk": member.pk})
+            member.send_intro_email(finish_url)
+        except Exception as e:
+            self.send_succeeded = False
+            self.message = f"Failed to send email! Please send the following information to the system admin: \n{e}"
+        else:
+            self.send_succeeded = True
+            self.message = "Email sent successfully"
+        return super(ResendIntroEmailView, self).get(*args, **kwargs)
+
+    def get_context_data(self, **context):
+        member = self.get_object()
+        context['send_status'] = self.send_succeeded
+        context['message'] = self.message
+        context['detail_url'] = f"{reverse('admin:core_member_detail', kwargs={'pk': member.pk})}"
+        return super(ResendIntroEmailView, self).get_context_data(**context)
+
+
 class MemberDetailView(UserPassesTestMixin, ModelDetailView):
     """Simple view that displays the all details of a user and provides access to specific change forms"""
 
@@ -60,6 +99,8 @@ class MemberDetailView(UserPassesTestMixin, ModelDetailView):
         context['can_edit'] = is_self or self.request.user.has_permission('core.change_member')
         context['can_promote'] = self.request.user.has_permission('core.add_staffer') and not member.is_staffer
         context['promote_url'] = f"{reverse('admin:core_staffer_add')}?member={member.pk}"
+        context['resend_email_url'] = reverse("admin:core_member_resendemail", kwargs={"pk": member.pk})
+        context['is_new'] = member.group == 'Just Joined'
         return super(MemberDetailView, self).get_context_data(**context)
 
 

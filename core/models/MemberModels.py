@@ -152,7 +152,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_staffer(self):
-        """Property to check if a member is an club staffer"""
+        """Property to check if a member is a excursion staffer or not"""
         return self.group in ['Staff', 'Board', 'Admin']
 
     @property

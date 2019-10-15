@@ -7,6 +7,7 @@ from core.views.MemberViews import (
     MemberFinishView,
     MemberListView,
     StafferDetailView,
+    ResendIntroEmailView
 )
 from core.models.MemberModels import Member
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -73,12 +74,17 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         # Get all the urls automatically generated for a admin view of a model by django
         urls = super().get_urls()
 
-        # Setup all the additional member finish url
+        # Setup all the additional member urls
         my_urls = [
             path(
                 "<int:pk>/finish/",
                 self.wrap(MemberFinishView.as_view()),
                 name="core_member_finish",
+            ),
+            path(
+                "<int:pk>/email/",
+                self.wrap(ResendIntroEmailView.as_view()),
+                name="core_member_resendemail",
             )
         ]
 
