@@ -443,11 +443,11 @@
         },
         "django-minio-storage": {
             "hashes": [
-                "sha256:218e34fa2a6672e0e4cd115858a3864884de7626f09d2c602f7b90c53d79758d",
-                "sha256:b7cfdbde693ce9c6001a771ee6a99c1bd895d3f98a9a609abb9662a88ed86366"
+                "sha256:66a62e99a8088504c3e71faea0fa4f30f6201b1a45ccd54d483d428e3127feb9",
+                "sha256:a262bc88de2a5b9c6fc2016f7c600dd3c8caf711aefe3702e88970ff011b579c"
             ],
             "index": "pypi",
-            "version": "==0.2.2"
+            "version": "==0.3.4"
         },
         "identify": {
             "hashes": [
