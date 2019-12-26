@@ -13,6 +13,7 @@ Bottom up re-design of the Excursion system
 - [AWS deployment](#aws-deployment)
     - Reference for how the real production server is setup
 
+
 ## Getting Started
 This project requires [python3.7](https://www.python.org/downloads/release/python-372/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
 
