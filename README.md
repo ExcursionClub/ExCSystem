@@ -15,9 +15,10 @@ Bottom up re-design of the Excursion system
 
 
 ## Getting Started
-This project requires [python3.7](https://www.python.org/downloads/release/python-372/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
+We use Heroku to host our app. The dev branch will automatically be deploy [here](https://excsystem.herokuapp.com/) and the master [here](https://excsystem-prod.herokuapp.com/).
 
 ### Install
+Local development requires [python3.8](https://www.python.org/downloads/release/python-381/), [Pipenv](https://github.com/pypa/pipenv/), [Docker](https://www.docker.com/) and [Minio](https://github.com/minio/minio).
 
 #### macOS
 Install [Postgres.app](https://postgresapp.com/)
@@ -95,7 +96,7 @@ TravisCI will run tests on all PRs.
 To run tests locally:
 
 ```bash
-$ python3.7 manage.py test
+$ python3 manage.py test
 ```
 
 ### Test Coverage
@@ -112,7 +113,7 @@ Install geckodriver and Firefox
 Django has to be running to test with selenium. Run these two commands in different windows:
 ```bash
 $ python manage.py runserver
-$ python3.7 functional_tests.py
+$ python3 functional_tests.py
 ```
 
 ### Applying Changes to the Models
@@ -121,8 +122,8 @@ The exception to this rule are any changes to the models that affect how data is
 To incorporate these, stop the server, and run:
 
 ```bash
-$ python3.7 manage.py makemigrations <app_name>
-$ python3.7 manage.py migrate
+$ python3 manage.py makemigrations <app_name>
+$ python3 manage.py migrate
 ```
 
 It's important to run create small atomic migrations to make it easy to roll back if we mess up our database.
@@ -143,8 +144,8 @@ using the ResetDatabase.py file.
 To restart the database:
 
 ```bash
-$ python3.7 task.py reset_database
-$ python3.7 task.py populate_database
+$ python3 task.py reset_database
+$ python3 task.py populate_database
 ```
 
 This will wipe everything that exists in the database, and generate random data for the new database.
@@ -194,7 +195,7 @@ Before you run the server it's advisable that you make sure all the following ar
 To run the server on the production machine first kill the old python process
 ```bash
 $ ps -ef | grep python
-ubuntu    7339  7220  0 07:01 pts/0    00:00:00 python3.7 -m pipenv shell
+ubuntu    7339  7220  0 07:01 pts/0    00:00:00 python3 -m pipenv shell
 $ kill -9 7339
 ```
 
@@ -264,7 +265,7 @@ For help on how to do this look [here](https://docs.aws.amazon.com/AWSEC2/latest
 ```bash
 $ sudo apt-get update
 $ sudo apt-get upgrade -y
-$ sudo apt-get install python3.7 nginx libpq-dev python3.7-dev postgresql postgresql-contrib  -y
+$ sudo apt-get install python3 nginx libpq-dev python3-dev postgresql postgresql-contrib  -y
 $ curl https://raw.githubusercontent.com/kennethreitz/pipenv/master/get-pipenv.py | python
 ```
 
@@ -381,12 +382,12 @@ $ pipenv install --deploy --system
 Note: If you ever run into issues where the wrong version of python is trying to run, you can update the symlink:
 ```bash
 $ sudo rm /usr/bin/python3
-$ sudo ln -s /usr/bin/python3.7 /usr/bin/python3
+$ sudo ln -s /usr/bin/python3 /usr/bin/python3
 ```
 
 ```bash
 # Generate keys:
-$ python3.7 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
+$ python3 manage.py shell -c 'from django.core.management import utils; print(f"export SECRET_KEY=\"{utils.get_random_secret_key()}\"")' >> ~/.profile
 ```
 #### Environment Variables
 All the below variables must be set with the appropriate values (from the above configuration process). None of these 
@@ -418,13 +419,13 @@ To make the environment variables persist through sessions, you can put the abov
 #### Prepare Database
 For django to be able to store data, we need to create the database schema. to do this run:
 ```bash
-$ python3.7 manage.py makemigrations
-$ python3.7 manage.py migrate
+$ python3 manage.py makemigrations
+$ python3 manage.py migrate
 ```
 
 To populate the database with start data (groups, permissions, quiz questions etc) run:
 ```bash
-$ python3.7 build_basic_data.py
+$ python3 build_basic_data.py
 ```
 
 #### Create folders for static files
@@ -432,7 +433,7 @@ Static and media files for the production server are stored in an S3 bucket.
 
 To make sure the server is getting access to s3, ensure the above environment variables are set and run:
 ```bash
-$ ENV_CONFIG=production; python3.7 manage.py collectstatic
+$ ENV_CONFIG=production; python3 manage.py collectstatic
 ```
 
 Everything should now be set up correctly. Check out [Run in Production](#run-in-production) for info on how to run the
