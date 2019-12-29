@@ -5,12 +5,11 @@ from excsystem.settings.base import *
 
 sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 
-STATIC_URL = "static/"
-MEDIA_URL = "media/"
-
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
 
 MEDIA_ROOT = "/var/www/media/"
+STATIC_ROOT = "/var/www/static/"
 
 AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
