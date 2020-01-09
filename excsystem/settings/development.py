@@ -5,7 +5,10 @@ DEBUG = True
 STATIC_URL = "static/"
 MEDIA_URL = "media/"
 
-INSTALLED_APPS.append("minio_storage")
+INSTALLED_APPS.extend([
+    "minio_storage",
+    "django_extensions"
+])
 MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 DEFAULT_FILE_STORAGE = "minio_storage.storage.MinioMediaStorage"
