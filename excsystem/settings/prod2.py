@@ -21,7 +21,7 @@ AWS_LOCATION = os.environ.get("AWS_LOCATION")
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
+DEBUG = False
 ALLOWED_HOSTS = ["excsystem-prod.herokuapp.com"]
 
 # Email host settings
