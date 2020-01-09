@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Active Members{% endblock %}</title>
+</head>
+<body>
+<br>
+<div>
+    {% for email in emails %}
+        <p style="font-family: courier;"> {{ email }} </p>
+    {% endfor %}
+</div>
+</body>
+</html>
