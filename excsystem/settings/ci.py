@@ -1,6 +1,6 @@
 from excsystem.settings.base import *
 
-DEBUG = True
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", True))
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
