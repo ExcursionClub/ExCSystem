@@ -6,7 +6,8 @@ class TransactionAdmin(ViewableModelAdmin):
     list_display = ("type", "timestamp", "gear", "member", "authorizer", "comments")
     list_filter = ("type",)
     search_fields = (
-        "gear__name",
+        "gear__geartype__name",
+        "gear__gear_data",
         "member__first_name",
         "member__last_name",
         "authorizer__first_name",

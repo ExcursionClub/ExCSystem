@@ -26,7 +26,7 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
+DEBUG = False
 ALLOWED_HOSTS = [".excursionclub.info", os.environ.get("NGINX_HOST_IP")]
 
 DATABASES = {
