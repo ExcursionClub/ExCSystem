@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,6 +17,8 @@ SITE_ID = 1
 SITE_NAME = "Climbing Club System"
 EXC_EMAIL = '@climbingclubuw.org'
 
+GEAR_EXPIRE_TIME = timedelta(days=90)
+
 ALLOWED_HOSTS = ["*"]
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
@@ -32,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    'django_user_agents',
     "phonenumber_field",
     "storages",
 ]
@@ -44,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = "uwccsystem.urls"

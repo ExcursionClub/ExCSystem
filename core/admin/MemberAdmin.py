@@ -7,6 +7,7 @@ from core.views.MemberViews import (
     MemberFinishView,
     MemberListView,
     StafferDetailView,
+    ResendIntroEmailView
 )
 from core.models.MemberModels import Member
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -73,12 +74,17 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
         # Get all the urls automatically generated for a admin view of a model by django
         urls = super().get_urls()
 
-        # Setup all the additional member finish url
+        # Setup all the additional member urls
         my_urls = [
             path(
                 "<int:pk>/finish/",
                 self.wrap(MemberFinishView.as_view()),
                 name="core_member_finish",
+            ),
+            path(
+                "<int:pk>/email/",
+                self.wrap(ResendIntroEmailView.as_view()),
+                name="core_member_resendemail",
             )
         ]
 
@@ -159,6 +165,13 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             raise PermissionDenied
 
         return fieldsets
+
+    def get_readonly_fields(self, request, obj=None):
+        """Make it so only those who can make staffers be able to change a member's group"""
+        if not request.user.has_permission('core.add_staffer'):
+            return ('groups', )
+        else:
+            return ()
 
 
 class StafferAdmin(ViewableModelAdmin):

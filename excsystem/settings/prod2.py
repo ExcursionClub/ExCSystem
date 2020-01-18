@@ -1,14 +1,12 @@
 import django_heroku
 import sentry_sdk
 
-from uwccsystem.settings.base import *
+from excsystem.settings.base import *
 
 sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 
-STATIC_URL = "static/"
-MEDIA_URL = "media/"
-
-DEFAULT_FILE_STORAGE = "uwccsystem.settings.storage_backends.MediaStorage"
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
 
 MEDIA_ROOT = "/var/www/media/"
 STATIC_ROOT = "/var/www/static/"
@@ -22,21 +20,20 @@ AWS_LOCATION = os.environ.get("AWS_LOCATION")
 
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
-ALLOWED_HOSTS = ["uwccsystem.herokuapp.com"]
+DEBUG = False
+ALLOWED_HOSTS = ["excsystem-prod.herokuapp.com"]
 
 # Email host settings
 EMAIL_HOST = "localhost"
 EMAIL_PORT = 1024
-MEMBERSHIP_EMAIL_HOST_USER = "membership@UWCCDev.org"
+MEMBERSHIP_EMAIL_HOST_USER = "membership@ExCDev.org"
 MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Base address of where the page is available
-WEB_BASE = "https://www.uwccsystem.herokuapp.com"
-SITE_DOMAIN = "www.uwccsystem.herokuapp.com"
+WEB_BASE = "https://www.excsystem-prod.herokuapp.com"
+SITE_DOMAIN = "www.excsystem-prod.herokuapp.com"
 
 LOGGING = {
     "version": 1,
