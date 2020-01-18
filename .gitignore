@@ -39,3 +39,6 @@ listserv_emails.txt
 
 ### Production Scrits ###
 rebootServer.sh
+
+### Old settings directory ###
+excsystem/

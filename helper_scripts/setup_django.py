@@ -8,7 +8,9 @@ if os.environ.get("ENV_CONFIG") == "development":
 elif os.environ.get("ENV_CONFIG") == "ci":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uwccsystem.settings.ci")
 elif os.environ.get("ENV_CONFIG") == "staging":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uwccsystem.settings.staging")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.staging")
+elif os.environ.get("ENV_CONFIG") == "prod2":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "excsystem.settings.prod2")
 else:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "uwccsystem.settings.production")
 

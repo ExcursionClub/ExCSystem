@@ -14,11 +14,12 @@ from django.forms.fields import (
 )
 from django.forms.widgets import CheckboxInput, NumberInput, Select, Textarea, TextInput
 from django.urls import reverse
+from datetime import date
 
 from .CertificationModels import Certification
 from .DepartmentModels import Department
 from .MemberModels import Member
-
+from excsystem.settings import GEAR_EXPIRE_TIME
 
 class CustomDataField(models.Model):
     data_types = (
@@ -318,6 +319,10 @@ class Gear(models.Model):
     def edit_gear_url(self):
         return reverse("admin:core_gear_change", kwargs={"object_id": self.pk})
 
+    @property
+    def view_gear_url(self):
+        return reverse("admin:core_gear_detail", kwargs={"pk": self.pk})
+
     def get_extra_fieldset(self, name="Additional Data", classes=("wide",)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
         fieldset = (
@@ -366,10 +371,10 @@ class Gear(models.Model):
 
     def is_available(self):
         """Returns True if the gear is available for renting"""
-        return True if self.status == 0 else False
+        return self.status == 0
 
     def is_rented_out(self):
-        return True if self.status == 1 else False
+        return self.status in [1, 3, 4]
 
     def is_active(self):
         """Returns True if the gear is actively in circulation (ie could be checked out in a few days)"""

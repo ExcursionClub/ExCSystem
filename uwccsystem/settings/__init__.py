@@ -9,5 +9,7 @@ elif env_config == "test":
     from .ci import *
 elif env_config == "staging":
     from .staging import *
+elif env_config == "prod2":
+    from .prod2 import *
 else:
     from .production import *
