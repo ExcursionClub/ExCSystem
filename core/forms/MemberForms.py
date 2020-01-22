@@ -54,6 +54,7 @@ class MemberCreationForm(forms.ModelForm):
     membership = forms.ChoiceField(
         label="Membership Payment", choices=membership_choices
     )
+    form_filled = forms.BooleanField(label="Liability form Signed", initial=False, required=True)
 
     membership_duration = 0
     referenced_member = None

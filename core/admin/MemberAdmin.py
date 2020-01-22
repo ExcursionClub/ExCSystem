@@ -39,7 +39,7 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             None,
             {"classes": ("wide",), "fields": ("username", "password1", "password2")},
         ),
-        ("Staff Use Only", {"classes": ("wide",), "fields": ("membership", "rfid")}),
+        ("Staff Use Only", {"classes": ("wide",), "fields": ("form_filled", "membership", "rfid")}),
     )
     fieldsets = (
         ("Contact Info", {"classes": ("wide",), "fields": ("email", "phone_number")}),
