@@ -174,6 +174,7 @@ class MemberFinishForm(forms.ModelForm):
     """
 
     member_field_names = ["first_name", "last_name", "phone_number", "image"]
+    emergency_field_names = ["emergency_contact_name", "emergency_relation", "emergency_phone", "emergency_email"]
 
     # Instantiate the non-default member data fields
     phone_number = PhoneNumberField(widget=PhoneNumberPrefixWidget)
@@ -208,11 +209,24 @@ class MemberFinishForm(forms.ModelForm):
     # This meta class allows the django backend to link this for to the model
     class Meta:
         model = Member
-        fields = ("first_name", "last_name", "phone_number", "image")
+        fields = (
+            "first_name",
+            "last_name",
+            "phone_number",
+            "image",
+            "emergency_contact_name",
+            "emergency_relation",
+            "emergency_phone",
+            "emergency_email"
+        )
 
     def as_table_member(self):
         """Make it possible to get the HTML of just the member information section of this form"""
         return self.as_table_subset(self.member_field_names)
+
+    def as_table_emergency(self):
+        """Make it possible to get the HTML of just the emergency contact information section of this form"""
+        return self.as_table_subset(self.emergency_field_names)
 
     def as_table_quiz(self):
         """Make it possible to get the HTML of just the quiz information section of this form"""
