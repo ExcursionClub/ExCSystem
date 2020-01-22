@@ -21,7 +21,7 @@ class ActiveMemberView(LoginRequiredMixin, UserPassesTestMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ActiveMemberView, self).get_context_data(**kwargs)
 
-        members = Member.objects.all()
+        members = Member.objects.all().exclude(group='Expired')
         emails = [f"{member.email}\n" for member in members if member.is_active_member]
 
         context['emails'] = emails
