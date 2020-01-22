@@ -212,7 +212,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
-        self.move_to_group("Member")
+        if self.group == "Staff" or self.group == "Board" or self.group == "Admin":
+            print("Member status is already better than member")
+        else:
+            self.move_to_group("Member")
 
     def extend_membership(self, duration, rfid="", password=""):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
