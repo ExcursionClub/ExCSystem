@@ -68,6 +68,11 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
                 "classes": ("wide",),
                 "fields": ("email", "phone_number", "first_name", "last_name", "image"),
             },
+            "Emergency Contact Info",
+            {
+                "classes": ("wide",),
+                "fields": ("emergency_contact_name", "emergency_relation", "emergency_phone", "emergency_email")
+            }
         ),
     )
     search_fields = ("email", "phone_number", "first_name", "last_name", "rfid")

@@ -124,10 +124,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
     phone_number = PhoneNumberField(unique=False, null=True)
 
     # Emergency contact information
-    emergency_contact_name = models.CharField(max_length=100, null=True)
-    emergency_relation = models.CharField(max_length=50, null=True)
-    emergency_phone = PhoneNumberField(unique=False, null=True)
-    emergency_email = models.EmailField(unique=False, null=True)
+    emergency_contact_name = models.CharField(max_length=100, verbose_name="Contact Name", null=True)
+    emergency_relation = models.CharField(max_length=50, verbose_name="Relationship", null=True)
+    emergency_phone = PhoneNumberField(unique=False, verbose_name="Phone Number", null=True)
+    emergency_email = models.EmailField(unique=False, verbose_name="Best Email", null=True)
 
     # Membership data
     date_joined = models.DateField(auto_now_add=True)
