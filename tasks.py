@@ -1,6 +1,6 @@
 import sys
 from helper_scripts import setup_django
-from core.tasks import expire_members, update_listserv
+from core.tasks import expire_members, update_listserv, expire_gear, email_overdue_gear
 from helper_scripts.build_permissions import build_all as build_all_perms
 from helper_scripts.listserv_interface import get_email_file
 from helper_scripts.fix_member_group import fix_all_group_names
@@ -16,6 +16,8 @@ def reset_database():
 
 tasks = {
     "expire_members": expire_members,
+    "expire_gear": expire_gear,
+    "email_overdue_gear": email_overdue_gear,
     "update_listserv": update_listserv,
     "get_email_file": get_email_file,
     "build_permissions": build_all_perms,

@@ -1,11 +1,11 @@
 language: python
 sudo: required
-dist: xenial
-python: 3.7
+dist: bionic
+python: 3.8
 
 install:
   - pip install pipenv
-  - pipenv install --dev
+  - pipenv install
 services:
   - postgresql
 before_script:

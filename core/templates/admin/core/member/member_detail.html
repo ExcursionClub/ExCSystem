@@ -12,54 +12,44 @@
 
 <div class="container emp-profile">
     <div class="row">
+        <!-- Left column: contains profile pic, and quicklinks -->
         <div class="col-md-4">
-            <div class="profile-img">
-                <img src="{{ object.image.url }}" alt="Member Profile Picture" width="90%" align="left"/>
+            <div class="row">
+                <div class="profile-img">
+                    <img src="{{ object.image.url }}" alt="Member Profile Picture" width="90%" align="left"/>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="profile-head">
-                <h5> {{ object.get_full_name }} </h5>
-                <h6> {{ object.group }} </h6>
-            </div>
-        </div>
-        <div class="col-md-2">
+            <br/><br/>
+            <div class="row">
+                <div class="profile-work">
+                    <p>CERTIFICATIONS</p>
+                    {% for cert in object.get_all_certifications %}
+                        <a href="{{cert.get_page_url}}"> {{ cert.title }} </a><br/>
+                    {% endfor %}
+                    {% if object.has_no_certifications %}
+                        Go on trips to earn certifications!<br/>
+                    {% endif %}
+                     <br/><br/>
+                    <p>COMING SOON</p>
+                    <a href="{{ main_admin_url }}">Admin Home</a><br/>
+                    <a href="{{ departments_url }}">Gear Departments</a><br/>
+                    <a href="{{ staffers_url }}">Our Staffers</a><br/>
 
-            <div class="row-md" style="padding-bottom: 5px">
-                {%  if can_edit %}
-                    <form action="{{ object.edit_profile_url }}">
-                        <input type="submit" class="profile-edit-btn" value="Edit" style="width: 100%">
-                    </form>
-                {%  endif %}
-            </div>
-            <div class="row-md" style="padding-top: 5px">
-                {%  if can_promote %}
-                    <a href="{{ promote_url }}">
-                       <input type="button" class="profile-edit-btn" value="Promote" style="width: 100%" />
-                    </a>
-                {%  endif %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="profile-work">
-                <br/>
-                <p>CERTIFICATIONS</p>
-                {% for cert in object.get_all_certifications %}
-                    <a href="{{cert.get_page_url}}"> {{ cert.title }} </a><br/>
-                {% endfor %}
-                {% if object.has_no_certifications %}
-                    Go on trips to earn certifications!<br/>
-                {% endif %}
-                <br/><br/>
-                <p>COMING SOON</p>
-                <a href="{{ main_admin_url }}">Admin Home</a><br/>
-                <a href="{{ departments_url }}">Gear Departments</a><br/>
-                <a href="{{ staffers_url }}">Our Staffers</a><br/>
+
+        <!-- Main body column, containsprofile information -->
+        <div class="col-md-6" style="padding-left: 50px">
+            <div class="row">
+                <div class="profile-head">
+                    <h5> {{ object.get_full_name }} </h5>
+                    <h6> {{ object.group }} </h6>
+                </div>
             </div>
-        </div>
-        <div class="col-md-8">
+
+            <br/><br/>
+
             <div class="row">
                 <h6>Personal Information</h6>
             <div class="col-2"></div>
@@ -120,53 +110,110 @@
                         <p>{{ object.date_expires }}</p>
                     </div>
                 </div>
-                </div>
             </div>
 
-            <br>
-            <br>
-            <div class="row">
-            <h6>Emergency Contact Information</h6>
-            <div class="col-2"></div>
-            <div class="col-10">
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Name</label>
+            <div class="row" style="padding-top: 30px">
+                <h6>Emergency Contact Information</h6>
+                <div class="col-2"></div>
+                <div class="col-10">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ object.emergency_contact_name}}</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p>{{ object.emergency_contact_name}}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Relationship</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ object.emergency_relation }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Relationship</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Phone Number</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ object.emergency_phone }}</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p>{{ object.emergency_relation }}</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Email</label>
+                        </div>
+                        <div class="col-md-6">
+                            <p>{{ object.emergency_email }}</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Phone Number</label>
                     </div>
-                    <div class="col-md-6">
-                        <p>{{ object.emergency_phone }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label>Email</label>
-                    </div>
-                    <div class="col-md-6">
-                        <p>{{ object.emergency_email }}</p>
-                    </div>
-                </div>
                 </div>
             </div>
         </div>
+
+
+        <div class="col-md-2">
+            <div class="row-md" style="padding-bottom: 5px">
+                {%  if can_edit %}
+                    <a href="{{ object.edit_profile_url }}">
+                        <input type="submit" class="profile-edit-btn" value="Edit" style="width: 100%"/>
+                    </a>
+                {%  endif %}
+            </div>
+            <div class="row-md" style="padding-bottom: 5px">
+                {% if is_new and can_edit %}
+                    <a href="{{ resend_email_url }}">
+                        <input type="submit" class="profile-edit-btn" value="Email" style="width: 100%"/>
+                    </a>
+                {% endif %}
+            </div>
+            <div class="row-md" style="padding-top: 5px">
+                {%  if can_promote %}
+                    <a href="{{ promote_url }}">
+                       <input type="button" class="profile-edit-btn" value="Promote" style="width: 100%" />
+                    </a>
+                {%  endif %}
             </div>
         </div>
     </div>
+
+
+    {% if has_gear %}
+        <div class="row">
+            <h4>CHECKED OUT GEAR</h4>
+                <div class="row">
+                    <div class="col-4">
+                        <strong>Name</strong>
+                    </div>
+                    <div class="col-4">
+                        <strong>RFID</strong>
+                    </div>
+                    <div class="col-2">
+                        <strong>Due Date</strong>
+                    </div>
+                </div>
+                <br/>
+                {% for gear in checked_out_gear %}
+                    <div class="row">
+                        <div class="col-4">
+                            <p><a href="{{ gear.view_gear_url }}">
+                                {{ gear.name }}
+                            </a></p>
+                        </div>
+                        <div class="col-4">
+                            <p>{{ gear.rfid }}</p>
+                        </div>
+                        <div class="col-2">
+                            <p style="color: {% if gear.status >= 3 %}red{% else %}black{% endif %}">{{ gear.due_date }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
 </div>
 
 {% endblock %}

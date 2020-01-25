@@ -283,7 +283,7 @@ class MemberFinishForm(forms.ModelForm):
         """Ensures that the image is of a sufficiently small size before it gets uploaded"""
         image = self.cleaned_data["image"]
 
-        if image.name == DEFAULT_IMG:
+        if not image or image.name == DEFAULT_IMG:
             raise forms.ValidationError("Please upload your own profile picture!")
         if not hasattr(image, "size"):
             raise forms.ValidationError("Please upload a profile picture!")
@@ -452,7 +452,8 @@ class MemberChangeForm(forms.ModelForm):
         return groups
 
     def save(self, commit=True):
-        self.instance.move_to_group(self.cleaned_data["group"])
+        if 'group' in self.cleaned_data:
+            self.instance.move_to_group(self.cleaned_data["group"])
         return super(MemberChangeForm, self).save(commit=commit)
 
 
