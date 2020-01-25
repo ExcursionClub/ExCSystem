@@ -109,13 +109,12 @@ class Member(AbstractBaseUser, PermissionsMixin):
     """This is the base model for all members (this includes staffers)"""
 
     objects = MemberManager()
-
     primary_key = PrimaryKeyField()
 
+    # Personal contact information
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
-    rfid = RFIDField(verbose_name="RFID")
     image = models.ImageField(
         verbose_name="Profile Picture",
         default=settings.DEFAULT_IMG,
@@ -124,17 +123,24 @@ class Member(AbstractBaseUser, PermissionsMixin):
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
+    # Emergency contact information
+    emergency_contact_name = models.CharField(max_length=100, verbose_name="Contact Name", null=True)
+    emergency_relation = models.CharField(max_length=50, verbose_name="Relationship", null=True)
+    emergency_phone = PhoneNumberField(unique=False, verbose_name="Phone Number", null=True)
+    emergency_email = models.EmailField(unique=False, verbose_name="Best Email", null=True)
+
+    # Membership data
     date_joined = models.DateField(auto_now_add=True)
     date_expires = models.DateField(null=False)
-
-    is_admin = models.BooleanField(default=False)
+    rfid = RFIDField(verbose_name="RFID")
     group = models.CharField(default="Unset", max_length=30)
+    is_admin = models.BooleanField(default=False)
+    certifications = models.ManyToManyField(Certification, blank=True)
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
     is_active = models.BooleanField(
         default=True
     )  # Use is_active_member to check actual activity
-    certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["date_expires"]
@@ -211,7 +217,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
-        self.move_to_group("Member")
+        if self.group == "Staff" or self.group == "Board" or self.group == "Admin":
+            print("Member status is already better than member")
+        else:
+            self.move_to_group("Member")
 
     def extend_membership(self, duration, rfid="", password=""):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
