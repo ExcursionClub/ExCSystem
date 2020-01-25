@@ -19,7 +19,7 @@ from datetime import date
 from .CertificationModels import Certification
 from .DepartmentModels import Department
 from .MemberModels import Member
-from excsystem.settings import GEAR_EXPIRE_TIME
+from uwccsystem.settings import GEAR_EXPIRE_TIME
 
 class CustomDataField(models.Model):
     data_types = (
