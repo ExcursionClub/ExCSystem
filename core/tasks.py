@@ -49,8 +49,11 @@ def expire_gear():
     for gear in checked_out:
         if gear.status == 1 and today > gear.due_date:
             Transaction.objects.missing_gear(sys_rfid, gear.rfid)
-        elif gear.status == 3 and today > gear.due_date + GEAR_EXPIRE_TIME:
-            Transaction.objects.expire_gear(sys_rfid, gear.rfid)
+        elif gear.status == 3:
+            if not gear.due_date:
+                gear.due_date = today
+            elif today > gear.due_date + GEAR_EXPIRE_TIME:
+                Transaction.objects.expire_gear(sys_rfid, gear.rfid)
 
 
 def email_overdue_gear():
