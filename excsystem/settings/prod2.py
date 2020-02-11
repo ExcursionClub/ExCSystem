@@ -25,11 +25,15 @@ DEBUG = False
 ALLOWED_HOSTS = ["excsystem-prod.herokuapp.com"]
 
 # Email host settings
-EMAIL_HOST = "localhost"
-EMAIL_PORT = 1024
-MEMBERSHIP_EMAIL_HOST_USER = "membership@ExCDev.org"
-MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.ionos.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+MEMBERSHIP_EMAIL_HOST_USER = os.environ.get("MEMBERSHIP_EMAIL_HOST_USER", EMAIL_HOST_USER)
+MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get("MEMBERSHIP_EMAIL_HOST_PASSWORD", EMAIL_HOST_PASSWORD)
+
 
 # Base address of where the page is available
 WEB_BASE = "https://www.excsystem-prod.herokuapp.com"
