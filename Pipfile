@@ -7,7 +7,7 @@ url = "https://pypi.org/simple"
 python_version = "3.8"
 
 [packages]
-django-phonenumber-field = "==3.0.1"
+django-phonenumber-field = "==4.0.0"
 phonenumbers = "==8.11.2"
 names = "==0.3.0"
 progressbar2 = "==3.47.0"
