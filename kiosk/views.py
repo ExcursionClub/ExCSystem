@@ -70,7 +70,7 @@ class CheckOutView(View):
         form = HomeForm()
 
         try:
-            name = get_name(rfid)
+            member = get_member(rfid)
         except ValidationError:
             alert_message = "The member has not yet completed the registration"
             messages.add_message(request, messages.WARNING, alert_message)
@@ -78,7 +78,7 @@ class CheckOutView(View):
 
         checked_out_gear = get_checked_out_gear(rfid)
 
-        args = {"form": form, "name": name, "checked_out_gear": checked_out_gear}
+        args = {"form": form, "member": member, "checked_out_gear": checked_out_gear}
         return render(request, self.template_name, args)
 
     @staticmethod
@@ -187,18 +187,22 @@ class GearView(View):
             return redirect("kiosk:gear", gear_rfid)
 
 
-def get_name(member_rfid: str) -> str:
+def get_member(member_rfid: str, member=None) -> Member:
     try:
-        name = Member.objects.get(rfid=member_rfid).get_full_name()
-        return name
+        member = Member.objects.get(rfid=member_rfid)
     except Member.DoesNotExist:
-        raise ValidationError("This is not associated with a member")
+        raise ValidationError("This RFID is not assiciated with a member!")
+    else:
+        return member
 
 
 def get_checked_out_gear(member_rfid: str) -> List[object]:
+
+    current_member = get_member(member_rfid)
+
     try:
-        current_member = Member.objects.get(rfid=member_rfid)
-        checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member))
-        return checked_out_gear
+        checked_out_gear = list(Gear.objects.filter(checked_out_to=current_member).order_by('due_date'))
     except Member.DoesNotExist:
-        raise ValidationError(f"There is no member with {member_rfid}")
+        raise ValidationError(f"Failed to get a gear list for {current_member.get_full_name()}")
+    else:
+        return checked_out_gear
