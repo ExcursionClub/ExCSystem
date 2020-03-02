@@ -18,6 +18,12 @@
                     <h1>{{ member }}</h1>
                 </div>
             </a>
+            <div style="text-align: center">
+                <h3>{{ member.group }}</h3>
+                {% if member.group == 'Member' %}
+                    <h4>Expires: {{ member.date_expires }}</h4>
+                {% endif %}
+            </div>
             <div class="row text-center mx-auto d-block">
                 {{ gear.get_status }}
             </div>
