@@ -55,12 +55,14 @@
             {% if checked_out_gear %}
                 {% for gear in checked_out_gear %}
                     {% if gear.is_overdue %}
-                        <div class="row p-3 mb-2 rounded" style="padding: 5px; background-color: #FFA1A1; font-weight: bold">
+                        <div class="card p-3 mb-2 rounded" style="padding: 5px; background-color: #FFA1A1; font-weight: bold">
                     {% else %}
-                        <div class="row p-3 mb-2 rounded bg-light">
+                        <div class="card p-3 mb-2 rounded bg-light">
                     {% endif %}
-                            <div class="col-8"><a href="{{ gear.view_gear_url }}">{{ gear }}</a></div>
-                            <div class="col-4" style="text-align: right"> {{ gear.due_date }}</div>
+                            <div class="row">
+                                <div class="col-8"><a href="{{ gear.view_gear_url }}">{{ gear }}</a></div>
+                                <div class="col-4" style="text-align: right"> {{ gear.due_date }}</div>
+                            </div>
                         </div>
                         <br/>
                 {% endfor %}

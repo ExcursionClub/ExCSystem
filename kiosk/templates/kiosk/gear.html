@@ -45,34 +45,42 @@
             <br/>
         </div>
         <div class="col-7">
-            <br/>
-            <h2>Gear data:</h2>
-            {% for field, value in gear.get_display_gear_data.items %}
-                <div class="row">
-                    <div class="col-1"></div>
-                    <div class="col-3">
-                        <label>{{ field }}</label>
-                    </div>
-                    <div class="col-8">
-                        <p>{{ value }}</p>
-                    </div>
+            <div class="card">
+                <div class="card-header">
+                    Gear data
                 </div>
-            {% endfor %}
+                {% for field, value in gear.get_display_gear_data.items %}
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-3">
+                            <label>{{ field }}</label>
+                        </div>
+                        <div class="col-8">
+                            {{ value }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
             <br/><br/>
             {% if gear.checked_out_to %}
-                <h2>Checked out to:</h2>
-                <div class="row">
-                    <div class="col-1"></div>
-                    <div class="col-4">
-                        <a href="{{ gear.checked_out_to.view_profile_url }}">
-                            <img class="rounded mx-auto d-block" src="{{ gear.checked_out_to.image.url }}" alt="member" width="200px">
-                        </a>
+                <div class="card">
+                    <div class="card-header">
+                        Checked out to
                     </div>
-                    <div class="col-7" style="padding-left: 30px">
-                        <a href="{{ gear.checked_out_to.view_profile_url }}"> <h3>{{ gear.checked_out_to }}</h3> </a>
-                        <p> {{ gear.checked_out_to.group }}</p>
-                        <br/>
-                        <p>Due: {{ gear.due_date }}</p>
+                    <div class="row" style="padding: 20px">
+                        <div class="col-1"></div>
+                        <div class="col-4">
+                            <a href="{{ gear.checked_out_to.view_profile_url }}">
+                                <img class="rounded mx-auto d-block" src="{{ gear.checked_out_to.image.url }}" alt="member" width="200px">
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6" style="padding-left: 30px">
+                            <a href="{{ gear.checked_out_to.view_profile_url }}"> <h3>{{ gear.checked_out_to }}</h3> </a>
+                            <p> {{ gear.checked_out_to.group }}</p>
+                            <br/>
+                            <p>Due: {{ gear.due_date }}</p>
+                        </div>
                     </div>
                 </div>
             {% endif %}
