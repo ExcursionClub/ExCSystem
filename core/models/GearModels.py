@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 from core.forms.fields.RFIDField import RFIDField
 from core.forms.widgets import ExistingImageWidget
@@ -322,6 +323,10 @@ class Gear(models.Model):
     @property
     def view_gear_url(self):
         return reverse("admin:core_gear_detail", kwargs={"pk": self.pk})
+
+    @property
+    def is_overdue(self):
+        return self.due_date < date.today()
 
     def get_extra_fieldset(self, name="Additional Data", classes=("wide",)):
         """Get a fieldset that contains data on how to represent the extra data fields contained in geartype"""
