@@ -1,5 +1,11 @@
 {% extends "kiosk/../base.html" %}
 
+
+{% block extrahead %}
+
+{% endblock %}
+
+
 {% block title %}Kiosk | Check out gear{% endblock %}
 
 {% block content %}
@@ -27,14 +33,19 @@
             <div class="row text-center mx-auto d-block">
                 {{ gear.get_status }}
             </div>
-            <br/><br/><br/><br/>
+            <br/><br/><br/>
             <div class="row">
-                <p>Scan RFID tag to check out gear to this member</p>
-                <form method="post">
+                <p>Scan RFID tag to check out gear to this member. Scan a member tag to switch members.</p>
+                <form method="post" style="width: 100%; align-content: center">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input type="submit" value="Submit">
+                    <br/>
+                    <input class="action-button" type="submit" value="Submit">
                 </form>
+            </div>
+            <br/>
+            <div class="row">
+                <a href="{{ kiosk_home }}" style="width: 100%"><input class="action-button" type="submit" value="Kiosk Home"></a>
             </div>
         </div>
         <div class="col-1">

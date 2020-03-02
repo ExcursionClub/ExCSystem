@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.http import Http404
+from django.urls import reverse
 from django.shortcuts import redirect, render
 from django.views import View, generic
 from kiosk.CheckoutLogic import do_checkin, do_checkout
@@ -78,7 +79,11 @@ class CheckOutView(View):
 
         checked_out_gear = get_checked_out_gear(rfid)
 
-        args = {"form": form, "member": member, "checked_out_gear": checked_out_gear}
+        args = {
+            "form": form,
+            "member": member,
+            "checked_out_gear": checked_out_gear,
+            "kiosk_home": reverse("kiosk:home")}
         return render(request, self.template_name, args)
 
     @staticmethod
@@ -128,8 +133,7 @@ class GearView(View):
         except Gear.DoesNotExist:
             raise Http404()
 
-        args = {"form": HomeForm(), "gear": gear}
-
+        args = {"form": HomeForm(), "gear": gear, "kiosk_home": reverse("kiosk:home")}
         return render(request, self.template_name, args)
 
     @staticmethod
