@@ -96,10 +96,10 @@ class CustomDataField(models.Model):
     def serialize_boolean(self, boolean, required=False, **kwargs):
         return {"initial": boolean, "required": required}
 
-    def serialize_int(self, value, min_value=-100, max_value=100, **kwargs):
+    def serialize_int(self, value, min_value=-1000000, max_value=1000000, **kwargs):
         return {"initial": value, "min_value": min_value, "max_value": max_value}
 
-    def serialize_float(self, value, min_value=-1000, max_value=1000, **kwargs):
+    def serialize_float(self, value, min_value=-1000000, max_value=1000000, **kwargs):
         return {"initial": value, "min_value": min_value, "max_value": max_value}
 
     def serialize_choice(self, value, choices=None, **kwargs):
