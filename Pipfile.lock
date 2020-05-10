@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9192d8619f041504c10e1fc86d075121c9ef082f9e0a92e649ded6caf2eee44c"
+            "sha256": "436d6a995703cbd0a94afd544910b1a77d1b9b6a3a467f7868a5ddd7cb841937"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -32,18 +32,18 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:989ede38b9f69743e2536ccf371941354e77103b47b37d5ba90f77718368a248",
-                "sha256:dc4d17a9b0bd6fb03b2650a0f7c7b6a458583fe7bebbcd6bbefd299d7169fb5b"
+                "sha256:05f75d30aa10094eb96bba22b25b6005126de748188f196a5fffab8a76d821ac",
+                "sha256:f1ac7eb23ff8b1d7e314123668ff1e93b874dd396ac5424adc443d68bd8a6fbf"
             ],
             "index": "pypi",
-            "version": "==1.13.3"
+            "version": "==1.13.6"
         },
         "botocore": {
             "hashes": [
-                "sha256:d291035e643c353029df8985cbc0bbdcdf9117fff81c715dd688aadd51816f41",
-                "sha256:e2c384f378d96c09079d9fa44be4f6a849c4d5295de68c9c8afc8783f7a5a2a2"
+                "sha256:1f5e57f41f9f9400feffc62f17b517a601643ffec69f7ee927555604112cc012",
+                "sha256:b9c8e0aa07770b7b371d586db41eef46e70bfc4ab47f7a1ee1acd4e9c811c6c9"
             ],
-            "version": "==1.16.3"
+            "version": "==1.16.6"
         },
         "certifi": {
             "hashes": [
@@ -85,11 +85,11 @@
         },
         "django-storages": {
             "hashes": [
-                "sha256:0a9b7e620e969fb0797523695329ed223bf540bbfdf6cd163b061fc11dab2d1c",
-                "sha256:9322ab74ba6371e2e0fccc350c741686ade829e43085597b26b07ae8955a0a00"
+                "sha256:3103991c2ee8cef8a2ff096709973ffe7106183d211a79f22cf855f33533d924",
+                "sha256:a59e9923cbce7068792f75344ed7727021ee4ac20f227cf17297d0d03d141e91"
             ],
             "index": "pypi",
-            "version": "==1.8"
+            "version": "==1.9.1"
         },
         "django-user-agents": {
             "hashes": [
@@ -131,11 +131,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:61adadab01adaac571b04ddbe50f981c488ef00cfd51eef7e040ef4765871b00",
-                "sha256:eedbace07295109ce98b13b9bd1ac22dd43c1e90a3f0854c557c2298493fc731"
+                "sha256:78e06d97ad8a4e1832061f9062ef17ba96b51c97f1ae489d557d41305173521b",
+                "sha256:a5e6615a36b3366bc1193feeb4e461b49d2b26b29ea43ca4f7dcc53f0182bbd1"
             ],
             "index": "pypi",
-            "version": "==8.12.2"
+            "version": "==8.12.3"
         },
         "pillow": {
             "hashes": [
