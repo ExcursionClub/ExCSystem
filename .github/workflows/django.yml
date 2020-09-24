@@ -22,10 +22,10 @@ jobs:
       run: |
         pip install pipenv
 
-    - name: Install Dependencies and Activate Shell
+    - name: Install Dependencies
       run: |
-        pipenv install && pipenv shell
+        pipenv install
 
     - name: Run Tests
       run: |
-        python manage.py test
+        pipenv run manage.py test
