@@ -17,7 +17,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Install Pipenv
-    - run: |
+      run: |
         pip install pipenv
     - name: Install Dependencies
       run: |
