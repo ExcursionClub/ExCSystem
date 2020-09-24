@@ -21,12 +21,13 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Pipenv 
+    - name: Install Pipenv
     - run: |
         pip install pipenv
-    - name: Install Dependencies
+    - name: Install Dependencies and activate shell
       run: |
         pipenv install
+        pipenv shell
     - name: Run Tests
       run: |
         python manage.py test
