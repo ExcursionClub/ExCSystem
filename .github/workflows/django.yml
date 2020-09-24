@@ -22,10 +22,9 @@ jobs:
       run: |
         pip install pipenv
 
-    - name: Install Dependencies and Activate Shell
+    - name: Install Dependencies
       run: |
         pipenv install
-        pipenv shell
 
     - name: Run Tests
       run: |
