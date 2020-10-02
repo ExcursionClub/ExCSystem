@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7cad845c036acc5d390c0f2a6c3148cc53df32b81663c263335001c58b171db3"
+            "sha256": "65c41bf58f5dd04f1ed1b1e5c04d9ab870b5f7434501c29c5185a354b8686ce2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,10 +41,10 @@
         },
         "botocore": {
             "hashes": [
-                "sha256:07b399997d8050d3ed1150d4d657b46558999f75246eb5b02cee78b9798b3bd5",
-                "sha256:53a778e6b715ad2ae39bf98e088962e8d524133fb458d83f080964254adc9885"
+                "sha256:33083dc87ba7b4dae8ecd4b019896a5e5cb2626808f52450b6a79def8a54023b",
+                "sha256:5e5bb69e5a5f8a992bd994c1faa302b44d8ba97860e042794e5a8f67e9de4f2a"
             ],
-            "version": "==1.18.8"
+            "version": "==1.18.10"
         },
         "certifi": {
             "hashes": [
@@ -62,11 +62,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:59c8125ca873ed3bdae9c12b146fbbd6ed8d0f743e4cf5f5817af50c51f1fc2f",
-                "sha256:b5fbb818e751f660fa2d576d9f40c34a4c615c8b48dd383f5216e609f383371f"
+                "sha256:a2127ad0150ec6966655bedf15dbbff9697cc86d61653db2da1afa506c0b04cc",
+                "sha256:c93c28ccf1d094cbd00d860e83128a39e45d2c571d3b54361713aaaf9a94cac4"
             ],
             "index": "pypi",
-            "version": "==3.1.1"
+            "version": "==3.1.2"
         },
         "django-heroku": {
             "hashes": [
@@ -435,11 +435,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:59c8125ca873ed3bdae9c12b146fbbd6ed8d0f743e4cf5f5817af50c51f1fc2f",
-                "sha256:b5fbb818e751f660fa2d576d9f40c34a4c615c8b48dd383f5216e609f383371f"
+                "sha256:a2127ad0150ec6966655bedf15dbbff9697cc86d61653db2da1afa506c0b04cc",
+                "sha256:c93c28ccf1d094cbd00d860e83128a39e45d2c571d3b54361713aaaf9a94cac4"
             ],
             "index": "pypi",
-            "version": "==3.1.1"
+            "version": "==3.1.2"
         },
         "django-minio-storage": {
             "hashes": [
@@ -641,10 +641,10 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:43add625c53c596d38f971a465553f6318decc39d98512bc100fa1b1e839c8dc",
-                "sha256:e0305af10299a7fb0d69393d8f04cb2965dda9351140d11ac8db4e5e3970451b"
+                "sha256:3d427459dfe5ec3241a6bad046b1d10c0e445940e013c81946458987c7c7e255",
+                "sha256:9160a8f6196afcb8bb91405b5362651f302ee8e810fc471f5f9ce9a06b070298"
             ],
-            "version": "==20.0.31"
+            "version": "==20.0.32"
         }
     }
 }
