@@ -120,6 +120,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         default=settings.DEFAULT_IMG,
         upload_to=get_profile_pic_upload_location,
         blank=True,
+        null=True,
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
