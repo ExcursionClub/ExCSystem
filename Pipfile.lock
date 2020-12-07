@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0d72aba82b3315f423a073b060baa092779bb49ad5d0186a17556f1be7874c63"
+            "sha256": "1d46d0bc3ceecab73d2287d865f8b57f7363325c3c8fd85fbe417c89762dd4f3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -48,10 +48,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:1f422849db327d534e3d0c5f02a263458c3955ec0aae4ff09b95f195c59f4edd",
-                "sha256:f05def092c44fbf25834a51509ef6e631dc19765ab8a57b4e7ab85531f0a9cf4"
+                "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c",
+                "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"
             ],
-            "version": "==2020.11.8"
+            "version": "==2020.12.5"
         },
         "dj-database-url": {
             "hashes": [
@@ -132,11 +132,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:96d02120a3481e22d8a8eb5e4595ceec1930855749f6e4a06ef931881f59f562",
-                "sha256:9de2937034deb040eb9ac56519b0887e0fe89811e57f6f5c88359e3be20ae3b5"
+                "sha256:58817072cf2b80fcc8710e7a2c395cd32fce2b70a259e36ff81916862f578d61",
+                "sha256:d60a3902d7648288624ee9568b8bc7a53b31de07bd7cb80993a3704c674dce32"
             ],
             "index": "pypi",
-            "version": "==8.12.13"
+            "version": "==8.12.14"
         },
         "pillow": {
             "hashes": [
@@ -375,10 +375,10 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:1f422849db327d534e3d0c5f02a263458c3955ec0aae4ff09b95f195c59f4edd",
-                "sha256:f05def092c44fbf25834a51509ef6e631dc19765ab8a57b4e7ab85531f0a9cf4"
+                "sha256:1a4995114262bffbc2413b159f2a1a480c969de6e6eb13ee966d470af86af59c",
+                "sha256:719a74fb9e33b9bd44cc7f3a8d94bc35e4049deebe19ba7d8e108280cfd59830"
             ],
-            "version": "==2020.11.8"
+            "version": "==2020.12.5"
         },
         "cfgv": {
             "hashes": [
