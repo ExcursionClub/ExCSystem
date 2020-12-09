@@ -458,10 +458,10 @@
         },
         "django-minio-storage": {
             "hashes": [
-                "sha256:351ada06bdd91d8f9e9092ebd9b0384a9513a47d8a523edec99cc89517cca752"
+                "sha256:17acc68dbf0c36711fc4d4f3722c1bde3cb705e1ac4fedf1d827a39f5f200c77"
             ],
             "index": "pypi",
-            "version": "==0.3.8"
+            "version": "==0.3.10"
         },
         "filelock": {
             "hashes": [
