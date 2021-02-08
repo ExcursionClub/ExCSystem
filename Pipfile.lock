@@ -254,10 +254,10 @@
         },
         "python-utils": {
             "hashes": [
-                "sha256:24fce25cb0eeb32201b95c74ec5f1e31688e7d17345cafed50e79591e275bf20",
-                "sha256:47fa0de95dd1ae90b03eb257053d426ce8cf5711b2eb60a0872469fdcf062759"
+                "sha256:18fbc1a1df9a9061e3059a48ebe5c8a66b654d688b0e3ecca8b339a7f168f208",
+                "sha256:352d5b1febeebf9b3cdb9f3c87a3b26ef22d3c9e274a8ec1e7048ecd2fac4349"
             ],
-            "version": "==2.5.5"
+            "version": "==2.5.6"
         },
         "pytz": {
             "hashes": [
@@ -562,11 +562,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:391ed331fdd0a21d0be48c1b9919921e9d372dfd60f6dc77b8f01dd6b13161c1",
-                "sha256:f413348d3a8464b77987e36ef6e02c3372dadb823edf0dfe6fb0c3dc2f378ef9"
+                "sha256:16212d1fde2bed88159287da88ff03796863854b04dc9f838a55979325a3d20e",
+                "sha256:399baf78f13f4de82a29b649afd74bef2c4e28eb4f021661fc7f29246e8c7a3a"
             ],
             "index": "pypi",
-            "version": "==2.10.0"
+            "version": "==2.10.1"
         },
         "python-dateutil": {
             "hashes": [
