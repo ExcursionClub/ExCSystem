@@ -18,10 +18,10 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:34103fa20270d8843a66e5df18547d2e8139534d23e3beffe96647c65ddffd4d",
-                "sha256:c62b616b226d6c2e927b0225f8101f9e2cca08112cff98839ca6726c129ff9e0"
+                "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee",
+                "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"
             ],
-            "version": "==3.3.2"
+            "version": "==3.3.4"
         },
         "babel": {
             "hashes": [
@@ -381,10 +381,10 @@
         },
         "asgiref": {
             "hashes": [
-                "sha256:34103fa20270d8843a66e5df18547d2e8139534d23e3beffe96647c65ddffd4d",
-                "sha256:c62b616b226d6c2e927b0225f8101f9e2cca08112cff98839ca6726c129ff9e0"
+                "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee",
+                "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"
             ],
-            "version": "==3.3.2"
+            "version": "==3.3.4"
         },
         "black": {
             "hashes": [
@@ -573,11 +573,11 @@
         },
         "pre-commit": {
             "hashes": [
-                "sha256:94c82f1bf5899d56edb1d926732f4e75a7df29a0c8c092559c77420c9d62428b",
-                "sha256:de55c5c72ce80d79106e48beb1b54104d16495ce7f95b0c7b13d4784193a00af"
+                "sha256:029d53cb83c241fe7d66eeee1e24db426f42c858f15a38d20bcefd8d8e05c9da",
+                "sha256:46b6ffbab37986c47d0a35e40906ae029376deed89a0eb2e446fb6e67b220427"
             ],
             "index": "pypi",
-            "version": "==2.11.1"
+            "version": "==2.12.0"
         },
         "python-dateutil": {
             "hashes": [
