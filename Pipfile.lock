@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "16c8854f3ff01d9393fbc5221c468f43e8900a88f6ed42231ff69d856b371836"
+            "sha256": "f809bf7370e3d7fcf0eaa62b4838679a14b00546b290c6de972ca3b315bf0ce1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -134,11 +134,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:4b9d2f2165309613f32fe5057ff0604eb8e4bbb7be44f7ba77baef760d7d60e2",
-                "sha256:8b0cf3df6ab75d22717af91014ca690423a85e77abc7b199748d1b3598b49a37"
+                "sha256:10204e005b1b887c7c96ce17c8b8ba4694693f3158199887874f9f857398b32d",
+                "sha256:c6c8c7fa69c553edbc88a95bfa5a0e9630ad19ac55f40c014a86cd061ad661ae"
             ],
             "index": "pypi",
-            "version": "==8.12.23"
+            "version": "==8.12.24"
         },
         "pillow": {
             "hashes": [
@@ -768,7 +768,10 @@
                 "sha256:14fdf849f80dbb29a4eb6caa9875d476ee2a5cf76a5f5415fa2f1606010ab467",
                 "sha256:2b0126166ea7c9c3661f5b8e06773d28f83322de7a3ff7d06f0aed18c9de6a76"
             ],
+<<<<<<< HEAD
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+=======
+>>>>>>> 3c54c31 (Bump phonenumbers from 8.12.23 to 8.12.24)
             "version": "==20.4.7"
         }
     }
