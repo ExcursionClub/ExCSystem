@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f747521fa9b3692a1c6a7dd497ddf1e997cda3df27db333032f16a2bf4681d83"
+            "sha256": "55ffaba2f1a3ef75a8f84b0f5488030e26d7ef28bc02469b7488214bfc73c5d5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,11 +18,11 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee",
-                "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"
+                "sha256:05914d0fa65a21711e732adc6572edad6c8da5f1435c3f0c060689ced5e85195",
+                "sha256:d36fa91dd90e3aa3c81a6bd426ccc8fb20bd3d22b0cf14a12800289e9c3e2563"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.3.4"
+            "version": "==3.4.0"
         },
         "babel": {
             "hashes": [
@@ -134,11 +134,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:10204e005b1b887c7c96ce17c8b8ba4694693f3158199887874f9f857398b32d",
-                "sha256:c6c8c7fa69c553edbc88a95bfa5a0e9630ad19ac55f40c014a86cd061ad661ae"
+                "sha256:37299bddabd81ce34fee97e1c95da49f2742b8240710d88649cfcfde3dc73ff2",
+                "sha256:65bab6ebdbe0ec5196c74626949748db5337d23895aabc1ef8f5d7284787998a"
             ],
             "index": "pypi",
-            "version": "==8.12.24"
+            "version": "==8.12.26"
         },
         "pillow": {
             "hashes": [
@@ -376,11 +376,11 @@
         },
         "asgiref": {
             "hashes": [
-                "sha256:92906c611ce6c967347bbfea733f13d6313901d54dcca88195eaeb52b2a8e8ee",
-                "sha256:d1216dfbdfb63826470995d31caed36225dcaf34f182e0fa257a4dd9e86f1b78"
+                "sha256:05914d0fa65a21711e732adc6572edad6c8da5f1435c3f0c060689ced5e85195",
+                "sha256:d36fa91dd90e3aa3c81a6bd426ccc8fb20bd3d22b0cf14a12800289e9c3e2563"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==3.3.4"
+            "version": "==3.4.0"
         },
         "black": {
             "hashes": [
