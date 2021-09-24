@@ -8,7 +8,7 @@ python_version = "3.8"
 
 [packages]
 django-phonenumber-field = "==5.2.0"
-phonenumbers = "==8.12.31"
+phonenumbers = "==8.12.33"
 names = "==0.3.0"
 progressbar2 = "==3.53.3"
 Pillow = "==8.3.2"
