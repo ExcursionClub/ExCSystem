@@ -1,10 +1,14 @@
+import django_heroku
 import sentry_sdk
-from excsystem.settings.base import *
+
+from uwccsystem.settings.base import *
 
 sentry_sdk.init("https://7f55db81d88d4875aeb5e21bce8655aa@sentry.io/1314232")
 
-STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-DEFAULT_FILE_STORAGE = "excsystem.settings.storage_backends.MediaStorage"
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
+
+DEFAULT_FILE_STORAGE = "uwccsystem.settings.storage_backends.MediaStorage"
 
 MEDIA_ROOT = "/var/www/media/"
 STATIC_ROOT = "/var/www/static/"
@@ -19,45 +23,20 @@ AWS_LOCATION = os.environ.get("AWS_LOCATION")
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
 
-CSRF_COOKIE_SECURE = True
-X_FRAME_OPTIONS = "DENY"
-SESSION_COOKIE_SECURE = True
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-ALLOWED_HOSTS = [".excursionclub.info", os.environ.get("NGINX_HOST_IP")]
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB_NAME"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
-        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
-        "PORT": 5432,
-    }
-}
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", False))
+ALLOWED_HOSTS = ["uwccsystem.herokuapp.com"]
 
 # Email host settings
-MEMBERSHIP_EMAIL_HOST_USER = os.environ.get("MEMBERSHIP_EMAIL_HOST_USER")
-MEMBERSHIP_EMAIL_HOST_PASSWORD = os.environ.get("MEMBERSHIP_EMAIL_HOST_PASSWORD")
-
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.ionos.com"
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-# These two are used by the backend as the defaults
-EMAIL_HOST_USER = MEMBERSHIP_EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = MEMBERSHIP_EMAIL_HOST_PASSWORD
-
-# Tells celery we will use Amazon SQS, interpets rest from env variables
-BROKER_URL = "sqs://"
+EMAIL_HOST = "localhost"
+EMAIL_PORT = 1024
+MEMBERSHIP_EMAIL_HOST_USER = "membership@UWCCDev.org"
+MEMBERSHIP_EMAIL_HOST_PASSWORD = ""
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Base address of where the page is available
-WEB_BASE = "https://www.excursionclub.info"
-SITE_DOMAIN = "www.excursionclub.info"
+WEB_BASE = "https://www.uwccsystem.herokuapp.com"
+SITE_DOMAIN = "www.uwccsystem.herokuapp.com"
 
 LOGGING = {
     "version": 1,
@@ -116,3 +95,5 @@ LOGGING = {
         },
     },
 }
+
+django_heroku.settings(locals(), staticfiles=False)

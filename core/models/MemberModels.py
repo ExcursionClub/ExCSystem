@@ -10,12 +10,13 @@ from django.core.mail import send_mail
 from django.db import models
 from django.urls import reverse
 from django.utils.timezone import datetime, now, timedelta
-from excsystem import settings
+from uwccsystem import settings
 from phonenumber_field.modelfields import PhoneNumberField
 from core.convinience import get_email_template
 
 from .CertificationModels import Certification
 from .fields.RFIDField import RFIDField
+from core import emailing
 
 
 def get_profile_pic_upload_location(instance, filename):
@@ -108,13 +109,12 @@ class Member(AbstractBaseUser, PermissionsMixin):
     """This is the base model for all members (this includes staffers)"""
 
     objects = MemberManager()
-
     primary_key = PrimaryKeyField()
 
+    # Personal contact information
     first_name = models.CharField(max_length=50, null=True)
     last_name = models.CharField(max_length=50, null=True)
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
-    rfid = RFIDField(verbose_name="RFID")
     image = models.ImageField(
         verbose_name="Profile Picture",
         default=settings.DEFAULT_IMG,
@@ -124,17 +124,24 @@ class Member(AbstractBaseUser, PermissionsMixin):
     )
     phone_number = PhoneNumberField(unique=False, null=True)
 
+    # Emergency contact information
+    emergency_contact_name = models.CharField(max_length=100, verbose_name="Contact Name", null=True)
+    emergency_relation = models.CharField(max_length=50, verbose_name="Relationship", null=True)
+    emergency_phone = PhoneNumberField(unique=False, verbose_name="Phone Number", null=True)
+    emergency_email = models.EmailField(unique=False, verbose_name="Best Email", null=True)
+
+    # Membership data
     date_joined = models.DateField(auto_now_add=True)
     date_expires = models.DateField(null=False)
-
-    is_admin = models.BooleanField(default=False)
+    rfid = RFIDField(verbose_name="RFID")
     group = models.CharField(default="Unset", max_length=30)
+    is_admin = models.BooleanField(default=False)
+    certifications = models.ManyToManyField(Certification, blank=True)
 
     #: This is used by django to determine if users are allowed to login. Leave it, except when banishing someone
     is_active = models.BooleanField(
         default=True
     )  # Use is_active_member to check actual activity
-    certifications = models.ManyToManyField(Certification, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["date_expires"]
@@ -211,7 +218,10 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def promote_to_active(self):
         """Move the member to the group of active members"""
-        self.move_to_group("Member")
+        if self.group == "Staff" or self.group == "Board" or self.group == "Admin":
+            print("Member status is already better than member")
+        else:
+            self.move_to_group("Member")
 
     def extend_membership(self, duration, rfid="", password=""):
         """Add the given amount of time to this member's membership, and optionally update their rfid and password"""
@@ -233,23 +243,23 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_email(self, title, body, from_email, email_host_password):
         """Sends an email to the member"""
-        send_mail(
+        emailing.send_email(
+            [self.email],
             title,
             body,
-            from_email,
-            [self.email],
-            fail_silently=False,
-            auth_user=from_email,
-            auth_password=email_host_password,
+            from_email=from_email,
+            smtp_password=email_host_password,
+            from_name='Excursion Club',
+            receiver_names=[self.get_full_name()]
         )
 
     def send_membership_email(self, title, body):
         """Send an email to the member from the membership email"""
-        self.send_email(
+        emailing.send_membership_email(
+            [self.email],
             title,
             body,
-            settings.MEMBERSHIP_EMAIL_HOST_USER,
-            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD,
+            receiver_names=[self.get_full_name()]
         )
 
     def send_intro_email(self, finish_signup_url):
@@ -261,14 +271,14 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def send_expires_soon_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expiring Soon!"
+        title = "Climbing Club Membership Expiring Soon!"
         template = get_email_template('expire_soon_email')
         body = template.format(member_name=self.get_full_name(), expiration_date=self.date_expires)
         self.send_membership_email(title, body)
 
     def send_expired_email(self):
         """Send an email warning the member that their membership will soon expire"""
-        title = "Excursion Club Membership Expired!"
+        title = "Climbing Club Membership Expired!"
         template = get_email_template('expired_email')
         body = template.format(member_name=self.get_full_name(), today=self.date_expires)
         self.send_membership_email(title, body)
@@ -337,12 +347,12 @@ class Staffer(models.Model):
         null=True,
         help_text="List of your favorite trips, one per line")
     exc_email = models.EmailField(
-        verbose_name='Official ExC Email',
+        verbose_name='Official Club Email',
         max_length=255,
         unique=True)
     title = models.CharField(
         verbose_name="Position Title",
-        default="Excursion Staff!",
+        default="Climbing Club Staff!",
         max_length=30)
     autobiography = models.TextField(
         verbose_name="Self Description of the staffer",

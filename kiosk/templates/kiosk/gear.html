@@ -1,33 +1,104 @@
 {% extends "kiosk/../base.html" %}
 
+{% block extrahead %}
+
+{% endblock %}
+
 {% block title %}Kiosk | {{ gear.name }}{% endblock %}
 
 {% block content %}
-    <img src="{{ gear.image.url }}" alt="gear image" width="200px">
-    <h1>{{ gear.geartype }}</h1>
-    <p>Brand: {{ gear.manufacturer|default:'N/A' }}</p>
-    <p>Status: {{ gear.get_status }}</p>
-    <br>
-    <p>Scan a member RFID tag to check this item out</p>
-    {% if gear.get_status == 'Checked Out' %}
-        <p>Or check this item in by scanning the gear RFID again</p>
-    {% endif %}
-    <p></p>
-     <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit">
-    </form>
-    {% if messages %}
-        <br>
-        <ul class="messages">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}" role="alert">
-                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                        Error
-                    {% endif %} {{ message }}
+
+<br/><br/><br/>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4 center">
+            <a href="{{ gear.view_gear_url }}">
+                <div class="row center">
+                    <img class="rounded mx-auto d-block" src="{{ gear.image.url }}" alt="gear image" width="200px">
                 </div>
-            {% endfor %}
-        </ul>
-    {% endif %}
+                <div class="row text-center mx-auto d-block">
+                    <h1>{{ gear.geartype }}</h1>
+                </div>
+            </a>
+            <div class="row text-center mx-auto d-block">
+                {{ gear.get_status }}
+            </div>
+            <br/><br/><br/><br/>
+            <div class="row">
+                <p>Scan a member RFID tag to check this item out</p>
+                {% if gear.get_status == 'Checked Out' %}
+                    <p>Or check this item in by scanning the gear RFID again</p>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="action-button" type="submit" value="Submit">
+                </form>
+            </div>
+            <br/>
+            <div class="row">
+                <a href="{{ kiosk_home }}" style="width: 100%"><input class="action-button" type="submit" value="Kiosk Home"></a>
+            </div>
+        </div>
+        <div class="col-1">
+            <br/>
+        </div>
+        <div class="col-7">
+            <div class="card">
+                <div class="card-header">
+                    Gear data
+                </div>
+                {% for field, value in gear.get_display_gear_data.items %}
+                    <div class="row">
+                        <div class="col-1"></div>
+                        <div class="col-3">
+                            <label>{{ field }}</label>
+                        </div>
+                        <div class="col-8">
+                            {{ value }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <br/><br/>
+            {% if gear.checked_out_to %}
+                <div class="card">
+                    <div class="card-header">
+                        Checked out to
+                    </div>
+                    <div class="row" style="padding: 20px">
+                        <div class="col-1"></div>
+                        <div class="col-4">
+                            <a href="{{ gear.checked_out_to.view_profile_url }}">
+                                <img class="rounded mx-auto d-block" src="{{ gear.checked_out_to.image.url }}" alt="member" width="200px">
+                            </a>
+                        </div>
+                        <div class="col-1"></div>
+                        <div class="col-6" style="padding-left: 30px">
+                            <a href="{{ gear.checked_out_to.view_profile_url }}"> <h3>{{ gear.checked_out_to }}</h3> </a>
+                            <p> {{ gear.checked_out_to.group }}</p>
+                            <br/>
+                            <p>Due: {{ gear.due_date }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    <br>
+    <ul class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    Error
+                {% endif %} {{ message }}
+            </div>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% endblock %}

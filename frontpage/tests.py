@@ -8,4 +8,4 @@ class HomePageTests(SimpleTestCase):
 
     def test_home_contains_correct_html(self):
         response = self.client.get("/")
-        self.assertContains(response, "<h1>The Excursion Club UCSB</h1>")
+        self.assertContains(response, "<h1>The Climbing Club UW</h1>")

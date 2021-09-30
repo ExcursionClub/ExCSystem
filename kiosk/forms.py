@@ -4,7 +4,7 @@ from django import forms
 
 class HomeForm(forms.Form):
     rfid = forms.CharField(
-        max_length=10, widget=forms.TextInput(attrs={"placeholder": "10 digits"})
+        max_length=10, widget=forms.TextInput(attrs={"placeholder": "    10 digit RFID", "autofocus": "autofocus"})
     )
 
 

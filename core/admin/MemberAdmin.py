@@ -40,13 +40,22 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             None,
             {"classes": ("wide",), "fields": ("username", "password1", "password2")},
         ),
-        ("Staff Use Only", {"classes": ("wide",), "fields": ("membership", "rfid")}),
+        ("Staff Use Only", {"classes": ("wide",), "fields": ("form_filled", "membership", "rfid")}),
     )
     fieldsets = (
-        ("Contact Info", {"classes": ("wide",), "fields": ("email", "phone_number")}),
+        (
+            "Contact Info",
+            {"classes": ("wide",), "fields": ("email", "phone_number")}),
         (
             "Personal Info",
             {"classes": ("wide",), "fields": ("first_name", "last_name", "image")},
+        ),
+        (
+            "Emergency Contact Info",
+            {
+                "classes": ("wide",),
+                "fields": ("emergency_contact_name", "emergency_relation", "emergency_phone", "emergency_email")
+            }
         ),
         (
             "Club  Info",
@@ -58,8 +67,13 @@ class MemberAdmin(ViewableModelAdmin, BaseUserAdmin):
             "Profile Info",
             {
                 "classes": ("wide",),
-                "fields": ("email", "phone_number", "first_name", "last_name"),
+                "fields": ("email", "phone_number", "first_name", "last_name", "image"),
             },
+            "Emergency Contact Info",
+            {
+                "classes": ("wide",),
+                "fields": ("emergency_contact_name", "emergency_relation", "emergency_phone", "emergency_email")
+            }
         ),
     )
     search_fields = ("email", "phone_number", "first_name", "last_name", "rfid")
