@@ -90,7 +90,7 @@ class StafferManager(models.Manager):
         :param autobiography: the staffers life story
         :return: Staffer
         """
-        exc_email = f"{staff_name}{settings.EXC_EMAIL}"
+        exc_email = f"{staff_name}{settings.CLUB_EMAIL}"
         member.move_to_group("Staff")
         member.date_expires = datetime.max
         member.save()
@@ -241,14 +241,13 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
         return self
 
-    def send_email(self, title, body, from_email, email_host_password):
+    def send_email(self, title, body, from_email):
         """Sends an email to the member"""
         emailing.send_email(
             [self.email],
             title,
             body,
             from_email=from_email,
-            smtp_password=email_host_password,
             from_name='Excursion Club',
             receiver_names=[self.get_full_name()]
         )
@@ -294,8 +293,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
         self.send_email(
             title,
             body,
-            'info@excursionclubucsb.org',
-            settings.MEMBERSHIP_EMAIL_HOST_PASSWORD,
+            'info@climbingclubuw.org',
         )
 
     def send_new_staff_email(self, staffer):

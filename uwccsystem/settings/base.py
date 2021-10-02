@@ -15,7 +15,7 @@ SECRET_KEY = os.environ.get(
 
 SITE_ID = 1
 SITE_NAME = "Climbing Club System"
-EXC_EMAIL = '@climbingclubuw.org'
+CLUB_EMAIL = '@climbingclubuw.org'
 
 GEAR_EXPIRE_TIME = timedelta(days=90)
 
