@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from uwccsystem.settings import CLUB_EMAIL
+from uwccsystem.settings import EXC_EMAIL
 from core.models.FileModels import AlreadyUploadedImage
 from django.forms import widgets
 from django.urls import reverse
@@ -90,7 +90,7 @@ class ExCEmailWidget(widgets.TextInput):
     template_name = "widgets/exc_email.html"
 
     def __init__(self, *args, **kwargs):
-        self.email_tail = CLUB_EMAIL
+        self.email_tail = EXC_EMAIL
         super(ExCEmailWidget, self).__init__(*args, **kwargs)
 
     def get_context(self, name, value, attrs):

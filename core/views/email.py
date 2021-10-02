@@ -9,4 +9,4 @@ from uwccsystem import settings
 
 
 class ExcPasswordResetView(PasswordResetView):
-    from_email = settings.MEMBERSHIP_EMAIL
+    from_email = settings.MEMBERSHIP_EMAIL_HOST_USER
