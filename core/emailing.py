@@ -20,7 +20,7 @@ def send_email(to_emails, title, body,
 
     email = {
         "to": recipients,
-        "reply_to": from_email,
+        "reply_to": {'email': from_email},
         "sender": {
             "name": from_name,
             "email": from_email
