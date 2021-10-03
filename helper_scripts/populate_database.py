@@ -100,7 +100,7 @@ def generate_member() -> Member:
 # Add the master admin  and excursion system accounts
 try:
     admin = Member.objects.create_superuser(
-        "admin@excursionclubucsb.org", ADMIN_RFID, password=PASSWORD
+        "admin@climbingclubuw.org", ADMIN_RFID, password=PASSWORD
     )
 except IntegrityError:
     pass  # If admin already exists don't try to re-make it
@@ -113,8 +113,8 @@ except IntegrityError:
 else:
     Staffer.objects.upgrade_to_staffer(
         system,
-        "excsystem",
-        "I am the Excursion computer system, and I do all the work nobody else can or wants to do",
+        "uwccsystem",
+        "I am the Climbing Club computer system, and I do all the work nobody else can or wants to do",
     )
 
 

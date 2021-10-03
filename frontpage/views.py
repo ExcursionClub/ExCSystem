@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def index(request):
-    return render(request, "frontpage/index.html")
+    return redirect('https://sites.uw.edu/climb')
+    # return render(request, "frontpage/index.html")

@@ -1,5 +1,5 @@
 from helper_scripts import setup_django
-import excsystem.settings as settings
+import uwccsystem.settings as settings
 import time
 import ssl
 from selenium import webdriver

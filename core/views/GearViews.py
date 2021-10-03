@@ -5,7 +5,7 @@ from core.views.ViewList import RestrictedViewList
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.urls import reverse
 from django.utils import timezone
-from excsystem.settings import WEB_BASE
+from uwccsystem.settings import WEB_BASE
 
 
 class GearTypeDetailView(ModelDetailView):

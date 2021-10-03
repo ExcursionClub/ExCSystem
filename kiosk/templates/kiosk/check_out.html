@@ -1,39 +1,92 @@
 {% extends "kiosk/../base.html" %}
 
+
+{% block extrahead %}
+
+{% endblock %}
+
+
 {% block title %}Kiosk | Check out gear{% endblock %}
 
 {% block content %}
-    {% if user.is_authenticated %}
-        <h1>{{ name }}</h1>
-        <h2>Check out gear</h2>
-        <ul>
-            {% for gear in checked_out_gear %}
-                <li>{{ gear }}, (Due {{ gear.due_date }})</li>
-            {% endfor %}
-        </ul>
-        <p>Scan RFID tag to check out more gear</p>
-        {% if checked_out_gear %}
-            <p>Or check this item in by scanning the gear RFID again</p>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit">
-        </form>
-        {% if messages %}
-            <br>
-            <ul class="messages">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}" role="alert">
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                            Error
-                        {% endif %} {{ message }}
-                    </div>
+
+<br/><br/><br/>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4 center">
+            <a href="{{ member.view_profile_url }}">
+                <div class="row center">
+                    <img class="rounded mx-auto d-block" src="{{ member.image.url }}" alt="profile picture" width="300px">
+                </div>
+                <br/>
+                <div class="row text-center mx-auto d-block">
+                    <h1>{{ member }}</h1>
+                </div>
+            </a>
+            <div style="text-align: center">
+                <h3>{{ member.group }}</h3>
+                {% if member.group == 'Member' %}
+                    <h4>Expires: {{ member.date_expires }}</h4>
+                {% endif %}
+            </div>
+            <div class="row text-center mx-auto d-block">
+                {{ gear.get_status }}
+            </div>
+            <br/><br/><br/>
+            <div class="row">
+                <p>Scan RFID tag to check out gear to this member. Scan a member tag to switch members.</p>
+                <form method="post" style="width: 100%; align-content: center">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <br/>
+                    <input class="action-button" type="submit" value="Submit">
+                </form>
+            </div>
+            <br/>
+            <div class="row">
+                <a href="{{ kiosk_home }}" style="width: 100%"><input class="action-button" type="submit" value="Kiosk Home"></a>
+            </div>
+        </div>
+        <div class="col-1">
+            <br/>
+        </div>
+        <div class="col-7">
+            {% if checked_out_gear %}
+                {% for gear in checked_out_gear %}
+                    {% if gear.is_overdue %}
+                        <div class="card p-3 mb-2 rounded" style="padding: 5px; background-color: #FFA1A1; font-weight: bold">
+                    {% else %}
+                        <div class="card p-3 mb-2 rounded bg-light">
+                    {% endif %}
+                            <div class="row">
+                                <div class="col-8"><a href="{{ gear.view_gear_url }}">{{ gear }}</a></div>
+                                <div class="col-4" style="text-align: right"> {{ gear.due_date }}</div>
+                            </div>
+                        </div>
+                        <br/>
                 {% endfor %}
+            {% else %}
+                <div class="row rounded bg-success">
+                    No gear checked out!
+                </div>
+            {% endif %}
             </ul>
-        {% endif %}
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'kiosk:login' %}">login</a>
-    {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+    <br>
+    <ul class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                    Error
+                {% endif %} {{ message }}
+            </div>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% endblock %}

@@ -69,7 +69,7 @@
 </head>
     {% if user.is_authenticated %}
         <div class="wrapper">
-            <p class="description">The Excursion Club has tons of gear and equipment available to our members. All gear and equipment has limited availability, and members are allowed to check them out for a limited time on a first-come, first-serve basis.</p>
+            <p class="description">The Climbing Club has tons of gear and equipment available to our members. All gear and equipment has limited availability, and members are allowed to check them out for a limited time on a first-come, first-serve basis.</p>
             <img class="hat" src="{% static "img/hat.webp" %}" width="170px" alt="hat">
             <div class="check-out">
                 <p>Scan a member or gear RFID tag to:</p>
@@ -82,7 +82,7 @@
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <input type="submit" value="Submit">
+                    <input class="action-button" type="submit" value="Submit">
                 </form>
                 {% if messages %}
                     <br>
