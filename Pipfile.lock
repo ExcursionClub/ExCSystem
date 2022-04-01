@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "df30b6d40368150cf52f51b2734fa50ccc03ab88bbe1c2c0f9e92920203139ba"
+            "sha256": "08d68fa2b5096bb7ab617d0fe7708b188ed475b3f19d24596be0bee89dcbb3f4"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -134,11 +134,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:94e30f59b2be6c4310a90f3d5da53d49900bdb440484506f3333c694ebb0cdab",
-                "sha256:e3af21c1e33a3dd063cddba3cad653abb8d23c37c62cedee597a3f3ea0f5365c"
+                "sha256:1c440f6336cb49893ff1a8326c70b4df693802ae981f210f545cd4215ac48133",
+                "sha256:ae300d40c3e0b581372294a43b04359b24af94f631dd9451881561d5c702a78d"
             ],
             "index": "pypi",
-            "version": "==8.12.45"
+            "version": "==8.12.46"
         },
         "pillow": {
             "hashes": [
@@ -729,7 +729,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version < '3.11'",
+            "markers": "python_version >= '3.7'",
             "version": "==2.0.1"
         },
         "typing-extensions": {
@@ -737,7 +737,7 @@
                 "sha256:1a9462dcc3347a79b1f1c0271fbe79e844580bb598bafa1ed208b94da3cdcd42",
                 "sha256:21c85e0fe4b9a155d0799430b0ad741cdce7e359660ccbd8b530613e8df88ce2"
             ],
-            "markers": "python_version < '3.10'",
+            "markers": "python_version >= '3.6'",
             "version": "==4.1.1"
         },
         "urllib3": {
