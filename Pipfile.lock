@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "43d419a81a0e25e472400b842908ff84d7d0a09c878a86f434bd4c7065ede64c"
+            "sha256": "76dcf34579e78c08ab29cd21d151a288b6075dd11810f49147002e2702f0102b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -156,11 +156,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:1c440f6336cb49893ff1a8326c70b4df693802ae981f210f545cd4215ac48133",
-                "sha256:ae300d40c3e0b581372294a43b04359b24af94f631dd9451881561d5c702a78d"
+                "sha256:065fc5930ceff3147f50beb4c6d253c25ab0a467ac461174c62696c119593f7e",
+                "sha256:56fd605d2f5460e1df2117085b653bb38322295ec658e6acaafc9c976867d522"
             ],
             "index": "pypi",
-            "version": "==8.12.46"
+            "version": "==8.12.47"
         },
         "pillow": {
             "hashes": [
