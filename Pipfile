@@ -29,7 +29,7 @@ babel = "==2.9.1"
 django-extensions = "*"
 
 [dev-packages]
-black = "==22.3.0"
+black = "==22.6.0"
 django-minio-storage = "*"
 mypy = "*"
 coverage = "*"
