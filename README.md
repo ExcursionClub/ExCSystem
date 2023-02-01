@@ -1,3 +1,5 @@
+:warning: ExCSystem is no longer maintained
+
 # UWCCsystem [![Build Status](https://travis-ci.org/ExcursionClub/UWCCsystem.svg?branch=master)](https://travis-ci.org/ExcursionClub/UWCCsystem) [![Coverage Status](https://coveralls.io/repos/github/ExcursionClub/UWCCsystem/badge.svg?branch=master)](https://coveralls.io/github/ExcursionClub/UWCCsystem?branch=master) [![Maintainability](https://api.codeclimate.com/v1/badges/27d1df00c121f0e32ada/maintainability)](https://codeclimate.com/github/ExcursionClub/UWCCsystem/maintainability) 
 Bottom up re-design of the Excursion system
 
